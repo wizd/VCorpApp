@@ -21,25 +21,31 @@ const EmployeeList = (props: Props) => {
   );
 
   useEffect(() => {
-    PersistentStorage.getCompany().then(compstor => {
-      if (compstor == null) {
-        // create a default company, with 1 employee
-        const defaultCompany: PersistentStorage.Company = {
-          privatekey: LyraCrypto.GenerateWallet().privateKey,
-          name: 'Default Company',
-          employees: [
-            {
-              id: 'A0001',
-              name: '助理小美',
-              desc: '助理小美是一名助理，她的工作是帮助公司的老板完成一些日常的工作。',
-              avatar: `${API_URL}/assets/avatar/A0001`,
-            },
-          ],
-        };
-        PersistentStorage.setCompany(defaultCompany);
-        setCompany(defaultCompany);
-      } else setCompany(compstor);
-    });
+    PersistentStorage.getCompany()
+      .then(compstor => {
+        if (compstor == null) {
+          // create a default company, with 1 employee
+          const wallet = LyraCrypto.GenerateWallet();
+          console.log('wallet address: ', wallet.accountId);
+          const defaultCompany: PersistentStorage.Company = {
+            privatekey: wallet.privateKey,
+            name: 'Default Company',
+            employees: [
+              {
+                id: 'A0001',
+                name: '助理小美',
+                desc: '助理小美是一名助理，她的工作是帮助公司的老板完成一些日常的工作。',
+                avatar: `${API_URL}/assets/avatar/A0001.png`,
+              },
+            ],
+          };
+          PersistentStorage.setCompany(defaultCompany);
+          setCompany(defaultCompany);
+        } else setCompany(compstor);
+      })
+      .catch(err => {
+        console.log('getCompany error: ', err);
+      });
   }, []);
 
   function alert(arg0: string): void {

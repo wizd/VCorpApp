@@ -81,10 +81,7 @@ const EmployeeListItem = ({item}: ItemProps) => {
     // Use a View component as a container for each item
     <View style={styles.itemContainer}>
       <TouchableOpacity>
-        <Image
-          source={{uri: `${API_URL}/assets/avatar/${item.avatar}`}}
-          style={styles.itemImage}
-        />
+        <Image source={{uri: item.avatar}} style={styles.itemImage} />
       </TouchableOpacity>
       <View style={styles.itemTextContainer}>
         <TouchableOpacity onPress={() => setIsPromptVisible(true)}>

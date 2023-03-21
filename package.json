@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "start:development": "cross-env NODE_ENV=development react-native start --reset-cache",
+    "start:development": "cross-env NODE_ENV=development react-native start",
     "start:production": "cross-env NODE_ENV=production react-native start --reset-cache"
   },
   "dependencies": {
