@@ -1,14 +1,14 @@
-import * as bigintConversion from "bigint-conversion";
-import { Buffer } from "buffer";
+import * as bigintConversion from 'bigint-conversion';
+import {Buffer} from 'buffer';
 
 export function decodeASN1Sequence(encoded: string): bigint[] {
   const integers: bigint[] = [];
-  const buffer = new Uint8Array(Buffer.from(encoded, "hex"));
+  const buffer = new Uint8Array(Buffer.from(encoded, 'hex'));
 
   // Find the ASN.1 sequence tag (0x30) at the beginning of the buffer
   let offset = 0;
   if (buffer[offset] !== 0x30) {
-    throw new Error("Invalid ASN.1 sequence encoding");
+    throw new Error('Invalid ASN.1 sequence encoding');
   }
 
   // Move the offset past the sequence tag and length field
@@ -86,7 +86,7 @@ export function convertDerToP1393(der: string): string {
 
   const buff = concatArrayBuffers(rb, sb);
 
-  return Buffer.from(buff).toString("hex");
+  return Buffer.from(buff).toString('hex');
 }
 
 // export function convertP1393ToDer(p1393: string): string {

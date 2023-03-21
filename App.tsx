@@ -4,9 +4,9 @@
  *
  * @format
  */
-
-import React, {useEffect} from 'react';
-import type {PropsWithChildren} from 'react';
+const Stack = createNativeStackNavigator();
+import React from 'react';
+/*import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -23,10 +23,61 @@ import {
   Header,
   LearnMoreLinks,
   ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+} from 'react-native/Libraries/NewAppScreen'; */
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Onboarding from './src/screens/Onboarding';
+import ChatPage from './src/screens/ChatPage';
+import ShortCuts from './src/screens/ShortCuts';
+import EmployeeList from './src/screens/EmployeeList';
+import EmployeeMarket from './src/screens/EmployeeMarket';
+
 //import {LyraCrypto} from './src/crypto/lyra-crypto';
 
-type SectionProps = PropsWithChildren<{
+const App = () => {
+  const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
+
+  return (
+    <>
+      <NavigationContainer>
+        {hideSplashScreen ? (
+          <Stack.Navigator
+            initialRouteName="Onboarding"
+            screenOptions={{headerShown: false}}>
+            <Stack.Screen
+              name="Onboarding"
+              component={Onboarding}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ChatPage"
+              component={ChatPage}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ShortCuts"
+              component={ShortCuts}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Employees"
+              component={EmployeeList}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="EmployeeMarket"
+              component={EmployeeMarket}
+              options={{headerShown: false}}
+            />
+          </Stack.Navigator>
+        ) : null}
+      </NavigationContainer>
+    </>
+  );
+};
+export default App;
+
+/*type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 
@@ -123,3 +174,4 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+*/
