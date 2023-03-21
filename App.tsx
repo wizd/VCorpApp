@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -24,6 +24,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+//import {LyraCrypto} from './src/crypto/lyra-crypto';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -31,6 +32,12 @@ type SectionProps = PropsWithChildren<{
 
 function Section({children, title}: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+
+  // useEffect(() => {
+  //   const wallet = LyraCrypto.GenerateWallet();
+  //   console.log('your private key is: ', wallet.privateKey);
+  // }, []);
+
   return (
     <View style={styles.sectionContainer}>
       <Text
