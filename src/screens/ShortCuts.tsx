@@ -17,14 +17,6 @@ import EventSource, {
 import React, {useContext} from 'react';
 import Tts from 'react-native-tts';
 
-Tts.addEventListener('tts-finish', event => {
-  console.log('TTS finished successfully');
-});
-
-Tts.addEventListener('tts-start', event => {
-  console.log('TTS started');
-});
-
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
@@ -35,6 +27,17 @@ import AIMessage from '../components/AIMessage';
 import UserMessage from '../components/UserMessage';
 
 import AppContext, {Company} from '../persist/AppContext';
+
+Tts.addEventListener('tts-finish', event => {
+  console.log('TTS finished successfully');
+});
+
+Tts.addEventListener('tts-start', event => {
+  console.log('TTS started');
+});
+
+Tts.setDefaultLanguage('zh-CN'); // en-US
+Tts.setDefaultRate(0.5);
 
 interface ChatCompletionChunk {
   id: string;
@@ -91,9 +94,6 @@ const ShortCuts = () => {
   console.log('currentEmployee', currentEmployee);
 
   useEffect(() => {
-    Tts.setDefaultLanguage('en-US');
-    Tts.setDefaultRate(0.5);
-
     const message = {
       _id: new Date().getTime(),
       text: `Here's an example code in Python using the \`requests\` library to upload a file to a REST API:
@@ -198,7 +198,6 @@ const ShortCuts = () => {
             } else {
               if (delta && delta.content) {
                 // Update content with new data
-                Tts.speak(delta.content);
                 newContent = newContent + delta.content;
               } else {
               }
@@ -222,6 +221,7 @@ const ShortCuts = () => {
           } else {
             es.close();
             console.log('done. the answer is: ', newContent);
+            Tts.speak(newContent);
             setMessages(previousMessages => {
               // Get the last array
               const last = [...previousMessages];
