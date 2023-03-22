@@ -1,5 +1,4 @@
 import {NativeEventEmitter, NativeModules} from 'react-native';
-
 import Tts from 'react-native-tts';
 
 export class TextToSpeech {
@@ -18,7 +17,7 @@ export class TextToSpeech {
       console.log('TTS started');
     });
 
-    Tts.setDefaultLanguage('zh-CN'); // en-US
+    Tts.setDefaultLanguage('zh-CN');
     Tts.setDefaultRate(0.56);
 
     this.eventEmitter = new NativeEventEmitter();
@@ -64,10 +63,9 @@ export class TextToSpeech {
 
     this.isReading = true;
     const text = this.textQueue.join('');
-    const textToRead = text.slice(0, this.minimumTextLength);
-    this.textQueue = [text.slice(this.minimumTextLength)];
+    this.textQueue = [];
 
-    Tts.speak(textToRead);
+    Tts.speak(text);
   }
 
   private getTotalTextLength(): number {
