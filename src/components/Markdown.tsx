@@ -1,5 +1,6 @@
 import React, {FC} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
+import {Color, FontFamily, FontSize} from '../../GlobalStyles';
 import CodeBlock, {CodeBlockProps} from './CodeBlock';
 
 interface MarkdownProps {
@@ -32,11 +33,27 @@ const Markdown: FC<MarkdownProps> = ({text}) => {
         />,
       );
     } else {
-      content.push(<Text key={`text-${content.length}`}>{line}</Text>);
+      content.push(
+        <Text
+          selectable={true}
+          style={styles.helloChatgpthowAre}
+          key={`text-${content.length}`}>
+          {line}
+        </Text>,
+      );
     }
   }
 
   return <View>{content}</View>;
 };
+
+const styles = StyleSheet.create({
+  helloChatgpthowAre: {
+    fontSize: FontSize.size_lg,
+    fontWeight: '700',
+    fontFamily: FontFamily.nunitoMedium,
+    textAlign: 'left',
+  },
+});
 
 export default Markdown;

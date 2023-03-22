@@ -20,7 +20,9 @@ const CodeBlock: FC<CodeBlockProps> = ({language, code}) => {
           <Text style={styles.copyButtonText}>Copy</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.code}>{code}</Text>
+      <Text selectable={true} style={styles.code}>
+        {code}
+      </Text>
     </View>
   );
 };
