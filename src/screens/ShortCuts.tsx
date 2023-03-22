@@ -81,7 +81,7 @@ const ShortCuts = () => {
     currentEmployee = company.employees[0];
   }
 
-  console.log('currentEmployee', currentEmployee);
+  //console.log('currentEmployee', currentEmployee);
 
   const beginReading = (txt: string) => {
     tts.emitTextGen(txt);
@@ -145,7 +145,7 @@ const ShortCuts = () => {
       let reason = '';
       // Listen the server until the last piece of text
       const listener: EventSourceListener = event => {
-        console.log('SSE Event:', event);
+        //console.log('SSE Event:', event);
         if (event.type === 'open') {
           console.log('Open SSE connection.');
         } else if (event.type === 'message') {
