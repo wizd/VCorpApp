@@ -14,7 +14,7 @@ Note: Make sure you have installed native code dependencies [here](https://react
    1. Use Android Virtual Device in [Android Studio](https://developer.android.com/studio/index.html) or follow the instructions [here](https://reactnative.dev/docs/running-on-device#running-your-app-on-android-devices) to run on physical device.
    2. Then, run `cd android && gradle wrapper && cd ..`
    3. Then, run `npx react-native run-android`
-   4. For release, run in android folder: `./gradlew assembleRelease -Penv=production`
+   4. For release, run in android folder: `./gradlew assembleRelease`
 
 ### dev note
 

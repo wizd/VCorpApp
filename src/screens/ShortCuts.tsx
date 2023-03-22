@@ -15,6 +15,7 @@ import EventSource, {
   EventSourceOptions,
 } from 'react-native-sse';
 import React, {useContext} from 'react';
+import Tts from 'react-native-tts';
 
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import {useCallback, useEffect, useRef, useState} from 'react';
@@ -82,6 +83,9 @@ const ShortCuts = () => {
   console.log('currentEmployee', currentEmployee);
 
   useEffect(() => {
+    Tts.setDefaultLanguage('en-US');
+    Tts.setDefaultRate(0.5);
+
     const message = {
       _id: new Date().getTime(),
       text: `Here's an example code in Python using the \`requests\` library to upload a file to a REST API:
@@ -186,6 +190,7 @@ const ShortCuts = () => {
             } else {
               if (delta && delta.content) {
                 // Update content with new data
+                Tts.speak(delta.content);
                 newContent = newContent + delta.content;
               } else {
               }
