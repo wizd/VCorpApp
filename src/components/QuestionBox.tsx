@@ -17,9 +17,10 @@ import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 type QuestionBoxType = {
   q: string;
   onVuesaxboldsendPress: (q: string) => void;
+  avatar: string;
 };
 
-const QuestionBox = ({q, onVuesaxboldsendPress}: QuestionBoxType) => {
+const QuestionBox = ({q, onVuesaxboldsendPress, avatar}: QuestionBoxType) => {
   const navigation = useNavigation();
 
   const defImg = require('../../assets/vuesaxboldsend.png');
@@ -77,10 +78,7 @@ const QuestionBox = ({q, onVuesaxboldsendPress}: QuestionBoxType) => {
     <TouchableWithoutFeedback>
       <View style={[styles.inputbox, styles.mt8]}>
         <Pressable onPress={() => navigation.navigate('Employees' as never)}>
-          <Image
-            source={{uri: `${API_URL}/assets/avatar/A0001.png`}}
-            style={styles.itemImage}
-          />
+          <Image source={{uri: avatar}} style={styles.itemImage} />
         </Pressable>
         <TextInput
           style={styles.writeYourMessage}

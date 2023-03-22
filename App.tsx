@@ -5,7 +5,7 @@
  * @format
  */
 const Stack = createNativeStackNavigator();
-import React from 'react';
+import React, {useEffect} from 'react';
 /*import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -31,47 +31,48 @@ import ChatPage from './src/screens/ChatPage';
 import ShortCuts from './src/screens/ShortCuts';
 import EmployeeList from './src/screens/EmployeeList';
 import EmployeeMarket from './src/screens/EmployeeMarket';
-
-//import {LyraCrypto} from './src/crypto/lyra-crypto';
+import {AppContextProvider} from './src/persist/AppContext';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
 
   return (
     <>
-      <NavigationContainer>
-        {hideSplashScreen ? (
-          <Stack.Navigator
-            initialRouteName="Onboarding"
-            screenOptions={{headerShown: false}}>
-            <Stack.Screen
-              name="Onboarding"
-              component={Onboarding}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="ChatPage"
-              component={ChatPage}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="ShortCuts"
-              component={ShortCuts}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Employees"
-              component={EmployeeList}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="EmployeeMarket"
-              component={EmployeeMarket}
-              options={{headerShown: false}}
-            />
-          </Stack.Navigator>
-        ) : null}
-      </NavigationContainer>
+      <AppContextProvider>
+        <NavigationContainer>
+          {hideSplashScreen ? (
+            <Stack.Navigator
+              initialRouteName="Onboarding"
+              screenOptions={{headerShown: false}}>
+              <Stack.Screen
+                name="Onboarding"
+                component={Onboarding}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ChatPage"
+                component={ChatPage}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ShortCuts"
+                component={ShortCuts}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Employees"
+                component={EmployeeList}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="EmployeeMarket"
+                component={EmployeeMarket}
+                options={{headerShown: false}}
+              />
+            </Stack.Navigator>
+          ) : null}
+        </NavigationContainer>
+      </AppContextProvider>
     </>
   );
 };

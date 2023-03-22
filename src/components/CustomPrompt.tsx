@@ -4,16 +4,24 @@ import prompt from 'react-native-prompt-android';
 
 export type CustomPromptProps = {
   isVisible: boolean;
+  title: string;
+  message: string;
   onSubmit: (name: string | undefined) => void;
   onCancel: () => void;
 };
 
-const CustomPrompt = ({isVisible, onSubmit, onCancel}: CustomPromptProps) => {
+const CustomPrompt = ({
+  isVisible,
+  title,
+  message,
+  onSubmit,
+  onCancel,
+}: CustomPromptProps) => {
   const showPrompt = () => {
     if (Platform.OS === 'ios') {
       Alert.prompt(
-        'Enter your name',
-        'Please enter your name below:',
+        title,
+        message,
         [
           {
             text: 'Cancel',
@@ -29,8 +37,8 @@ const CustomPrompt = ({isVisible, onSubmit, onCancel}: CustomPromptProps) => {
       );
     } else {
       prompt(
-        'Enter your name',
-        'Please enter your name below:',
+        title,
+        message,
         [
           {text: 'Cancel', onPress: () => onCancel()},
           {text: 'OK', onPress: name => onSubmit(name)},

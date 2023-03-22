@@ -14,11 +14,6 @@ import {API_URL, SECRET_KEY} from '@env';
 import CustomPrompt from './CustomPrompt';
 import {Employee} from '../storage';
 
-// Define the props of the custom component that renders each item
-type ItemProps = {
-  item: Employee; // The item object
-};
-
 type TextButtonType = {
   title: string;
   onPress: () => void;
@@ -31,8 +26,14 @@ const TextButton = ({title, onPress}: TextButtonType) => {
   );
 };
 
+// Define the props of the custom component that renders each item
+type ItemProps = {
+  assistant: Employee; // The item object
+  changeName: (id: string, name: string) => void;
+};
+
 // Define the custom component that renders each item
-const EmployeeListItem = ({item}: ItemProps) => {
+const EmployeeListItem = (props: ItemProps) => {
   const navigation = useNavigation();
   const [name, setName] = useState('');
 
@@ -41,6 +42,7 @@ const EmployeeListItem = ({item}: ItemProps) => {
   const handleNameSubmit = (name: string | undefined) => {
     console.log('User entered name:', name);
     setIsPromptVisible(false);
+    props.changeName(props.assistant.id, name as string);
     navigation.navigate('ShortCuts' as never, {name: name} as never);
   };
 
@@ -49,48 +51,26 @@ const EmployeeListItem = ({item}: ItemProps) => {
     setIsPromptVisible(false);
   };
 
-  // Define a function that handles the user selection of an item
-  const handlePress = () => {
-    // show an alert dialog with a text input
-    console.log('handlePress on recuite');
-    Alert.prompt(
-      'Enter your name',
-      'What do you want to name your character?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: value => {
-            // save the name to the state
-            setName(value!);
-            // navigate to another screen with the name as a parameter
-            navigation.navigate('ShortCuts' as never, {name: value} as never);
-          },
-        },
-      ],
-      // set the alert type to plain-text
-      'plain-text',
-    );
-  };
-
   // Return the JSX element that renders each item
   return (
     // Use a View component as a container for each item
     <View style={styles.itemContainer}>
       <TouchableOpacity>
-        <Image source={{uri: item.avatar}} style={styles.itemImage} />
+        <Image
+          source={{uri: props.assistant.avatar}}
+          style={styles.itemImage}
+        />
       </TouchableOpacity>
       <View style={styles.itemTextContainer}>
         <TouchableOpacity onPress={() => setIsPromptVisible(true)}>
           <View>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemDesc}>{item.desc}</Text>
+            <Text style={styles.itemName}>{props.assistant.name}</Text>
+            <Text style={styles.itemDesc}>{props.assistant.desc}</Text>
             {/* <TextButton title="招募" onPress={() => setIsPromptVisible(true)} /> */}
             <CustomPrompt
               isVisible={isPromptVisible}
+              title="改名"
+              message="请输入新名字"
               onSubmit={handleNameSubmit}
               onCancel={handleNameCancel}
             />

@@ -1,13 +1,11 @@
 // Import React and React Native components
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {View, Button, Image, StyleSheet, FlatList} from 'react-native';
 import {Header} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
-import {API_URL, SECRET_KEY} from '@env';
 
-import * as PersistentStorage from '../storage';
 import EmployeeListItem from '../components/EmployeeListItem';
-import {LyraCrypto} from '../crypto/lyra-crypto';
+import AppContext from '../persist/AppContext';
 
 // Define the props of the main component that renders the page
 type Props = {};
@@ -15,42 +13,25 @@ type Props = {};
 // Define the main component that renders the page
 const EmployeeList = (props: Props) => {
   const navigation = useNavigation();
-
-  const [company, setCompany] = useState<PersistentStorage.Company | null>(
-    null,
-  );
-
-  useEffect(() => {
-    PersistentStorage.getCompany()
-      .then(compstor => {
-        if (compstor == null) {
-          // create a default company, with 1 employee
-          const wallet = LyraCrypto.GenerateWallet();
-          console.log('wallet address: ', wallet.accountId);
-          const defaultCompany: PersistentStorage.Company = {
-            privatekey: wallet.privateKey,
-            name: 'Default Company',
-            employees: [
-              {
-                id: 'A0001',
-                name: '助理小美',
-                desc: '助理小美是一名助理，她的工作是帮助公司的老板完成一些日常的工作。',
-                avatar: `${API_URL}/assets/avatar/A0001.png`,
-              },
-            ],
-          };
-          PersistentStorage.setCompany(defaultCompany);
-          setCompany(defaultCompany);
-        } else setCompany(compstor);
-      })
-      .catch(err => {
-        console.log('getCompany error: ', err);
-      });
-  }, []);
+  const {company, setCompany} = useContext(AppContext);
 
   function alert(arg0: string): void {
     throw new Error('Function not implemented.');
   }
+
+  const handleNameChange = (id: string, name: string) => {
+    const employee = company.employees.find(e => e.id === id);
+    if (employee) {
+      const newCompany = {
+        ...company,
+        employees: [
+          ...company.employees.filter(e => e.id !== id),
+          {...employee, name},
+        ],
+      };
+      setCompany(newCompany);
+    }
+  };
 
   // Return the JSX element that renders the page
   return (
@@ -68,7 +49,9 @@ const EmployeeList = (props: Props) => {
       />
       <FlatList
         data={company?.employees} // Pass in the data source as a prop
-        renderItem={({item}) => <EmployeeListItem item={item} />} // Pass in a function that returns an element for each item
+        renderItem={({item}) => (
+          <EmployeeListItem assistant={item} changeName={handleNameChange} />
+        )} // Pass in a function that returns an element for each item
         keyExtractor={item => item.id} // Pass in a function that returns a unique key for each item
       />
     </View>

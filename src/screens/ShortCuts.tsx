@@ -14,8 +14,7 @@ import EventSource, {
   EventSourceListener,
   EventSourceOptions,
 } from 'react-native-sse';
-import React from 'react';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import React, {useContext} from 'react';
 
 import {API_URL, SECRET_KEY} from '@env';
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
@@ -26,6 +25,8 @@ import QuickActions from '../components/QuickActions';
 import QuestionBox from '../components/QuestionBox';
 import AIMessage from '../components/AIMessage';
 import UserMessage from '../components/UserMessage';
+
+import AppContext, {Company} from '../persist/AppContext';
 
 interface ChatCompletionChunk {
   id: string;
@@ -62,6 +63,24 @@ const ShortCuts = () => {
 
   const [q, setQ] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
+
+  const {company, setCompany} = useContext(AppContext);
+
+  if (!company) {
+    return null;
+  }
+
+  let currentEmployee = company.employees.find(e => e.id == company.curid);
+  if (!currentEmployee) {
+    const newcompany = {
+      ...company,
+      curid: company.employees[0].id,
+    };
+    setCompany(newcompany);
+    currentEmployee = company.employees[0];
+  }
+
+  console.log('currentEmployee', currentEmployee);
 
   useEffect(() => {
     const message = {
@@ -114,8 +133,8 @@ const ShortCuts = () => {
 
       // Parameters to pass to the API
       const data = {
-        veid: 'A0002',
-        vename: 'Xiao Mei',
+        veid: currentEmployee.id,
+        vename: currentEmployee.name,
         messages: question,
       };
 
@@ -276,7 +295,11 @@ const ShortCuts = () => {
           // onContentSizeChange={() => flatListRef?.current?.scrollToEnd()}
           ref={flatListRef}
         />
-        <QuestionBox q={q} onVuesaxboldsendPress={ask} />
+        <QuestionBox
+          q={q}
+          onVuesaxboldsendPress={ask}
+          avatar={currentEmployee.avatar}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
