@@ -34,7 +34,7 @@
     "react-native-safe-area-context": "^4.5.0",
     "react-native-screens": "^3.20.0",
     "react-native-sse": "^1.1.0",
-    "react-native-tts": "^4.1.0",
+    "react-native-tts": "https://github.com/pabloromeu/react-native-tts.git",
     "react-native-vector-icons": "^9.2.0",
     "web-encoding": "^1.1.5"
   },

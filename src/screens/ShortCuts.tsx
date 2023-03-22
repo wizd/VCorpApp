@@ -17,6 +17,14 @@ import EventSource, {
 import React, {useContext} from 'react';
 import Tts from 'react-native-tts';
 
+Tts.addEventListener('tts-finish', event => {
+  console.log('TTS finished successfully');
+});
+
+Tts.addEventListener('tts-start', event => {
+  console.log('TTS started');
+});
+
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import {useCallback, useEffect, useRef, useState} from 'react';
 

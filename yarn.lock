@@ -6165,10 +6165,9 @@ react-native-sse@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-native-sse/-/react-native-sse-1.1.0.tgz#28c419f58a49d32f7f625f5862c467b3d7ac3598"
   integrity sha512-qPhZwuVg7ry0Cw8Q2+0VH90on223obZcfB5a/2ktoD3951zWx7HXAtrqQtDfLGjv7ncSJoswd+efn2k0uoR5lw==
 
-react-native-tts@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-tts/-/react-native-tts-4.1.0.tgz#05fa34492bec234bcd64f6ed2bf122c4667d141a"
-  integrity sha512-tvf3lQ6u9MqztUie37qoPw5YQPqi0ql1lPhDsBBs/RRA6A/H1J9X9H/qb1A0Hx0ZpjavrEdtVSqQQ2JDZvZCTQ==
+"react-native-tts@https://github.com/pabloromeu/react-native-tts.git":
+  version "4.1.1"
+  resolved "https://github.com/pabloromeu/react-native-tts.git#375ee06f5cf3b296b33ad0ee5d2a67d73d0513db"
 
 react-native-vector-icons@^9.2.0:
   version "9.2.0"
