@@ -11,8 +11,9 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {API_URL, SECRET_KEY} from '@env';
+
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
+import AppContext from '../persist/AppContext';
 
 type QuestionBoxType = {
   q: string;
@@ -22,6 +23,7 @@ type QuestionBoxType = {
 
 const QuestionBox = ({q, onVuesaxboldsendPress, avatar}: QuestionBoxType) => {
   const navigation = useNavigation();
+  const {company, setCompany} = React.useContext(AppContext);
 
   const defImg = require('../../assets/vuesaxboldsend.png');
   const [key, setKey] = useState(0);
@@ -82,7 +84,7 @@ const QuestionBox = ({q, onVuesaxboldsendPress, avatar}: QuestionBoxType) => {
             source={{
               uri: avatar.startsWith('http')
                 ? avatar
-                : API_URL + '/assets/avatar/' + avatar,
+                : company.config.API_URL + '/assets/avatar/' + avatar,
             }}
             style={styles.itemImage}
           />

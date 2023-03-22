@@ -3,7 +3,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {View, Button, Alert, StyleSheet, FlatList} from 'react-native';
 import {Header} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
-import {API_URL, SECRET_KEY} from '@env';
 
 import EmployeeListItem from '../components/EmployeeListItem';
 import AppContext, {Employee} from '../persist/AppContext';
@@ -19,13 +18,13 @@ const EmployeeMarket = (props: Props) => {
   const [data, setData] = useState<Employee[]>([]);
 
   useEffect(() => {
-    const url = API_URL + '/vc/v1/ve/list';
+    const url = company.config.API_URL + '/vc/v1/ve/list';
     // Fetch the data from the url, and set data to the returned data
     fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: SECRET_KEY,
+        Authorization: company.config.SECRET_KEY,
       },
     })
       .then(response => response.json())

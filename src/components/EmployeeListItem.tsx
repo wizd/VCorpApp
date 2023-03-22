@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {
   View,
@@ -10,9 +10,7 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {API_URL, SECRET_KEY} from '@env';
-import CustomPrompt from './CustomPrompt';
-import {Employee} from '../storage';
+import AppContext, {Employee} from '../persist/AppContext';
 
 type TextButtonType = {
   title: string;
@@ -35,6 +33,8 @@ type ItemProps = {
 
 // Define the custom component that renders each item
 const EmployeeListItem = (props: ItemProps) => {
+  const {company, setCompany} = useContext(AppContext);
+
   // Return the JSX element that renders each item
   return (
     // Use a View component as a container for each item
@@ -44,7 +44,9 @@ const EmployeeListItem = (props: ItemProps) => {
           source={{
             uri: props.assistant.avatar.startsWith('http')
               ? props.assistant.avatar
-              : API_URL + '/assets/avatar/' + props.assistant.avatar,
+              : company.config.API_URL +
+                '/assets/avatar/' +
+                props.assistant.avatar,
           }}
           style={styles.itemImage}
         />

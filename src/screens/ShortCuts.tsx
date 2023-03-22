@@ -16,7 +16,6 @@ import EventSource, {
 } from 'react-native-sse';
 import React, {useContext} from 'react';
 
-import {API_URL, SECRET_KEY} from '@env';
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
@@ -129,7 +128,7 @@ const ShortCuts = () => {
     setMessages(previousMessages => [...previousMessages, userMsg]);
 
     if (true) {
-      const url = API_URL + '/vc/v1/chat'; // replace with your API url
+      const url = company.config.API_URL + '/vc/v1/chat'; // replace with your API url
 
       // Parameters to pass to the API
       const data = {

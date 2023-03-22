@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import QuickQuestonButton from '../components/QuickQuestonButton';
 import {Margin, FontSize, FontFamily, Color} from '../../GlobalStyles';
-import {API_URL, SECRET_KEY} from '@env';
 
 const QuickActions = (props: any) => {
   return (
