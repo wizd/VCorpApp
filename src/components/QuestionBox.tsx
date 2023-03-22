@@ -78,7 +78,14 @@ const QuestionBox = ({q, onVuesaxboldsendPress, avatar}: QuestionBoxType) => {
     <TouchableWithoutFeedback>
       <View style={[styles.inputbox, styles.mt8]}>
         <Pressable onPress={() => navigation.navigate('Employees' as never)}>
-          <Image source={{uri: avatar}} style={styles.itemImage} />
+          <Image
+            source={{
+              uri: avatar.startsWith('http')
+                ? avatar
+                : API_URL + '/assets/avatar/' + avatar,
+            }}
+            style={styles.itemImage}
+          />
         </Pressable>
         <TextInput
           style={styles.writeYourMessage}

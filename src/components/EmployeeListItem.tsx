@@ -29,51 +29,32 @@ const TextButton = ({title, onPress}: TextButtonType) => {
 // Define the props of the custom component that renders each item
 type ItemProps = {
   assistant: Employee; // The item object
-  changeName: (id: string, name: string) => void;
+  onSelect: (id: string) => void;
+  onEdit: (id: string) => void;
 };
 
 // Define the custom component that renders each item
 const EmployeeListItem = (props: ItemProps) => {
-  const navigation = useNavigation();
-  const [name, setName] = useState('');
-
-  const [isPromptVisible, setIsPromptVisible] = useState(false);
-
-  const handleNameSubmit = (name: string | undefined) => {
-    console.log('User entered name:', name);
-    setIsPromptVisible(false);
-    props.changeName(props.assistant.id, name as string);
-    navigation.navigate('ShortCuts' as never, {name: name} as never);
-  };
-
-  const handleNameCancel = () => {
-    console.log('User canceled the prompt');
-    setIsPromptVisible(false);
-  };
-
   // Return the JSX element that renders each item
   return (
     // Use a View component as a container for each item
     <View style={styles.itemContainer}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => props.onEdit(props.assistant.id)}>
         <Image
-          source={{uri: props.assistant.avatar}}
+          source={{
+            uri: props.assistant.avatar.startsWith('http')
+              ? props.assistant.avatar
+              : API_URL + '/assets/avatar/' + props.assistant.avatar,
+          }}
           style={styles.itemImage}
         />
       </TouchableOpacity>
       <View style={styles.itemTextContainer}>
-        <TouchableOpacity onPress={() => setIsPromptVisible(true)}>
+        <TouchableOpacity onPress={() => props.onSelect(props.assistant.id)}>
           <View>
             <Text style={styles.itemName}>{props.assistant.name}</Text>
             <Text style={styles.itemDesc}>{props.assistant.desc}</Text>
             {/* <TextButton title="招募" onPress={() => setIsPromptVisible(true)} /> */}
-            <CustomPrompt
-              isVisible={isPromptVisible}
-              title="改名"
-              message="请输入新名字"
-              onSubmit={handleNameSubmit}
-              onCancel={handleNameCancel}
-            />
           </View>
         </TouchableOpacity>
       </View>

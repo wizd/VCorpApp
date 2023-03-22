@@ -8,6 +8,7 @@ export type CustomPromptProps = {
   message: string;
   onSubmit: (name: string | undefined) => void;
   onCancel: () => void;
+  onDelete?: () => void;
 };
 
 const CustomPrompt = ({
@@ -16,6 +17,7 @@ const CustomPrompt = ({
   message,
   onSubmit,
   onCancel,
+  onDelete,
 }: CustomPromptProps) => {
   const showPrompt = () => {
     if (Platform.OS === 'ios') {
@@ -24,13 +26,17 @@ const CustomPrompt = ({
         message,
         [
           {
+            text: 'OK',
+            onPress: name => onSubmit(name),
+          },
+          {
             text: 'Cancel',
             onPress: () => onCancel(),
             style: 'cancel',
           },
           {
-            text: 'OK',
-            onPress: name => onSubmit(name),
+            text: 'Delete',
+            onPress: () => onDelete && onDelete(),
           },
         ],
         'plain-text',
@@ -40,8 +46,9 @@ const CustomPrompt = ({
         title,
         message,
         [
-          {text: 'Cancel', onPress: () => onCancel()},
           {text: 'OK', onPress: name => onSubmit(name)},
+          {text: 'Cancel', onPress: () => onCancel()},
+          {text: 'Delete', onPress: () => onDelete && onDelete()},
         ],
         {
           type: 'plain-text',
