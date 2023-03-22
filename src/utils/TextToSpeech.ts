@@ -1,8 +1,8 @@
-import {NativeEventEmitter, NativeModules} from 'react-native';
+import {EventEmitter} from 'events';
 import Tts from 'react-native-tts';
 
 export class TextToSpeech {
-  private eventEmitter: NativeEventEmitter;
+  private eventEmitter: EventEmitter;
   private textQueue: string[];
   private isReading: boolean;
   private minimumTextLength: number;
@@ -20,7 +20,7 @@ export class TextToSpeech {
     Tts.setDefaultLanguage('zh-CN');
     Tts.setDefaultRate(0.56);
 
-    this.eventEmitter = new NativeEventEmitter();
+    this.eventEmitter = new EventEmitter();
     this.textQueue = [];
     this.isReading = false;
     this.minimumTextLength = minimumTextLength;
