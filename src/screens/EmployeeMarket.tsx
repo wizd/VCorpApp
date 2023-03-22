@@ -1,6 +1,6 @@
 // Import React and React Native components
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Button, Image, StyleSheet, FlatList} from 'react-native';
+import {View, Button, Alert, StyleSheet, FlatList} from 'react-native';
 import {Header} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import {API_URL, SECRET_KEY} from '@env';
@@ -36,7 +36,7 @@ const EmployeeMarket = (props: Props) => {
   const veSelected = (veid: string) => {
     console.log('will hire ' + veid);
     if (company.employees.find(e => e.id === veid)) {
-      console.log('已经雇佣过了');
+      Alert.alert('已经雇佣过了');
       return;
     } else {
       const employee = data.find(e => e.id === veid);

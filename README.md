@@ -15,3 +15,7 @@ Note: Make sure you have installed native code dependencies [here](https://react
    2. Then, run `cd android && gradle wrapper && cd ..`
    3. Then, run `npx react-native run-android`
    4. For release, run in android folder: `./gradlew assembleRelease -Penv=production`
+
+### dev note
+
+\*. black theme on Android: https://github.com/facebook/react-native/issues/31052
