@@ -226,8 +226,10 @@ const ShortCuts = () => {
           }
         } else if (event.type === 'error') {
           console.error('Connection error:', event.message);
+          es.close();
         } else if (event.type === 'exception') {
           console.error('Error:', event.message, event.error);
+          es.close();
         }
       };
 
