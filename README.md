@@ -6,7 +6,7 @@ Note: Make sure you have installed native code dependencies [here](https://react
 ### To preview and run the project on your device:
 
 1. Open project folder in Visual Studio Code
-2. Run `npm install` in the terminal
+2. Run `yarn install` in the terminal
 3. For iOS device (only on MacOS)
    1. Run `npx pod-install`
    2. Then, run `npx react-native run-ios` to view on iOS simulator or follow the instructions [here](https://reactnative.dev/docs/running-on-device#running-your-app-on-ios-devices) to run on a physical device.
