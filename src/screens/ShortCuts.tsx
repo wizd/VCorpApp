@@ -37,7 +37,7 @@ Tts.addEventListener('tts-start', event => {
 });
 
 Tts.setDefaultLanguage('zh-CN'); // en-US
-Tts.setDefaultRate(0.5);
+Tts.setDefaultRate(0.56);
 
 interface ChatCompletionChunk {
   id: string;

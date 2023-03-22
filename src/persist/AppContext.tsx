@@ -56,8 +56,8 @@ export const AppContextProvider: React.FC = ({children}) => {
       employees: [
         {
           id: 'A0001',
-          name: '助理小美',
-          desc: '助理小美是一名助理，她的工作是帮助公司的老板完成一些日常的工作。',
+          name: '晓玲珑',
+          desc: '晓玲珑是一名助理，她的工作是帮助公司的老板完成一些日常的工作。',
           avatar: `${defaultConfig.API_URL}/assets/avatar/A0001.png`,
         },
       ],

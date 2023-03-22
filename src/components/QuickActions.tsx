@@ -14,21 +14,20 @@ const QuickActions = (props: any) => {
         />
         <Text style={[styles.writeEdit, styles.mt5]}>{`让我们开始吧`}</Text>
       </View>
-      <View style={[styles.frameParent, styles.mt18]}>
-        {/* <QuickQuestonButton q={`Using: ${API_URL}`} pressed={props.pressed} /> */}
+      <View style={[styles.buttonsContainer]}>
         <QuickQuestonButton
-          q="写个朋友圈消息，说我也用上人工智能了"
           pressed={props.pressed}
+          q="我的朋友说你是神级大佬，我现在对你非常崇拜。你真的是大佬吗？"
+          frame44MarginTop={8}
         />
         <QuickQuestonButton
-          q="写一首歌，赞颂人工智能改变了生活"
+          q="帮我写一首诗，赞颂有了人工智以后的幸福生活。用七律来写，模仿李白的风格。"
           pressed={props.pressed}
           frame44MarginTop={8}
         />
         <QuickQuestonButton
+          q="帮我写个朋友圈消息，说我也用上人工智能了！我的朋友们都很好奇，你来挑逗一下他们吧。"
           pressed={props.pressed}
-          q="如果我有个问题，我可以问人工智能吗？"
-          frame44MarginTop={8}
         />
       </View>
     </View>
@@ -57,8 +56,16 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   frameParent: {
-    alignItems: 'center',
+    alignItems: 'center', // 修改为 flex-start
     justifyContent: 'center',
+  },
+  buttonsContainer: {
+    flex: 1,
+    //alignItems: 'stretch', // 新增
+    justifyContent: 'space-between', // 新增
+    flexDirection: 'column', // 新增
+    //paddingVertical: 15,
+    //margin: 5,
   },
 });
 

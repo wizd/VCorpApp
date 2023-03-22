@@ -49,10 +49,11 @@ const styles = StyleSheet.create({
     borderRadius: Border.br_md,
     backgroundColor: Color.whitesmoke_100,
     width: 317,
-    height: 40,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 10,
+    flex: 1,
   },
 });
 
