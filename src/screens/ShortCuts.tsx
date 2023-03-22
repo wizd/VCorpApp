@@ -15,7 +15,6 @@ import EventSource, {
   EventSourceOptions,
 } from 'react-native-sse';
 import React, {useContext} from 'react';
-import Tts from 'react-native-tts';
 
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import {useCallback, useEffect, useRef, useState} from 'react';
@@ -27,17 +26,7 @@ import AIMessage from '../components/AIMessage';
 import UserMessage from '../components/UserMessage';
 
 import AppContext, {Company} from '../persist/AppContext';
-
-Tts.addEventListener('tts-finish', event => {
-  console.log('TTS finished successfully');
-});
-
-Tts.addEventListener('tts-start', event => {
-  console.log('TTS started');
-});
-
-Tts.setDefaultLanguage('zh-CN'); // en-US
-Tts.setDefaultRate(0.56);
+import {TextToSpeech} from '../utils/TextToSpeech';
 
 interface ChatCompletionChunk {
   id: string;
@@ -69,11 +58,12 @@ interface Message {
 
 const ShortCuts = () => {
   const scrollViewRef = useRef<ScrollView>(null);
-  const inputRef = useRef<TextInput>(null);
   const flatListRef = useRef<FlatList>(null);
 
   const [q, setQ] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
+
+  const [tts] = useState(() => new TextToSpeech(10));
 
   const {company, setCompany} = useContext(AppContext);
 
@@ -93,36 +83,13 @@ const ShortCuts = () => {
 
   console.log('currentEmployee', currentEmployee);
 
-  useEffect(() => {
-    const message = {
-      _id: new Date().getTime(),
-      text: `Here's an example code in Python using the \`requests\` library to upload a file to a REST API:
+  const beginReading = (txt: string) => {
+    tts.emitTextGen(txt);
+  };
 
-\`\`\`python
-      import requests
-      
-      url = 'https://example.com/api/upload'
-      file_path = '/path/to/file.txt'
-      
-      # Open the file in binary mode
-      with open(file_path, 'rb') as file:
-          # Send a POST request with the file as the payload
-          response = requests.post(url, files={'file': file})
-      
-      # Check if the upload was successful
-      if response.status_code == requests.codes.ok:
-          print('File uploaded successfully.')
-      else:
-          response.raise_for_status()
-\`\`\`
-      
-      In this example, we first define the URL of the REST API endpoint and the path to the file we want to upload. We then open the file in binary mode using a \`with\` statement, which ensures that the file is closed properly after it is uploaded. We then send a \`POST\` request to the API endpoint using the \`requests.post()\` method, passing the file as the payload in a dictionary with the key \`'file'\`. Finally, we check the status code of the response to see if the upload was successful, and print a message accordingly."`,
-      createdAt: new Date(),
-      isLoading: false,
-      isAI: true,
-    };
-    //setMessages((previousMessages) => [...previousMessages, message]);
-  }, []);
+  const textFinished = () => {
+    tts.emitTextEnd();
+  };
 
   const ask = (question: string) => {
     setQ('');
@@ -197,6 +164,7 @@ const ShortCuts = () => {
               es.close();
             } else {
               if (delta && delta.content) {
+                beginReading(delta.content);
                 // Update content with new data
                 newContent = newContent + delta.content;
               } else {
@@ -221,7 +189,7 @@ const ShortCuts = () => {
           } else {
             es.close();
             console.log('done. the answer is: ', newContent);
-            Tts.speak(newContent);
+            textFinished();
             setMessages(previousMessages => {
               // Get the last array
               const last = [...previousMessages];
