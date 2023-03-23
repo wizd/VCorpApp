@@ -14,7 +14,7 @@ const TitleSection = () => {
           <Image
             style={styles.blueRobotMascotLogoIconDe}
             resizeMode="cover"
-            source={require('../../assets/bluerobotmascotlogoicondesign-67546755-1-traced-1.png')}
+            source={require('../../assets/logo_sm.png')}
           />
           <View style={[styles.chatgptParent, styles.ml20]}>
             <Text style={styles.chatgpt}>ChatGPT</Text>
@@ -78,8 +78,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   blueRobotMascotLogoIconDe: {
-    height: 36,
-    width: 24,
+    height: 48,
+    width: 48,
+    borderRadius: 8,
   },
   chatgpt: {
     fontSize: FontSize.size_xl,
