@@ -14,6 +14,10 @@ export interface Config {
   API_URL: string;
   SECRET_KEY: string;
 }
+
+export interface Settings {
+  tts: boolean;
+}
 export interface Employee {
   id: string;
   name: string;
@@ -23,6 +27,7 @@ export interface Employee {
 
 export interface Company {
   config: Config;
+  settings?: Settings;
   privatekey: string;
   name: string;
   curid: string;
@@ -50,6 +55,7 @@ export const AppContextProvider: React.FC = ({children}) => {
     console.log('wallet address: ', wallet.accountId);
     const defaultCompany: Company = {
       config: defaultConfig,
+      settings: {tts: true},
       privatekey: wallet.privateKey,
       name: 'Default Company',
       curid: 'A0001',
@@ -73,6 +79,8 @@ export const AppContextProvider: React.FC = ({children}) => {
           var companyFromData = JSON.parse(value);
           if (companyFromData.config === undefined)
             companyFromData.config = defaultConfig;
+          if (companyFromData.settings === undefined)
+            companyFromData.settings = {tts: true};
           setCompany(companyFromData);
           console.log('@company loaded from storage: ', value);
         } else {

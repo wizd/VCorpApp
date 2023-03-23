@@ -1,7 +1,6 @@
 import React, {FC} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
-import {WebView} from 'react-native-webview';
 
 export interface CodeBlockProps {
   language: string;
@@ -16,14 +15,7 @@ const CodeBlock: FC<CodeBlockProps> = ({language, code}) => {
   return (
     <View style={styles.codeBlockContainer}>
       {language === 'image' && code && code.trim() !== '' ? (
-        <WebView
-          style={styles.imagex}
-          source={{
-            html: `
-              <img src=${`${code}`} style="max-width: 100%; height: auto;" />
-            `,
-          }}
-        />
+        <Image style={styles.imagex} source={{uri: code}} />
       ) : (
         <>
           <View style={styles.header}>
@@ -48,8 +40,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imagex: {
-    width: '100', // 你可以根据需要调整图片的宽度和高度
-    height: '100',
+    width: 300,
+    height: 300,
   },
   codeBlockContainer: {
     borderWidth: 1,

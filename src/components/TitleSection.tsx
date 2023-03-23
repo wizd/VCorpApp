@@ -1,8 +1,23 @@
 import * as React from 'react';
+import {useContext} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {Margin, FontSize, FontFamily, Color, Padding} from '../../GlobalStyles';
+import AppContext from '../persist/AppContext';
+import ToggleButton from './ToggleButton';
 
 const TitleSection = () => {
+  const {company, setCompany} = useContext(AppContext);
+
+  const setTtsEnabled = () => {
+    setCompany({
+      ...company,
+      settings: {
+        ...company.settings,
+        tts: !company?.settings.tts,
+      },
+    });
+  };
+
   return (
     <View style={[styles.frameParent, styles.frameParentFlexBox]}>
       <View style={[styles.frameWrapper, styles.frameParentFlexBox]}>
@@ -45,10 +60,13 @@ const TitleSection = () => {
           styles.blueRobotMascotLogoIconDeParent,
           styles.frameParentFlexBox,
         ]}>
-        <Image
-          style={styles.vuesaxlinearvolumeHighIcon}
-          resizeMode="cover"
-          source={require('../../assets/vuesaxlinearvolumehigh1.png')}
+        <ToggleButton
+          disabled={company?.settings?.tts === false}
+          disabledImageSource={require('../../assets/vuesaxlinearvolumehigh.png')}
+          enabledImageSource={require('../../assets/vuesaxlinearvolumehigh1.png')}
+          onPress={() => {
+            setTtsEnabled();
+          }}
         />
         <Image
           style={[styles.vuesaxlinearvolumeHighIcon, styles.ml19]}

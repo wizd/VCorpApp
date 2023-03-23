@@ -84,7 +84,9 @@ const ShortCuts = () => {
   //console.log('currentEmployee', currentEmployee);
 
   const beginReading = (txt: string) => {
-    tts.emitTextGen(txt);
+    if (company.settings?.tts) {
+      tts.emitTextGen(txt);
+    }
   };
 
   const textFinished = () => {
