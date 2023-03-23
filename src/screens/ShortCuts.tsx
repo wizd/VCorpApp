@@ -111,6 +111,7 @@ const ShortCuts = () => {
 
       // Parameters to pass to the API
       const data = {
+        version: 2,
         veid: currentEmployee.id,
         vename: currentEmployee.name,
         messages: question,

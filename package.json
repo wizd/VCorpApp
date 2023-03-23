@@ -30,8 +30,10 @@
     "react": "18.2.0",
     "react-native": "0.71.4",
     "react-native-elements": "^3.4.3",
+    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-localize": "^2.2.6",
     "react-native-prompt-android": "^1.1.0",
     "react-native-reanimated": "^3.0.2",
     "react-native-safe-area-context": "^4.5.0",
@@ -39,6 +41,7 @@
     "react-native-sse": "^1.1.0",
     "react-native-tts": "https://github.com/pabloromeu/react-native-tts.git",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-webview": "^11.26.1",
     "web-encoding": "^1.1.5"
   },
   "devDependencies": {

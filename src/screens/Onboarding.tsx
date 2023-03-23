@@ -10,7 +10,7 @@ const Onboarding = () => {
     <View style={styles.onboarding}>
       <View style={styles.parentFlexBox}>
         <Text style={[styles.youAiAssistant, styles.continueTypo]}>
-          AI, 你的
+          我的AI世界
         </Text>
         <Text style={[styles.usingThisSoftwareyouContainer, styles.mt14]}>
           <Text style={styles.usingThisSoftwareyou}>

@@ -5,7 +5,7 @@
  * @format
  */
 const Stack = createNativeStackNavigator();
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 /*import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -24,6 +24,8 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen'; */
+import RNLocalize from 'react-native-localize';
+import translations from './src/i18n/translations';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Onboarding from './src/screens/Onboarding';
@@ -35,7 +37,14 @@ import {AppContextProvider} from './src/persist/AppContext';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
+  const [appName, setAppName] = useState('VCorp');
 
+  useEffect(() => {
+    const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+    if (translations.hasOwnProperty(deviceLanguage)) {
+      setAppName(translations[deviceLanguage].appName);
+    }
+  }, []);
   return (
     <>
       <AppContextProvider>

@@ -1,6 +1,7 @@
 import React, {FC} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
+import {WebView} from 'react-native-webview';
 
 export interface CodeBlockProps {
   language: string;
@@ -11,23 +12,45 @@ const CodeBlock: FC<CodeBlockProps> = ({language, code}) => {
   const handleCopy = () => {
     Clipboard.setString(code);
   };
-
+  console.log('code: ', code);
   return (
     <View style={styles.codeBlockContainer}>
-      <View style={styles.header}>
-        <Text style={styles.language}>{language}</Text>
-        <TouchableOpacity onPress={handleCopy} style={styles.copyButton}>
-          <Text style={styles.copyButtonText}>Copy</Text>
-        </TouchableOpacity>
-      </View>
-      <Text selectable={true} style={styles.code}>
-        {code}
-      </Text>
+      {language === 'image' && code && code.trim() !== '' ? (
+        <WebView
+          style={styles.imagex}
+          source={{
+            html: `
+              <img src=${`${code}`} style="max-width: 100%; height: auto;" />
+            `,
+          }}
+        />
+      ) : (
+        <>
+          <View style={styles.header}>
+            <Text style={styles.language}>{language}</Text>
+            <TouchableOpacity onPress={handleCopy} style={styles.copyButton}>
+              <Text style={styles.copyButtonText}>Copy</Text>
+            </TouchableOpacity>
+          </View>
+          <Text selectable={true} style={styles.code}>
+            {code}
+          </Text>
+        </>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imagex: {
+    width: '100', // 你可以根据需要调整图片的宽度和高度
+    height: '100',
+  },
   codeBlockContainer: {
     borderWidth: 1,
     borderColor: '#E0E0E0',
