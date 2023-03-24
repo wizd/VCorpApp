@@ -63,5 +63,11 @@
 		<string>Nunito_medium.ttf</string>
 		<string>Nunito_bold.ttf</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+
 </dict>
 </plist>
