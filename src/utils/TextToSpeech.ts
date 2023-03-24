@@ -2,6 +2,8 @@ import {EventEmitter} from 'events';
 import Tts from 'react-native-tts';
 import {franc} from 'franc';
 import langs from 'langs';
+
+const regex = /(`{1,3}|~{1,3}|```)([\s\S]*?)\1/gm;
 export class TextToSpeech {
   private eventEmitter: EventEmitter;
   private textQueue: string[];
@@ -77,7 +79,8 @@ export class TextToSpeech {
     const text = this.textQueue.join('');
     this.textQueue = [];
 
-    console.log('reading: ', text);
+    const replacedText = text.replace(regex, '');
+    console.log('reading: ', replacedText);
 
     if (text?.length > 8 && this.isDetectNeeded) {
       const detectedLanguageCode = franc(text);
@@ -91,7 +94,7 @@ export class TextToSpeech {
       }
     }
 
-    Tts.speak(text);
+    Tts.speak(replacedText);
   }
 
   private getTotalTextLength(): number {
