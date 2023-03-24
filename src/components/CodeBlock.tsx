@@ -15,7 +15,12 @@ const CodeBlock: FC<CodeBlockProps> = ({language, code}) => {
   return (
     <View style={styles.codeBlockContainer}>
       {language === 'image' && code && code.trim() !== '' ? (
-        <Image style={styles.imagex} source={{uri: code}} />
+        <>
+          <Image style={styles.imagex} source={{uri: code}} />
+          <Text selectable={true} style={styles.code}>
+            {code}
+          </Text>
+        </>
       ) : (
         <>
           <View style={styles.header}>
