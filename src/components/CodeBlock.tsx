@@ -1,6 +1,7 @@
 import React, {FC} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
+import ImageSaver from './ImageSaver';
 
 export interface CodeBlockProps {
   language: string;
@@ -16,7 +17,7 @@ const CodeBlock: FC<CodeBlockProps> = ({language, code}) => {
     <View style={styles.codeBlockContainer}>
       {language === 'image' && code && code.trim() !== '' ? (
         <>
-          <Image style={styles.imagex} source={{uri: code.trim()}} />
+          <ImageSaver source={{uri: code.trim()}} />
         </>
       ) : (
         <>
@@ -40,10 +41,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  imagex: {
-    width: 300,
-    height: 300,
   },
   codeBlockContainer: {
     borderWidth: 1,
