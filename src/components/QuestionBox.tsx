@@ -93,13 +93,12 @@ const QuestionBox = ({q, onVuesaxboldsendPress, avatar}: QuestionBoxType) => {
           style={styles.writeYourMessage}
           key={key} // add a key prop
           ref={inputRef}
-          placeholder="Write your message"
+          placeholder=""
           keyboardType="default"
           multiline
           value={question}
           placeholderTextColor="#a1a1a1"
           onChangeText={setQuestion}
-          onSubmitEditing={handleSubmit}
         />
 
         <TouchableHighlight
