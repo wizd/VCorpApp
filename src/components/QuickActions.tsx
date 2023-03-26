@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   frameParent: {
     alignItems: 'center', // 修改为 flex-start
     justifyContent: 'center',
+    padding: 8,
   },
   buttonsContainer: {
     flex: 1,
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', // 新增
     flexDirection: 'column', // 新增
     //paddingVertical: 15,
-    //margin: 5,
+    marginTop: 8,
   },
 });
 

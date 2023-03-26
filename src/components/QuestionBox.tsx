@@ -78,7 +78,7 @@ const QuestionBox = ({q, onVuesaxboldsendPress, avatar}: QuestionBoxType) => {
 
   return (
     <TouchableWithoutFeedback>
-      <View style={[styles.inputbox, styles.mt8]}>
+      <View style={[styles.inputcontainer, styles.mt8]}>
         <Pressable onPress={() => navigation.navigate('Employees' as never)}>
           <Image
             source={{
@@ -130,24 +130,34 @@ const styles = StyleSheet.create({
   },
   writeYourMessage: {
     flex: 1,
+    backgroundColor: Color.white,
+    paddingLeft: 4,
+    borderRadius: 12,
+    marginTop: 4,
+    marginBottom: 4,
+    marginEnd: 4,
+    width: '100%',
   },
   vuesaxlinearmicrophone2Icon: {
-    width: 24,
-    height: 24,
+    flex: 0,
+    margin: 0,
+    padding: 0,
   },
   icon: {
-    width: '100%',
-    height: '100%',
+    flex: 0,
+    marginRight: 12,
+    alignSelf: 'center',
+    alignContent: 'center',
   },
   square: {
     width: 24,
     height: 24,
     backgroundColor: 'red',
   },
-  inputbox: {
-    alignSelf: 'stretch',
+  inputcontainer: {
+    flex: 0,
     borderRadius: Border.br_md,
-    backgroundColor: Color.white,
+    backgroundColor: '#e0e0e0',
     shadowColor: 'rgba(0, 0, 0, 0.13)',
     shadowOffset: {
       width: 5,
@@ -155,13 +165,13 @@ const styles = StyleSheet.create({
     },
     fontSize: 16,
     shadowRadius: 20,
-    elevation: 20,
     shadowOpacity: 1,
     flexDirection: 'row',
-    paddingHorizontal: Padding.p_sm,
-    paddingVertical: Padding.p_sm,
     alignItems: 'center',
     borderWidth: 0,
+    minHeight: 50,
+    alignSelf: 'flex-start',
+    verticalAlign: 'middle',
   },
   questionBox: {
     position: 'absolute',
@@ -173,7 +183,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    margin: 0,
+    margin: 8,
   },
 });
 
