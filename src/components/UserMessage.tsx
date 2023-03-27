@@ -1,12 +1,21 @@
 import * as React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View, ToastAndroid} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
+import Clipboard from '@react-native-community/clipboard';
 
 const UserMessage = (props: any) => {
+  const handleCopy = () => {
+    Clipboard.setString(props.text);
+    ToastAndroid.show('文本已复制到剪贴板', ToastAndroid.SHORT);
+  };
+
   return (
     <View style={styles.frameWrapper}>
       <View style={styles.helloChatgpthowAreYouTodaWrapper}>
-        <Text selectable={true} style={styles.helloChatgpthowAre}>
+        <Text
+          selectable={true}
+          style={styles.helloChatgpthowAre}
+          onLongPress={handleCopy}>
           {props.text}
         </Text>
       </View>
