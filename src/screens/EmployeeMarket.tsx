@@ -1,7 +1,7 @@
 // Import React and React Native components
 import React, {useContext, useEffect, useState} from 'react';
 import {View, Button, Alert, StyleSheet, FlatList} from 'react-native';
-import {Header} from 'react-native-elements';
+import {Header} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
 
 import EmployeeListItem from '../components/EmployeeListItem';

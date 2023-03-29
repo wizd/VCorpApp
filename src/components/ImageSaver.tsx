@@ -13,7 +13,7 @@ import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import RNFS, {DownloadResult} from 'react-native-fs';
 import {basename} from 'react-native-path';
 import AutoImage from './AutoImage';
-import {imgPlaceHolder} from '../utils/util';
+import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 
 async function hasAndroidPermission() {
   const permission =
@@ -64,6 +64,9 @@ interface ImageModalProps {
 }
 
 const ImageModal: React.FC<ImageModalProps> = ({visible, uri, onClose}) => {
+  if (isNullOrEmpty(uri)) {
+    return null;
+  }
   return (
     <Modal visible={visible} animationType="slide">
       <View style={styles.modalContainer}>

@@ -1,12 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {View, Image, StyleSheet, Dimensions, Text} from 'react-native';
-import {imgPlaceHolder} from '../utils/util';
-
-function isNullOrEmpty(str: string | null | undefined): boolean {
-  return !str || str.trim().length === 0;
+import React, {useState, useEffect, FC} from 'react';
+import {View, Image, StyleSheet, Text} from 'react-native';
+import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
+export interface AutoImageProps {
+  source: string;
 }
 
-const AutoImage = (props: any) => {
+const AutoImage: FC<AutoImageProps> = ({source}) => {
   const [imageSize, setImageSize] = useState({width: 300, height: 300});
   const [contwidth, setContwidth] = useState(0);
 
@@ -18,10 +17,10 @@ const AutoImage = (props: any) => {
 
   useEffect(() => {
     console.log(
-      `in auto image useEffect, container width is ${contwidth} image src is: ${props.source}`,
+      `in auto image useEffect, container width is ${contwidth} image src is: ${source}`,
     );
-    if (contwidth > 0 && props.source && props.source !== '') {
-      const imageSource = props.source;
+    if (contwidth > 0 && !isNullOrEmpty(source)) {
+      const imageSource = source;
 
       Image.getSize(
         imageSource,
@@ -39,19 +38,14 @@ const AutoImage = (props: any) => {
         },
       );
     }
-  }, [contwidth, props.source]);
-
-  if (!props.source || props.source === '') {
-    // You can return null or a placeholder component here.
-    return null;
-  }
+  }, [contwidth, source]);
 
   return (
     <View style={styles.container} onLayout={onLayout}>
-      {props.source && props.source !== '' && props.source !== null && (
+      {!isNullOrEmpty(source) && (
         <Image
           source={{
-            uri: isNullOrEmpty(props.source) ? imgPlaceHolder : props.source,
+            uri: isNullOrEmpty(source) ? imgPlaceHolder : source,
           }}
           style={[
             styles.image,
@@ -59,7 +53,7 @@ const AutoImage = (props: any) => {
           ]}
         />
       )}
-      {!props.source && <Text>等待加载...</Text>}
+      {isNullOrEmpty(source) && <Text>等待加载...</Text>}
     </View>
   );
 };
