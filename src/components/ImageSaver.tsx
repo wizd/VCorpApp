@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Image,
@@ -85,35 +85,39 @@ interface NetworkImageProps {
 }
 const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
   const [localImagePath, setLocalImagePath] = useState<string | null>(null);
+  const isMountedRef = useRef(false);
 
   useEffect(() => {
-    const downloadImage = async () => {
-      const fileName = basename(imageUrl);
-      const path = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-      const fileExists = await RNFS.exists(path);
-      if (fileExists) {
-        const localPath = `file://${path}`;
-        setLocalImagePath(localPath);
-        console.log('Image loaded from cache:', localPath);
-        saved(localPath);
-      } else {
-        const {jobId, promise} = RNFS.downloadFile({
-          fromUrl: imageUrl,
-          toFile: path,
-        });
-        const result: DownloadResult = await promise;
-        if (result.statusCode === 200) {
+    if (!isMountedRef.current) {
+      const downloadImage = async () => {
+        const fileName = basename(imageUrl);
+        const path = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+        const fileExists = await RNFS.exists(path);
+        if (fileExists) {
           const localPath = `file://${path}`;
           setLocalImagePath(localPath);
-          console.log('Image downloaded and saved to:', localPath);
+          console.log('Image loaded from cache:', localPath);
           saved(localPath);
         } else {
-          console.error('Failed to download image:', result.statusCode);
+          const {jobId, promise} = RNFS.downloadFile({
+            fromUrl: imageUrl,
+            toFile: path,
+          });
+          const result: DownloadResult = await promise;
+          if (result.statusCode === 200) {
+            const localPath = `file://${path}`;
+            setLocalImagePath(localPath);
+            console.log('Image downloaded and saved to:', localPath);
+            saved(localPath);
+          } else {
+            console.error('Failed to download image:', result.statusCode);
+          }
         }
-      }
-    };
+      };
 
-    downloadImage();
+      downloadImage();
+      isMountedRef.current = true;
+    }
   }, [imageUrl, saved]);
 
   if (localImagePath) {

@@ -2,26 +2,42 @@ import React, {useState, useEffect} from 'react';
 import {View, Image, StyleSheet, Dimensions} from 'react-native';
 
 const AutoImage = (props: any) => {
-  const [imageSize, setImageSize] = useState({width: 0, height: 0});
+  const [imageSize, setImageSize] = useState({width: 300, height: 300});
+  const [contwidth, setContwidth] = useState(0);
+
+  const onLayout = event => {
+    const {width: containerWidth} = event.nativeEvent.layout;
+    setContwidth(containerWidth);
+    console.log('in auto image onLayout, container width is: ', containerWidth);
+  };
 
   useEffect(() => {
-    const imageUrl = props.source;
-    Image.getSize(
-      imageUrl,
-      (width, height) => {
-        const screenWidth = Dimensions.get('window').width;
-        const scaleFactor = width / screenWidth;
-        const imageHeight = height / scaleFactor;
-        setImageSize({width: screenWidth, height: imageHeight});
-      },
-      error => {
-        console.error('Failed to load image size:', error);
-      },
+    console.log(
+      `in auto image useEffect, container width is ${contwidth} image src is: ${props.source}`,
     );
-  }, []);
+    if (contwidth > 0 && props.source) {
+      const imageSource = props.source;
+
+      Image.getSize(
+        imageSource,
+        (width, height) => {
+          const scaleFactor = width / contwidth;
+          const imageHeight = height / scaleFactor;
+
+          setImageSize({width: contwidth, height: imageHeight});
+          console.log(
+            `in auto image useEffect, image size is: ${contwidth} x ${imageHeight}}`,
+          );
+        },
+        error => {
+          console.error('Failed to get image size:', error);
+        },
+      );
+    }
+  }, [contwidth, props.source]);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onLayout}>
       <Image
         source={{uri: props.source}}
         style={[
