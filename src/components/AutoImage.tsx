@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Image, StyleSheet, Dimensions} from 'react-native';
+import {View, Image, StyleSheet, Dimensions, Text} from 'react-native';
 
 const AutoImage = (props: any) => {
   const [imageSize, setImageSize] = useState({width: 300, height: 300});
@@ -15,7 +15,7 @@ const AutoImage = (props: any) => {
     console.log(
       `in auto image useEffect, container width is ${contwidth} image src is: ${props.source}`,
     );
-    if (contwidth > 0 && props.source) {
+    if (contwidth > 0 && props.source && props.source !== '') {
       const imageSource = props.source;
 
       Image.getSize(
@@ -38,13 +38,16 @@ const AutoImage = (props: any) => {
 
   return (
     <View style={styles.container} onLayout={onLayout}>
-      <Image
-        source={{uri: props.source}}
-        style={[
-          styles.image,
-          {width: imageSize.width, height: imageSize.height},
-        ]}
-      />
+      {props.source && props.source !== '' && (
+        <Image
+          source={{uri: props.source}}
+          style={[
+            styles.image,
+            {width: imageSize.width, height: imageSize.height},
+          ]}
+        />
+      )}
+      {!props.source && <Text>等待加载...</Text>}
     </View>
   );
 };
