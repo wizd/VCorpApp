@@ -12,6 +12,7 @@ import {
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import RNFS, {DownloadResult} from 'react-native-fs';
 import {basename} from 'react-native-path';
+import AutoImage from './AutoImage';
 
 async function hasAndroidPermission() {
   const permission =
@@ -116,7 +117,13 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
   }, [imageUrl, saved]);
 
   if (localImagePath) {
-    return <Image source={{uri: localImagePath}} style={styles.image} />;
+    return (
+      <AutoImage
+        source={localImagePath}
+        style={styles.image}
+        resizeMode="cover"
+      />
+    );
   }
 
   return <View style={styles.container} />;
@@ -169,8 +176,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 300,
-    height: 300,
+    flex: 1,
+    width: '100%',
+    aspectRatio: 1, // 可以根据图片的宽高比进行调整
   },
   modalContainer: {
     flex: 1,
@@ -182,8 +190,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalImage: {
+    flex: 1,
     width: '100%',
-    height: '100%',
+    aspectRatio: 1, // 可以根据图片的宽高比进行调整
     resizeMode: 'contain',
   },
   saveButtonContainer: {
