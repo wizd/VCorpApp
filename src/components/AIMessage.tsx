@@ -3,7 +3,7 @@ import {useContext} from 'react';
 import {Text, StyleSheet, View, ActivityIndicator, Image} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
-import {imgPlaceHolder} from '../utils/util';
+import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import GearMenu from './GearMenu';
 import Markdown from './Markdown';
 
@@ -21,7 +21,7 @@ const AIMessage = (props: any) => {
     <View style={[styles.frameWrapper, styles.mt24]}>
       <Image
         source={{
-          uri: imgsrc ?? imgPlaceHolder,
+          uri: isNullOrEmpty(imgsrc) ? imgPlaceHolder : imgsrc,
         }}
         style={styles.itemImage}
       />
