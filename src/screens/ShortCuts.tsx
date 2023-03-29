@@ -158,6 +158,8 @@ const ShortCuts = () => {
       ) {
         const msg = messages[i];
         if (msg.isAI && msg.text.startsWith('```image')) {
+          continue;
+        } else if (msg.isAI) {
           history = [
             {
               role: 'assistant',
