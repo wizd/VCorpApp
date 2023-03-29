@@ -385,12 +385,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   shortcuts: {
-    borderRadius: Border.br_lg,
+    //borderRadius: Border.br_lg,
     backgroundColor: Color.white,
     width: '100%',
     overflow: 'hidden',
     paddingHorizontal: Padding.p_sm,
-    paddingVertical: Padding.p_xl,
+    //paddingVertical: Padding.p_xl,
+    paddingBottom: 28,
     flex: 1,
   },
 });
