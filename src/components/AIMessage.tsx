@@ -3,10 +3,20 @@ import {useContext} from 'react';
 import {Text, StyleSheet, View, ActivityIndicator, Image} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
+import GearMenu from './GearMenu';
 import Markdown from './Markdown';
 
 const AIMessage = (props: any) => {
   const {company, setCompany} = useContext(AppContext);
+
+  const onRefreshPress = () => {
+    props.onRefreshPress();
+  };
+
+  const onSettingsPress = () => {
+    props.onSettingsPress();
+  };
+
   return (
     <View style={[styles.frameWrapper, styles.mt24]}>
       <Image
@@ -21,9 +31,19 @@ const AIMessage = (props: any) => {
       />
       <View style={styles.helloimFinehowCanIHelpWrapper}>
         <Markdown text={props.text} />
-      </View>
-      <View>
-        {props.isLoading && <ActivityIndicator size="small" color="#0000ff" />}
+        <View>
+          {!props.isLoading && (
+            <GearMenu
+              onRefreshPress={onRefreshPress}
+              onSettingsPress={onSettingsPress}
+            />
+          )}
+        </View>
+        <View>
+          {props.isLoading && (
+            <ActivityIndicator size="small" color="#0000ff" />
+          )}
+        </View>
       </View>
     </View>
   );
@@ -41,13 +61,13 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   helloimFinehowCanIHelpWrapper: {
+    flex: 1,
     borderBottomLeftRadius: Border.br_sm,
     borderTopRightRadius: Border.br_sm,
     borderBottomRightRadius: Border.br_sm,
     backgroundColor: Color.whitesmoke_200,
-    flexDirection: 'row',
+    flexDirection: 'column',
     padding: Padding.p_md,
-    alignItems: 'center',
   },
   frameWrapper: {
     alignSelf: 'stretch',
