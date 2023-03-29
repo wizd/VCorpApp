@@ -1,5 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {View, Image, StyleSheet, Dimensions, Text} from 'react-native';
+import {imgPlaceHolder} from '../utils/util';
+
+function isNullOrEmpty(str: string | null | undefined): boolean {
+  return !str || str.trim().length === 0;
+}
 
 const AutoImage = (props: any) => {
   const [imageSize, setImageSize] = useState({width: 300, height: 300});
@@ -45,7 +50,9 @@ const AutoImage = (props: any) => {
     <View style={styles.container} onLayout={onLayout}>
       {props.source && props.source !== '' && props.source !== null && (
         <Image
-          source={{uri: props.source}}
+          source={{
+            uri: isNullOrEmpty(props.source) ? imgPlaceHolder : props.source,
+          }}
           style={[
             styles.image,
             {width: imageSize.width, height: imageSize.height},

@@ -120,8 +120,8 @@ const ShortCuts = () => {
   };
 
   useEffect(() => {
-    if (company) register(company);
-    else console.log('company is null');
+    // if (company) register(company);
+    // else console.log('company is null');
   }, [company]);
 
   const ask = (question: string) => {

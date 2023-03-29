@@ -13,6 +13,7 @@ import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import RNFS, {DownloadResult} from 'react-native-fs';
 import {basename} from 'react-native-path';
 import AutoImage from './AutoImage';
+import {imgPlaceHolder} from '../utils/util';
 
 async function hasAndroidPermission() {
   const permission =
@@ -68,7 +69,10 @@ const ImageModal: React.FC<ImageModalProps> = ({visible, uri, onClose}) => {
       <View style={styles.modalContainer}>
         <TouchableOpacity style={styles.modalImageContainer} onPress={onClose}>
           {uri !== null && uri !== '' && (
-            <Image source={{uri: uri}} style={styles.modalImage} />
+            <Image
+              source={{uri: uri ?? imgPlaceHolder}}
+              style={styles.modalImage}
+            />
           )}
         </TouchableOpacity>
         <SaveToCameraRollButton uri={uri} />
