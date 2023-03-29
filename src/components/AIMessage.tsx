@@ -8,37 +8,32 @@ import Markdown from './Markdown';
 
 const AIMessage = (props: any) => {
   const {company, setCompany} = useContext(AppContext);
+  const [imgsrc, setImgsrc] = React.useState('');
 
-  const onRefreshPress = () => {
-    props.onRefreshPress();
-  };
-
-  const onSettingsPress = () => {
-    props.onSettingsPress();
-  };
+  React.useEffect(() => {
+    setImgsrc(
+      company!.config.API_URL + '/assets/avatar/' + props.msg.veid + '.png',
+    );
+  }, [company, props]);
 
   return (
     <View style={[styles.frameWrapper, styles.mt24]}>
       <Image
         source={{
-          uri:
-            company!.config.API_URL +
-            '/assets/avatar/' +
-            props.msg.veid +
-            '.png',
+          uri: imgsrc,
         }}
         style={styles.itemImage}
       />
       <View style={styles.helloimFinehowCanIHelpWrapper}>
         <Markdown text={props.text} />
-        <View>
+        {/* <View>
           {!props.isLoading && (
             <GearMenu
               onRefreshPress={onRefreshPress}
               onSettingsPress={onSettingsPress}
             />
           )}
-        </View>
+        </View> */}
         <View>
           {props.isLoading && (
             <ActivityIndicator size="small" color="#0000ff" />
