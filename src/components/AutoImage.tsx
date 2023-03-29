@@ -36,6 +36,11 @@ const AutoImage = (props: any) => {
     }
   }, [contwidth, props.source]);
 
+  if (!props.source || props.source === '') {
+    // You can return null or a placeholder component here.
+    return null;
+  }
+
   return (
     <View style={styles.container} onLayout={onLayout}>
       {props.source && props.source !== '' && (

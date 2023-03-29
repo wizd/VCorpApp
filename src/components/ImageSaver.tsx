@@ -67,7 +67,7 @@ const ImageModal: React.FC<ImageModalProps> = ({visible, uri, onClose}) => {
     <Modal visible={visible} animationType="slide">
       <View style={styles.modalContainer}>
         <TouchableOpacity style={styles.modalImageContainer} onPress={onClose}>
-          <Image source={{uri}} style={styles.modalImage} />
+          <Image source={{uri: uri}} style={styles.modalImage} />
         </TouchableOpacity>
         <SaveToCameraRollButton uri={uri} />
       </View>
