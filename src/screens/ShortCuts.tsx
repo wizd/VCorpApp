@@ -135,7 +135,7 @@ const ShortCuts = () => {
       createdAt: new Date(),
       isLoading: false,
       isAI: false,
-      veid: '',
+      veid: currentEmployee!.id,
     };
 
     setMessages(previousMessages => [...previousMessages, userMsg]);
@@ -157,7 +157,8 @@ const ShortCuts = () => {
         i--
       ) {
         const msg = messages[i];
-        if (msg.isAI && msg.text.startsWith('```image')) {
+        if (msg.veid.startsWith('D')) {
+          // drawer
           continue;
         } else if (msg.isAI) {
           history = [
