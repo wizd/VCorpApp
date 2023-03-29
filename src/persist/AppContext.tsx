@@ -1,6 +1,7 @@
 import React, {createContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LyraCrypto} from '../crypto/lyra-crypto';
+import axios from 'axios';
 
 // fuck various dotenv configs. let's just hardcode the default config here.
 const defaultConfig = {
@@ -31,6 +32,7 @@ export interface Company {
   privatekey: string;
   name: string;
   curid: string;
+  jwt: string;
   employees: Employee[];
 }
 
@@ -99,6 +101,7 @@ export const AppContextProvider: React.FC = ({children}) => {
   useEffect(() => {
     async function saveData() {
       try {
+        console.log('Company updated and saved: ', company);
         await AsyncStorage.setItem(storeName, JSON.stringify(company));
       } catch (error) {
         console.log(error);

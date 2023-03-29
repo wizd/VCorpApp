@@ -1,11 +1,24 @@
 import * as React from 'react';
-import {Text, StyleSheet, View, ActivityIndicator} from 'react-native';
+import {useContext} from 'react';
+import {Text, StyleSheet, View, ActivityIndicator, Image} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
+import AppContext from '../persist/AppContext';
 import Markdown from './Markdown';
 
 const AIMessage = (props: any) => {
+  const {company, setCompany} = useContext(AppContext);
   return (
     <View style={[styles.frameWrapper, styles.mt24]}>
+      <Image
+        source={{
+          uri:
+            company!.config.API_URL +
+            '/assets/avatar/' +
+            props.msg.veid +
+            '.png',
+        }}
+        style={styles.itemImage}
+      />
       <View style={styles.helloimFinehowCanIHelpWrapper}>
         <Markdown text={props.text} />
       </View>
@@ -28,7 +41,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   helloimFinehowCanIHelpWrapper: {
-    borderTopLeftRadius: Border.br_sm,
+    borderBottomLeftRadius: Border.br_sm,
     borderTopRightRadius: Border.br_sm,
     borderBottomRightRadius: Border.br_sm,
     backgroundColor: Color.whitesmoke_200,
@@ -40,6 +53,12 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     padding: Padding.p_xs,
     justifyContent: 'center',
+  },
+  itemImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    margin: 8,
   },
 });
 

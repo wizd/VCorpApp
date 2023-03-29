@@ -27,6 +27,8 @@ import UserMessage from '../components/UserMessage';
 
 import AppContext, {Company} from '../persist/AppContext';
 import {TextToSpeech} from '../utils/TextToSpeech';
+import {LyraCrypto} from '../crypto/lyra-crypto';
+import axios from 'axios';
 
 interface ChatCompletionChunk {
   id: string;
@@ -53,12 +55,14 @@ interface Message {
   text: string;
   isLoading: boolean;
   isAI: boolean;
+  veid: string;
   createdAt: Date;
 }
 
 const ShortCuts = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const flatListRef = useRef<FlatList>(null);
+  const [jwt, setJwt] = useState<string>('');
 
   const [q, setQ] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -81,8 +85,6 @@ const ShortCuts = () => {
     currentEmployee = company.employees[0];
   }
 
-  //console.log('currentEmployee', currentEmployee);
-
   const beginReading = (txt: string) => {
     if (company.settings?.tts) {
       tts.emitTextGen(txt);
@@ -92,6 +94,35 @@ const ShortCuts = () => {
   const textFinished = () => {
     tts.emitTextEnd();
   };
+
+  const register = (co: any) => {
+    console.log('registering my company: ', co);
+    const baseUrl = co.config.API_URL + '/vc/v1/user';
+    const usr = {
+      accountId: LyraCrypto.GetAccountIdFromPrivateKey(co.privatekey),
+    };
+    const data = {
+      user: usr,
+      signature: LyraCrypto.Sign(JSON.stringify(usr), co.privatekey),
+    };
+    const api = axios.create({
+      baseURL: baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    api.post('/register', data).then(ret => {
+      console.log('register result: ', ret.data);
+      if (ret.data.success) {
+        setJwt(ret.data.data.token);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (company) register(company);
+    else console.log('company is null');
+  }, [company]);
 
   const ask = (question: string) => {
     setQ('');
@@ -104,19 +135,57 @@ const ShortCuts = () => {
       createdAt: new Date(),
       isLoading: false,
       isAI: false,
+      veid: '',
     };
 
     setMessages(previousMessages => [...previousMessages, userMsg]);
 
-    if (true) {
+    if (currentEmployee) {
       const url = company.config.API_URL + '/vc/v1/chat'; // replace with your API url
+
+      // construct message history to send to the API
+      let history = [
+        {
+          role: 'user',
+          content: question,
+        },
+      ];
+
+      for (
+        let i = messages.length - 1;
+        i >= 0 && i > messages.length - 6;
+        i--
+      ) {
+        const msg = messages[i];
+        if (msg.isAI && msg.text.startsWith('```image')) {
+          history = [
+            {
+              role: 'assistant',
+              content: msg.text,
+            },
+            ...history,
+          ];
+        } else {
+          history = [
+            {
+              role: 'user',
+              content: msg.text,
+            },
+            ...history,
+          ];
+        }
+
+        if (JSON.stringify(history).length > 1024) {
+          break;
+        }
+      }
 
       // Parameters to pass to the API
       const data = {
         version: 3,
         veid: currentEmployee.id,
         vename: currentEmployee.name,
-        messages: question,
+        messages: history,
       };
 
       const options: EventSourceOptions = {
@@ -124,7 +193,7 @@ const ShortCuts = () => {
         //timeout: 0, // Time after which the connection will expire without any activity: Default: 0 (no timeout)
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer AAABBBCCCCCCC`,
+          Authorization: `Bearer aaaaaa`, //${jwt}`,
         }, // Your request headers. Default: {}
         body: JSON.stringify(data), // Your request body sent on connection: Default: undefined
         debug: true, // Show console.debug messages for debugging purpose. Default: false
@@ -138,6 +207,7 @@ const ShortCuts = () => {
         createdAt: new Date(),
         isLoading: true,
         isAI: true,
+        veid: currentEmployee.id,
       };
 
       setMessages(previousMessages => [...previousMessages, message]);
@@ -228,15 +298,15 @@ const ShortCuts = () => {
         es.close();
       };
     } else {
-      console.error('Please insert a prompt!');
+      console.error('请选择一个虚拟员工');
     }
   };
 
-  useEffect(() => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({animated: true});
-    }
-  }, [scrollViewRef.current, messages]);
+  // useEffect(() => {
+  //   if (scrollViewRef.current) {
+  //     scrollViewRef.current.scrollToEnd({animated: true});
+  //   }
+  // }, [messages]);
 
   const handleContentSizeChange = () => {
     console.log('handleContentSizeChange');
@@ -262,6 +332,7 @@ const ShortCuts = () => {
                 key={index}
                 text={item.text}
                 isLoading={item.isLoading}
+                msg={item}
               />
             ) : (
               <UserMessage key={index} text={item.text} />
