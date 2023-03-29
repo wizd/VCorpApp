@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
     marginEnd: 0,
     width: '100%',
     minHeight: 36,
+    fontSize: 18,
   },
   vuesaxlinearmicrophone2Icon: {
     flex: 0,

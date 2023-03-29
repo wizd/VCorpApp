@@ -34,6 +34,7 @@ import ShortCuts from './src/screens/ShortCuts';
 import EmployeeList from './src/screens/EmployeeList';
 import EmployeeMarket from './src/screens/EmployeeMarket';
 import {AppContextProvider} from './src/persist/AppContext';
+import Toast from 'react-native-toast-message';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
@@ -81,6 +82,7 @@ const App = () => {
             </Stack.Navigator>
           ) : null}
         </NavigationContainer>
+        <Toast />
       </AppContextProvider>
     </>
   );

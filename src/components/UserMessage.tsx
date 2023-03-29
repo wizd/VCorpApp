@@ -1,12 +1,22 @@
 import * as React from 'react';
-import {Text, StyleSheet, View, ToastAndroid} from 'react-native';
+import {Text, StyleSheet, View} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
 import Clipboard from '@react-native-community/clipboard';
+import Toast from 'react-native-toast-message';
 
 const UserMessage = (props: any) => {
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      position: 'top',
+      text1: 'Notice',
+      text2: '文本已复制到剪贴板',
+    });
+  };
+
   const handleCopy = () => {
     Clipboard.setString(props.text);
-    ToastAndroid.show('文本已复制到剪贴板', ToastAndroid.SHORT);
+    showToast();
   };
 
   return (
