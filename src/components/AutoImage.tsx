@@ -43,7 +43,7 @@ const AutoImage = (props: any) => {
 
   return (
     <View style={styles.container} onLayout={onLayout}>
-      {props.source && props.source !== '' && (
+      {props.source && props.source !== '' && props.source !== null && (
         <Image
           source={{uri: props.source}}
           style={[
