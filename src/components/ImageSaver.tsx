@@ -14,6 +14,7 @@ import RNFS, {DownloadResult} from 'react-native-fs';
 import {basename} from 'react-native-path';
 import AutoImage from './AutoImage';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
+import * as Progress from 'react-native-progress';
 
 async function hasAndroidPermission() {
   const permission =
@@ -92,8 +93,10 @@ interface NetworkImageProps {
   imageUrl: string;
   saved: (tag: string) => void;
 }
+
 const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
   const [localImagePath, setLocalImagePath] = useState<string | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState(0);
   const isMountedRef = useRef(false);
 
   useEffect(() => {
@@ -111,6 +114,22 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
           const {jobId, promise} = RNFS.downloadFile({
             fromUrl: imageUrl,
             toFile: path,
+            progressDivider: 1,
+            begin: () => {
+              setDownloadProgress(0);
+            },
+            progress: data => {
+              const progress = data.bytesWritten / data.contentLength;
+              setDownloadProgress(progress);
+              console.log(
+                'Downloaded ' +
+                  data.bytesWritten +
+                  ' of ' +
+                  data.contentLength +
+                  'progress: ' +
+                  progress,
+              );
+            },
           });
           const result: DownloadResult = await promise;
           if (result.statusCode === 200) {
@@ -139,7 +158,11 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
     );
   }
 
-  return <View style={styles.container} />;
+  return (
+    <View style={styles.container}>
+      <Progress.Bar progress={downloadProgress} width={300} />
+    </View>
+  );
 };
 
 const ImageWithModal: React.FC<ImageWithModalProps> = ({source}) => {

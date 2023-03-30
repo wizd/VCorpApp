@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingHorizontal: Padding.p_sm,
     //paddingVertical: Padding.p_xl,
-    paddingBottom: 28,
+    paddingBottom: Platform.OS === 'ios' ? 30 : 45,
     flex: 1,
   },
 });
