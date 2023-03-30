@@ -17,6 +17,9 @@ const AIMessage = (props: any) => {
     );
   }, [company, props]);
 
+  const onRefreshPress = () => {};
+  const onSettingsPress = () => {};
+
   return (
     <View style={[styles.frameWrapper, styles.mt24]}>
       <Image
@@ -27,7 +30,7 @@ const AIMessage = (props: any) => {
       />
       <View style={styles.helloimFinehowCanIHelpWrapper}>
         <Markdown text={props.text} />
-        {/* <View>
+        {/* <View style={styles.gearMenu}>
           {!props.isLoading && (
             <GearMenu
               onRefreshPress={onRefreshPress}
@@ -64,6 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.whitesmoke_200,
     flexDirection: 'column',
     padding: Padding.p_md,
+    position: 'relative',
   },
   frameWrapper: {
     alignSelf: 'stretch',
@@ -75,6 +79,11 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     margin: 8,
+  },
+  gearMenu: {
+    position: 'absolute',
+    bottom: 12,
+    right: 12,
   },
 });
 

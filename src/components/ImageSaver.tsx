@@ -121,14 +121,6 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
             progress: data => {
               const progress = data.bytesWritten / data.contentLength;
               setDownloadProgress(progress);
-              console.log(
-                'Downloaded ' +
-                  data.bytesWritten +
-                  ' of ' +
-                  data.contentLength +
-                  'progress: ' +
-                  progress,
-              );
             },
           });
           const result: DownloadResult = await promise;
@@ -149,13 +141,7 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
   }, [imageUrl, saved]);
 
   if (localImagePath) {
-    return (
-      <AutoImage
-        source={localImagePath}
-        style={styles.image}
-        resizeMode="cover"
-      />
-    );
+    return <AutoImage source={localImagePath} />;
   }
 
   return (

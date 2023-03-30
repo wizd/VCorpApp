@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {Dialog} from '@rneui/themed';
 
 interface GearMenuProps {
   onSettingsPress: () => void;
@@ -11,27 +12,40 @@ const GearMenu: React.FC<GearMenuProps> = ({
   onSettingsPress,
   onRefreshPress,
 }) => {
-  const [menuVisible, setMenuVisible] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
-  const toggleMenu = () => {
-    setMenuVisible(!menuVisible);
+  const showDialog = () => {
+    setDialogVisible(true);
+  };
+
+  const hideDialog = () => {
+    setDialogVisible(false);
   };
 
   return (
     <View>
-      <TouchableOpacity onPress={toggleMenu} style={styles.iconContainer}>
+      <TouchableOpacity onPress={showDialog} style={styles.iconContainer}>
         <Icon name="gear" size={24} />
       </TouchableOpacity>
-      {menuVisible && (
-        <View style={styles.menu}>
-          <TouchableOpacity onPress={onSettingsPress} style={styles.menuItem}>
-            <Text>设置</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onRefreshPress} style={styles.menuItem}>
-            <Text>刷新</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <Dialog isVisible={dialogVisible} onBackdropPress={hideDialog}>
+        <Dialog.Title title="操作" />
+        <Dialog.Actions>
+          <Dialog.Button
+            title="设置"
+            onPress={() => {
+              onSettingsPress();
+              hideDialog();
+            }}
+          />
+          <Dialog.Button
+            title="刷新"
+            onPress={() => {
+              onRefreshPress();
+              hideDialog();
+            }}
+          />
+        </Dialog.Actions>
+      </Dialog>
     </View>
   );
 };
@@ -42,15 +56,6 @@ const styles = StyleSheet.create({
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  menu: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  menuItem: {
-    padding: 10,
   },
 });
 

@@ -12,7 +12,7 @@ const CodeBlock: FC<CodeBlockProps> = ({language, code}) => {
   const handleCopy = () => {
     Clipboard.setString(code);
   };
-  console.log('code: ', code);
+  //console.log('code: ', code);
   return (
     <View style={styles.codeBlockContainer}>
       {language === 'image' && code && code.trim() !== '' ? (
