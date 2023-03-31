@@ -15,8 +15,8 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 
 import EmployeeListItem from '../components/EmployeeListItem';
 import AppContext, {Employee} from '../persist/AppContext';
-import CustomPrompt from '../components/CustomPrompt';
 import CustomButton from '../components/CustomButton';
+import EditRoleModal from '../components/EditRoleModel';
 
 // Define the props of the main component that renders the page
 type Props = {};
@@ -27,37 +27,35 @@ const EmployeeList = (props: Props) => {
   const {company, setCompany} = useContext(AppContext);
 
   const [id, setId] = useState('' as string);
-  const [isPromptVisible, setIsPromptVisible] = useState(false);
+  const [roleName, setRoleName] = useState('');
+  const [roleDescription, setRoleDescription] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
 
-  const handleNameSubmit = (name: string | undefined) => {
-    console.log('User entered name:', name);
-    setIsPromptVisible(false);
-    handleNameChange(name as string);
-    navigation.navigate('ShortCuts' as never, {name: name} as never);
+  const openModal = () => {
+    setModalVisible(true);
   };
 
-  const handleNameCancel = () => {
-    console.log('User canceled the prompt');
-    setIsPromptVisible(false);
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
-  const handleDelete = () => {
-    setIsPromptVisible(false);
+  const handleDelete = (veid: string) => {
     const newCompany = {
       ...company,
-      employees: [...company.employees.filter(e => e.id !== id)],
+      employees: [...company.employees.filter(e => e.id !== veid)],
     };
     setCompany(newCompany);
   };
 
-  const handleNameChange = (name: string) => {
+  const handleSave = (newName: string, newDescription: string) => {
+    console.log('User entered name:', newName);
     const employee = company.employees.find(e => e.id === id);
     if (employee) {
       const newCompany = {
         ...company,
         employees: [
           ...company.employees.filter(e => e.id !== id),
-          {...employee, name},
+          {...employee, name: newName, note: newDescription},
         ],
       };
       setCompany(newCompany);
@@ -66,7 +64,13 @@ const EmployeeList = (props: Props) => {
 
   const veEdit = (veid: string) => {
     setId(veid);
-    setIsPromptVisible(true);
+    const emp = company.employees.find(e => e.id === veid);
+    console.log('edit ' + veid + ' ' + emp?.name);
+    if (emp) {
+      setRoleName(emp.name);
+      setRoleDescription(emp.note);
+    }
+    openModal();
   };
 
   const veSelected = (veid: string) => {
@@ -92,12 +96,12 @@ const EmployeeList = (props: Props) => {
       <TouchableOpacity
         style={[styles.backRightBtn, styles.backRightBtnLeft]}
         onPress={() => veEdit(data.item.id)}>
-        <Text style={styles.backTextWhite}>Edit</Text>
+        <Text style={styles.backTextWhite}>定制</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.backRightBtn, styles.backRightBtnRight]}
-        onPress={() => veSelected(data.item.id)}>
-        <Text style={styles.backTextWhite}>Delete</Text>
+        onPress={() => handleDelete(data.item.id)}>
+        <Text style={styles.backTextWhite}>炒掉</Text>
       </TouchableOpacity>
     </View>
   );
@@ -144,13 +148,12 @@ const EmployeeList = (props: Props) => {
         )} // Pass in a function that returns an element for each item
         keyExtractor={item => item.id} // Pass in a function that returns a unique key for each item
       /> */}
-      <CustomPrompt
-        isVisible={isPromptVisible}
-        title="改名"
-        message="请输入新名字"
-        onSubmit={handleNameSubmit}
-        onCancel={handleNameCancel}
-        onDelete={handleDelete}
+      <EditRoleModal
+        isVisible={isModalVisible}
+        onClose={closeModal}
+        onSave={handleSave}
+        roleName={roleName}
+        roleDescription={roleDescription}
       />
     </View>
   );

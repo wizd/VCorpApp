@@ -39,7 +39,7 @@ const EmployeeListItem = (props: ItemProps) => {
   return (
     // Use a View component as a container for each item
     <View style={styles.itemContainer}>
-      <TouchableOpacity onPress={() => props.onEdit(props.assistant.id)}>
+      <TouchableOpacity onPress={() => props.onSelect(props.assistant.id)}>
         <Image
           source={{
             uri: props.assistant.avatar.startsWith('http')

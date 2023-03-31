@@ -24,6 +24,7 @@ export interface Employee {
   name: string;
   desc: string;
   avatar: string;
+  note?: string;
 }
 
 export interface Company {

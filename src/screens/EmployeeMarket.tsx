@@ -1,6 +1,13 @@
 // Import React and React Native components
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Button, Alert, StyleSheet, FlatList} from 'react-native';
+import {
+  View,
+  Button,
+  Alert,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import {Header} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
 
@@ -17,6 +24,7 @@ const EmployeeMarket = (props: Props) => {
   const {company, setCompany} = useContext(AppContext);
 
   const [data, setData] = useState<Employee[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const url = company.config.API_URL + '/vc/v1/ve/list';
@@ -29,7 +37,10 @@ const EmployeeMarket = (props: Props) => {
       },
     })
       .then(response => response.json())
-      .then(json => setData(json))
+      .then(json => {
+        setData(json);
+        setIsLoading(false);
+      })
       .catch(error => console.error(error));
   }, []);
 
@@ -78,17 +89,25 @@ const EmployeeMarket = (props: Props) => {
         // }
         backgroundColor="#3D6DCC"
       />
-      <FlatList
-        data={data} // Pass in the data source as a prop
-        renderItem={({item}) => (
-          <EmployeeListItem
-            assistant={item}
-            onSelect={id => veSelected(id)}
-            onEdit={onEdit}
+      <View style={styles.outerContainer}>
+        {isLoading ? (
+          <View style={styles.centeredContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : (
+          <FlatList
+            data={data} // Pass in the data source as a prop
+            renderItem={({item}) => (
+              <EmployeeListItem
+                assistant={item}
+                onSelect={id => veSelected(id)}
+                onEdit={onEdit}
+              />
+            )} // Pass in a function that returns an element for each item
+            keyExtractor={item => item.id} // Pass in a function that returns a unique key for each item
           />
-        )} // Pass in a function that returns an element for each item
-        keyExtractor={item => item.id} // Pass in a function that returns a unique key for each item
-      />
+        )}
+      </View>
     </View>
   );
 };
@@ -103,5 +122,16 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  outerContainer: {
+    flex: 1,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  innerContainer: {
+    flexGrow: 1,
   },
 });

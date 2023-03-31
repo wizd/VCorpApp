@@ -10,11 +10,13 @@ import Markdown from './Markdown';
 const AIMessage = (props: any) => {
   const {company, setCompany} = useContext(AppContext);
   const [imgsrc, setImgsrc] = React.useState('');
+  const [name, setName] = React.useState('');
 
   React.useEffect(() => {
     setImgsrc(
       company!.config.API_URL + '/assets/avatar/' + props.msg.veid + '.png',
     );
+    setName(company?.employees.find(e => e.id === props.msg.veid)?.name || '');
   }, [company, props]);
 
   const onRefreshPress = () => {};
@@ -22,12 +24,15 @@ const AIMessage = (props: any) => {
 
   return (
     <View style={[styles.frameWrapper, styles.mt24]}>
-      <Image
-        source={{
-          uri: isNullOrEmpty(imgsrc) ? imgPlaceHolder : imgsrc,
-        }}
-        style={styles.itemImage}
-      />
+      <View style={styles.container}>
+        <Image
+          source={{
+            uri: isNullOrEmpty(imgsrc) ? imgPlaceHolder : imgsrc,
+          }}
+          style={styles.itemImage}
+        />
+        <Text style={styles.userName}>{name}</Text>
+      </View>
       <View style={styles.helloimFinehowCanIHelpWrapper}>
         <Markdown text={props.text} />
         {/* <View style={styles.gearMenu}>
@@ -84,6 +89,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 12,
     right: 12,
+  },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userName: {
+    marginLeft: 8,
+    fontSize: 14,
   },
 });
 
