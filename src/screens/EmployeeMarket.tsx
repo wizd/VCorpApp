@@ -32,6 +32,10 @@ const EmployeeMarket = (props: Props) => {
       .catch(error => console.error(error));
   }, []);
 
+  const onEdit = (veid: string) => {
+    console.log('edit ' + veid);
+  };
+
   const veSelected = (veid: string) => {
     console.log('will hire ' + veid);
     if (company.employees.find(e => e.id === veid)) {
@@ -73,7 +77,11 @@ const EmployeeMarket = (props: Props) => {
       <FlatList
         data={data} // Pass in the data source as a prop
         renderItem={({item}) => (
-          <EmployeeListItem assistant={item} onSelect={id => veSelected(id)} />
+          <EmployeeListItem
+            assistant={item}
+            onSelect={id => veSelected(id)}
+            onEdit={onEdit}
+          />
         )} // Pass in a function that returns an element for each item
         keyExtractor={item => item.id} // Pass in a function that returns a unique key for each item
       />

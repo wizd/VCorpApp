@@ -53,7 +53,7 @@ const SaveToCameraRollButton: React.FC<SaveToCameraRollButtonProps> = ({
 
   return (
     <View style={styles.saveButtonContainer}>
-      <Button title="Save to Camera Roll" onPress={handleSaveToCameraRoll} />
+      <Button title="保存到相册" onPress={handleSaveToCameraRoll} />
     </View>
   );
 };

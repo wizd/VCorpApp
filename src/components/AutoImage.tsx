@@ -12,13 +12,10 @@ const AutoImage: FC<AutoImageProps> = ({source}) => {
   const onLayout = event => {
     const {width: containerWidth} = event.nativeEvent.layout;
     setContwidth(containerWidth);
-    console.log('in auto image onLayout, container width is: ', containerWidth);
+    //console.log('in auto image onLayout, container width is: ', containerWidth);
   };
 
   useEffect(() => {
-    console.log(
-      `in auto image useEffect, container width is ${contwidth} image src is: ${source}`,
-    );
     if (contwidth > 0 && !isNullOrEmpty(source)) {
       const imageSource = source;
 
@@ -29,9 +26,6 @@ const AutoImage: FC<AutoImageProps> = ({source}) => {
           const imageHeight = height / scaleFactor;
 
           setImageSize({width: contwidth, height: imageHeight});
-          console.log(
-            `in auto image useEffect, image size is: ${contwidth} x ${imageHeight}}`,
-          );
         },
         error => {
           console.error('Failed to get image size:', error);

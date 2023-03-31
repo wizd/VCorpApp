@@ -31,6 +31,13 @@ const GearMenu: React.FC<GearMenuProps> = ({
         <Dialog.Title title="操作" />
         <Dialog.Actions>
           <Dialog.Button
+            title="翻译"
+            onPress={() => {
+              onSettingsPress();
+              hideDialog();
+            }}
+          />
+          <Dialog.Button
             title="设置"
             onPress={() => {
               onSettingsPress();
