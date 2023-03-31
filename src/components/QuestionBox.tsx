@@ -14,6 +14,9 @@ import {
 
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
+import InputWithClear from './InputWithClear';
+import {Dimensions} from 'react-native';
+const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
   q: string;
@@ -89,17 +92,19 @@ const QuestionBox = ({q, onVuesaxboldsendPress, avatar}: QuestionBoxType) => {
             style={styles.itemImage}
           />
         </Pressable>
-        <TextInput
-          style={styles.writeYourMessage}
-          key={key} // add a key prop
-          ref={inputRef}
-          placeholder=""
-          keyboardType="default"
-          multiline
-          value={question}
-          placeholderTextColor="#a1a1a1"
-          onChangeText={setQuestion}
-        />
+        <View style={styles.inputWrapper}>
+          <InputWithClear
+            key={key}
+            inputRef={inputRef}
+            placeholder=""
+            keyboardType="default"
+            multiline
+            initialValue={question}
+            placeholderTextColor="#a1a1a1"
+            onChangeText={setQuestion}
+            inputStyle={styles.writeYourMessage}
+          />
+        </View>
 
         <TouchableHighlight
           style={[styles.vuesaxlinearmicrophone2Icon, styles.ml10]}
@@ -128,13 +133,18 @@ const styles = StyleSheet.create({
   mt8: {
     marginTop: Margin.m_sm,
   },
+  inputWrapper: {
+    borderWidth: 0,
+    padding: 4,
+    borderColor: 'gray',
+    borderRadius: 5,
+    width: deviceWidth - 125, // 设置宽度为父容器宽度
+  },
   writeYourMessage: {
     flex: 1,
     backgroundColor: Color.white,
-    paddingLeft: 4,
+    //padding: 4,
     borderRadius: 4,
-    marginTop: 4,
-    marginBottom: 4,
     marginEnd: 0,
     width: '100%',
     minHeight: 36,

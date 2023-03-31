@@ -1,11 +1,20 @@
 // Import React and React Native components
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Button, Image, StyleSheet, FlatList} from 'react-native';
+import {
+  View,
+  Button,
+  Image,
+  StyleSheet,
+  FlatList,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import {Header} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
+import {SwipeListView} from 'react-native-swipe-list-view';
 
 import EmployeeListItem from '../components/EmployeeListItem';
-import AppContext from '../persist/AppContext';
+import AppContext, {Employee} from '../persist/AppContext';
 import CustomPrompt from '../components/CustomPrompt';
 import CustomButton from '../components/CustomButton';
 
@@ -70,6 +79,29 @@ const EmployeeList = (props: Props) => {
     navigation.navigate('ShortCuts' as never);
   };
 
+  const renderItem = (data: {item: Employee}) => (
+    <EmployeeListItem
+      assistant={data.item}
+      onEdit={veid => veEdit(veid)}
+      onSelect={veid => veSelected(veid)}
+    />
+  );
+
+  const renderHiddenItem = (data: {item: Employee}) => (
+    <View style={styles.rowBack}>
+      <TouchableOpacity
+        style={[styles.backRightBtn, styles.backRightBtnLeft]}
+        onPress={() => veEdit(data.item.id)}>
+        <Text style={styles.backTextWhite}>Edit</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.backRightBtn, styles.backRightBtnRight]}
+        onPress={() => veSelected(data.item.id)}>
+        <Text style={styles.backTextWhite}>Delete</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   // Return the JSX element that renders the page
   return (
     // Use a View component as a container for the page
@@ -90,7 +122,18 @@ const EmployeeList = (props: Props) => {
         }
         backgroundColor="#3D6DCC"
       />
-      <FlatList
+      <View style={styles.container}>
+        <SwipeListView
+          data={company?.employees}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-150}
+          previewRowKey={'0'}
+          previewOpenValue={-40}
+          previewOpenDelay={3000}
+        />
+      </View>
+      {/* <FlatList
         data={company?.employees} // Pass in the data source as a prop
         renderItem={({item}) => (
           <EmployeeListItem
@@ -100,7 +143,7 @@ const EmployeeList = (props: Props) => {
           />
         )} // Pass in a function that returns an element for each item
         keyExtractor={item => item.id} // Pass in a function that returns a unique key for each item
-      />
+      /> */}
       <CustomPrompt
         isVisible={isPromptVisible}
         title="改名"
@@ -124,7 +167,43 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  titleButton: {
-    color: '#fff',
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  rowFront: {
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+    height: 50,
+  },
+  rowBack: {
+    alignItems: 'center',
+    backgroundColor: 'red',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 15,
+  },
+  backRightBtn: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 75,
+  },
+  backRightBtnLeft: {
+    backgroundColor: 'blue',
+    right: 75,
+  },
+  backRightBtnRight: {
+    backgroundColor: 'red',
+    right: 0,
+  },
+  backTextWhite: {
+    color: '#FFF',
   },
 });

@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
   itemImage: {
     width: 80,
