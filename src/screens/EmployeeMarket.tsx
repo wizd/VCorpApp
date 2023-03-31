@@ -66,9 +66,16 @@ const EmployeeMarket = (props: Props) => {
     <View style={styles.pageContainer}>
       <Header
         leftComponent={
-          <Button onPress={() => navigation.goBack()} title="Back" />
+          <Button
+            color="#fff"
+            onPress={() => navigation.goBack()}
+            title="返回"
+          />
         }
-        centerComponent={{text: '虚拟员工市场', style: {color: '#fff'}}}
+        centerComponent={{
+          text: '虚拟员工市场',
+          style: {color: '#fff', fontSize: 20},
+        }}
         // rightComponent={
         //   <Button onPress={() => alert('This is a button!')} title="" />
         // }

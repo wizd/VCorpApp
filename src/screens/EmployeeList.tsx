@@ -81,7 +81,10 @@ const EmployeeList = (props: Props) => {
             title="返回"
           />
         }
-        centerComponent={{text: '公司员工列表', style: {color: '#fff'}}}
+        centerComponent={{
+          text: '公司员工列表',
+          style: {color: '#fff', fontSize: 20},
+        }}
         rightComponent={
           <Button
             color="#fff"
