@@ -75,11 +75,16 @@ const EmployeeList = (props: Props) => {
     <View style={styles.pageContainer}>
       <Header
         leftComponent={
-          <Button onPress={() => navigation.goBack()} title="Back" />
+          <Button
+            color="#fff"
+            onPress={() => navigation.goBack()}
+            title="返回"
+          />
         }
         centerComponent={{text: '公司员工列表', style: {color: '#fff'}}}
         rightComponent={
           <Button
+            color="#fff"
             onPress={() => navigation.navigate('EmployeeMarket' as never)}
             title="招募"
           />
@@ -119,5 +124,8 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  titleButton: {
+    color: '#fff',
   },
 });

@@ -35,6 +35,7 @@ import EmployeeList from './src/screens/EmployeeList';
 import EmployeeMarket from './src/screens/EmployeeMarket';
 import {AppContextProvider} from './src/persist/AppContext';
 import Toast from 'react-native-toast-message';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
@@ -49,40 +50,42 @@ const App = () => {
   return (
     <>
       <AppContextProvider>
-        <NavigationContainer>
-          {hideSplashScreen ? (
-            <Stack.Navigator
-              initialRouteName="Onboarding"
-              screenOptions={{headerShown: false}}>
-              <Stack.Screen
-                name="Onboarding"
-                component={Onboarding}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ChatPage"
-                component={ChatPage}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ShortCuts"
-                component={ShortCuts}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Employees"
-                component={EmployeeList}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="EmployeeMarket"
-                component={EmployeeMarket}
-                options={{headerShown: false}}
-              />
-            </Stack.Navigator>
-          ) : null}
-        </NavigationContainer>
-        <Toast />
+        <SafeAreaProvider>
+          <NavigationContainer>
+            {hideSplashScreen ? (
+              <Stack.Navigator
+                initialRouteName="Onboarding"
+                screenOptions={{headerShown: false}}>
+                <Stack.Screen
+                  name="Onboarding"
+                  component={Onboarding}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="ChatPage"
+                  component={ChatPage}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="ShortCuts"
+                  component={ShortCuts}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="Employees"
+                  component={EmployeeList}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="EmployeeMarket"
+                  component={EmployeeMarket}
+                  options={{headerShown: false}}
+                />
+              </Stack.Navigator>
+            ) : null}
+          </NavigationContainer>
+          <Toast />
+        </SafeAreaProvider>
       </AppContextProvider>
     </>
   );
