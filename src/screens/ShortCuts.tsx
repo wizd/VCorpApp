@@ -178,7 +178,9 @@ const ShortCuts = () => {
           ];
         }
 
-        if (JSON.stringify(history).length > 1024) {
+        const msgTxt = JSON.stringify(history);
+        console.log('msgTxt length: ', msgTxt.length);
+        if (msgTxt.length > 512) {
           break;
         }
       }
