@@ -7,6 +7,7 @@ import {useNavigation} from '@react-navigation/native';
 import EmployeeListItem from '../components/EmployeeListItem';
 import AppContext from '../persist/AppContext';
 import CustomPrompt from '../components/CustomPrompt';
+import CustomButton from '../components/CustomButton';
 
 // Define the props of the main component that renders the page
 type Props = {};
@@ -75,19 +76,14 @@ const EmployeeList = (props: Props) => {
     <View style={styles.pageContainer}>
       <Header
         leftComponent={
-          <Button
-            color="#fff"
-            onPress={() => navigation.goBack()}
-            title="返回"
-          />
+          <CustomButton onPress={() => navigation.goBack()} title="返回" />
         }
         centerComponent={{
           text: '公司员工列表',
           style: {color: '#fff', fontSize: 20},
         }}
         rightComponent={
-          <Button
-            color="#fff"
+          <CustomButton
             onPress={() => navigation.navigate('EmployeeMarket' as never)}
             title="招募"
           />

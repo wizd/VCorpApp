@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import EmployeeListItem from '../components/EmployeeListItem';
 import AppContext, {Employee} from '../persist/AppContext';
+import CustomButton from '../components/CustomButton';
 
 // Define the props of the main component that renders the page
 type Props = {};
@@ -66,11 +67,7 @@ const EmployeeMarket = (props: Props) => {
     <View style={styles.pageContainer}>
       <Header
         leftComponent={
-          <Button
-            color="#fff"
-            onPress={() => navigation.goBack()}
-            title="返回"
-          />
+          <CustomButton onPress={() => navigation.goBack()} title="返回" />
         }
         centerComponent={{
           text: '虚拟员工市场',
