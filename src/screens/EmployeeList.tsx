@@ -27,8 +27,7 @@ const EmployeeList = (props: Props) => {
   const {company, setCompany} = useContext(AppContext);
 
   const [id, setId] = useState('' as string);
-  const [roleName, setRoleName] = useState('');
-  const [roleDescription, setRoleDescription] = useState('');
+  const [curasst, setCurasst] = useState<Employee | undefined>(undefined);
   const [isModalVisible, setModalVisible] = useState(false);
 
   const openModal = () => {
@@ -65,11 +64,7 @@ const EmployeeList = (props: Props) => {
   const veEdit = (veid: string) => {
     setId(veid);
     const emp = company.employees.find(e => e.id === veid);
-    console.log('edit ' + veid + ' ' + emp?.name);
-    if (emp) {
-      setRoleName(emp.name);
-      setRoleDescription(emp.note);
-    }
+    setCurasst(emp);
     openModal();
   };
 
@@ -152,8 +147,7 @@ const EmployeeList = (props: Props) => {
         isVisible={isModalVisible}
         onClose={closeModal}
         onSave={handleSave}
-        roleName={roleName}
-        roleDescription={roleDescription}
+        assistant={curasst!}
       />
     </View>
   );

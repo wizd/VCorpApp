@@ -1,5 +1,5 @@
 // EditRoleModal.tsx
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,24 +8,32 @@ import {
   Modal,
   StyleSheet,
 } from 'react-native';
+import {Employee} from '../persist/AppContext';
 
 interface EditRoleModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onSave: (name: string, description: string) => void;
-  roleName: string;
-  roleDescription: string;
+  onSave: (name: string, description: string | undefined) => void;
+  assistant: Employee;
 }
 
 const EditRoleModal: React.FC<EditRoleModalProps> = ({
   isVisible,
   onClose,
   onSave,
-  roleName,
-  roleDescription,
+  assistant,
 }) => {
-  const [name, setName] = useState(roleName);
-  const [description, setDescription] = useState(roleDescription);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState<string | undefined>('');
+
+  useEffect(() => {
+    if (assistant) {
+      setName(assistant.name);
+      setDescription(assistant.note);
+    } else {
+      console.log('assistant is null');
+    }
+  }, [assistant]);
 
   const handleSave = () => {
     onSave(name, description);
