@@ -205,9 +205,6 @@ const ShortCuts = () => {
         pollingInterval: 5000, // Time (ms) between reconnections. Default: 5000
       };
 
-      //Initiate the requests
-      const es = new EventSource(url, options);
-
       //Add the last message to the list
       const message = {
         _id: userMsg._id + 1,
@@ -218,6 +215,9 @@ const ShortCuts = () => {
         veid: currentEmployee.id,
       };
       setMessages(previousMessages => [...previousMessages, message]);
+
+      //Initiate the requests
+      const es = new EventSource(url, options);
 
       let reason = '';
       // Listen the server until the last piece of text
@@ -345,6 +345,9 @@ const ShortCuts = () => {
     console.log('handleLayout');
     scrollViewRef.current?.scrollToEnd({animated: true});
   };
+  const handleStop = (msg: Message) => {
+    reqErrorHandler(msg._id, msg.text);
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -362,6 +365,7 @@ const ShortCuts = () => {
                 text={item.text}
                 isLoading={item.isLoading}
                 msg={item}
+                onStop={handleStop}
               />
             ) : (
               <UserMessage key={index} text={item.text} />

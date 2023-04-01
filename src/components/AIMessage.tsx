@@ -24,8 +24,9 @@ const AIMessage = (props: any) => {
   const onSettingsPress = () => {};
 
   const handleStop = () => {
-    //console.log('Stop button pressed, ess is: ', props.ess);
-    // 在这里处理停止操作
+    if (props.onStop) {
+      props.onStop(props.msg);
+    }
   };
 
   return (
@@ -41,9 +42,9 @@ const AIMessage = (props: any) => {
       </View>
       <View style={styles.helloimFinehowCanIHelpWrapper}>
         <Markdown text={props.text} />
-        {/* <View style={styles.gearMenu}>
+        <View style={styles.gearMenu}>
           {props.isLoading && <StopButton onPress={handleStop} />}
-        </View> */}
+        </View>
         {/* <View style={styles.gearMenu}>
           {!props.isLoading && (
             <GearMenu
