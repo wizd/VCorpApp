@@ -6,6 +6,7 @@ import AppContext from '../persist/AppContext';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import GearMenu from './GearMenu';
 import Markdown from './Markdown';
+import StopButton from './StopButton';
 
 const AIMessage = (props: any) => {
   const {company, setCompany} = useContext(AppContext);
@@ -22,6 +23,11 @@ const AIMessage = (props: any) => {
   const onRefreshPress = () => {};
   const onSettingsPress = () => {};
 
+  const handleStop = () => {
+    //console.log('Stop button pressed, ess is: ', props.ess);
+    // 在这里处理停止操作
+  };
+
   return (
     <View style={[styles.frameWrapper, styles.mt24]}>
       <View style={styles.container}>
@@ -35,6 +41,9 @@ const AIMessage = (props: any) => {
       </View>
       <View style={styles.helloimFinehowCanIHelpWrapper}>
         <Markdown text={props.text} />
+        {/* <View style={styles.gearMenu}>
+          {props.isLoading && <StopButton onPress={handleStop} />}
+        </View> */}
         {/* <View style={styles.gearMenu}>
           {!props.isLoading && (
             <GearMenu

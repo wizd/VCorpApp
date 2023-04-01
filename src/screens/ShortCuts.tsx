@@ -205,6 +205,9 @@ const ShortCuts = () => {
         pollingInterval: 5000, // Time (ms) between reconnections. Default: 5000
       };
 
+      //Initiate the requests
+      const es = new EventSource(url, options);
+
       //Add the last message to the list
       const message = {
         _id: userMsg._id + 1,
@@ -214,11 +217,7 @@ const ShortCuts = () => {
         isAI: true,
         veid: currentEmployee.id,
       };
-
       setMessages(previousMessages => [...previousMessages, message]);
-
-      //Initiate the requests
-      const es = new EventSource(url, options);
 
       let reason = '';
       // Listen the server until the last piece of text
@@ -285,9 +284,13 @@ const ShortCuts = () => {
         } else if (event.type === 'error') {
           console.error('Connection error:', event.message);
           es.close();
+
+          reqErrorHandler(message._id, newContent);
         } else if (event.type === 'exception') {
           console.error('Error:', event.message, event.error);
           es.close();
+
+          reqErrorHandler(message._id, newContent);
         }
       };
 
@@ -305,6 +308,27 @@ const ShortCuts = () => {
     } else {
       console.error('请选择一个虚拟员工');
     }
+  };
+
+  const reqErrorHandler = (msgid: number, txt: string) => {
+    console.log('reqErrorHandler, msgid: ', msgid, ', txt: ', txt);
+    textFinished();
+    setMessages(previousMessages => {
+      // Get the last array
+      const last = [...previousMessages];
+
+      // Update the list
+      const mewLIst = last.map((m, i) => {
+        if (m._id === msgid) {
+          m.isLoading = false;
+          m.text = txt;
+        }
+
+        return m;
+      });
+      // Return the new array
+      return mewLIst;
+    });
   };
 
   // useEffect(() => {
