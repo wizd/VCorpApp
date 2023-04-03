@@ -16,8 +16,8 @@ const LikeDislikeButtons: React.FC<LikeDislikeButtonsProps> = ({content}) => {
     Toast.show({
       type: 'success',
       position: 'top',
-      text1: '提示',
-      text2: '文本已复制到剪贴板',
+      text1: '',
+      text2: '内容已复制到剪贴板',
     });
   };
 

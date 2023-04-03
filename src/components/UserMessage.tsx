@@ -9,8 +9,8 @@ const UserMessage = (props: any) => {
     Toast.show({
       type: 'success',
       position: 'top',
-      text1: 'Notice',
-      text2: '文本已复制到剪贴板',
+      text1: '',
+      text2: '内容已复制到剪贴板',
     });
   };
 
@@ -22,10 +22,7 @@ const UserMessage = (props: any) => {
   return (
     <View style={styles.frameWrapper}>
       <View style={styles.helloChatgpthowAreYouTodaWrapper}>
-        <Text
-          selectable={true}
-          style={styles.helloChatgpthowAre}
-          onLongPress={handleCopy}>
+        <Text style={styles.helloChatgpthowAre} onLongPress={handleCopy}>
           {props.text}
         </Text>
       </View>
