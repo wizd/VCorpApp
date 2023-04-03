@@ -2,6 +2,8 @@ import React, {FC} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Color, FontFamily, FontSize} from '../../GlobalStyles';
 import CodeBlock, {CodeBlockProps} from './CodeBlock';
+import HyperText from './ClickableLinks';
+import ClickableLinks from './ClickableLinks';
 
 interface MarkdownProps {
   text: string;
@@ -33,27 +35,16 @@ const Markdown: FC<MarkdownProps> = ({text}) => {
         />,
       );
     } else {
-      content.push(
-        <Text
-          selectable={true}
-          style={styles.helloChatgpthowAre}
-          key={`text-${content.length}`}>
-          {line}
-        </Text>,
-      );
+      content.push(<ClickableLinks content={line} />);
     }
   }
 
   return <View>{content}</View>;
 };
 
-const styles = StyleSheet.create({
-  helloChatgpthowAre: {
-    fontSize: FontSize.size_lg,
-    fontWeight: '700',
-    fontFamily: FontFamily.nunitoMedium,
-    textAlign: 'left',
-  },
-});
+// selectable={true}
+// style={styles.helloChatgpthowAre}
+// key={`text-${content.length}`}>
+//const styles = StyleSheet.create({});
 
 export default Markdown;

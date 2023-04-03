@@ -21,9 +21,6 @@ const AIMessage = (props: any) => {
     setName(company?.employees.find(e => e.id === props.msg.veid)?.name || '');
   }, [company, props]);
 
-  const onRefreshPress = () => {};
-  const onSettingsPress = () => {};
-
   const handleStop = () => {
     if (props.onStop) {
       props.onStop(props.msg);
@@ -45,7 +42,7 @@ const AIMessage = (props: any) => {
         <Markdown text={props.text} />
         <View style={styles.gearMenu}>
           {props.isLoading && <StopButton onPress={handleStop} />}
-          {!props.isLoading && <LikeDislikeButtons />}
+          {!props.isLoading && <LikeDislikeButtons content={props.msg.text} />}
         </View>
         {/* <View style={styles.gearMenu}>
           {!props.isLoading && (

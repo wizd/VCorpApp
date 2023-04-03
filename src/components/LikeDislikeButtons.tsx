@@ -1,10 +1,30 @@
 import React, {useState} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Clipboard from '@react-native-community/clipboard';
+import Toast from 'react-native-toast-message';
 
-const LikeDislikeButtons: React.FC = () => {
+interface LikeDislikeButtonsProps {
+  content: string;
+}
+
+const LikeDislikeButtons: React.FC<LikeDislikeButtonsProps> = ({content}) => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
+
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      position: 'top',
+      text1: '提示',
+      text2: '文本已复制到剪贴板',
+    });
+  };
+
+  const handleCopy = () => {
+    Clipboard.setString(content);
+    showToast();
+  };
 
   const onLikePress = () => {
     setLiked(!liked);
@@ -22,18 +42,21 @@ const LikeDislikeButtons: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={onLikePress}>
+      <TouchableOpacity onPress={handleCopy}>
+        <MaterialIcons name={'content-copy'} size={14} color="grey" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onLikePress} style={styles.dislikeIcon}>
         <MaterialIcons
           name={liked ? 'thumb-up' : 'thumb-up-off-alt'}
           size={16}
-          color="black"
+          color="grey"
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={onDislikePress} style={styles.dislikeIcon}>
         <MaterialIcons
           name={disliked ? 'thumb-down' : 'thumb-down-off-alt'}
           size={16}
-          color="black"
+          color="grey"
         />
       </TouchableOpacity>
     </View>
