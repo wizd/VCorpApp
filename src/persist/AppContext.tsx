@@ -18,6 +18,7 @@ export interface Config {
 
 export interface Settings {
   tts: boolean;
+  guide: boolean;
 }
 export interface Employee {
   id: string;
@@ -58,10 +59,11 @@ export const AppContextProvider: React.FC = ({children}) => {
     console.log('wallet address: ', wallet.accountId);
     const defaultCompany: Company = {
       config: defaultConfig,
-      settings: {tts: true},
+      settings: {tts: true, guide: true},
       privatekey: wallet.privateKey,
       name: 'Default Company',
       curid: 'A0001',
+      jwt: '',
       employees: [
         {
           id: 'A0001',

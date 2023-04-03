@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   FlatList,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import EventSource, {
   EventSourceListener,
   EventSourceOptions,
@@ -29,6 +30,7 @@ import AppContext, {Company} from '../persist/AppContext';
 import {TextToSpeech} from '../utils/TextToSpeech';
 import {LyraCrypto} from '../crypto/lyra-crypto';
 import axios from 'axios';
+import ArrowGuide from '../components/help/ArrowGuide';
 
 interface ChatCompletionChunk {
   id: string;
@@ -60,6 +62,7 @@ interface Message {
 }
 
 const ShortCuts = () => {
+  const navigation = useNavigation();
   const scrollViewRef = useRef<ScrollView>(null);
   const flatListRef = useRef<FlatList>(null);
   const [jwt, setJwt] = useState<string>('');
@@ -70,6 +73,21 @@ const ShortCuts = () => {
   const [tts] = useState(() => new TextToSpeech(10));
 
   const {company, setCompany} = useContext(AppContext);
+
+  const [showArrow, setShowArrow] = useState(true);
+
+  const onQuestionBoxAvatarClick = () => {
+    setShowArrow(false);
+    const newcompany = {
+      ...company,
+      settings: {
+        ...company.settings,
+        guide: false,
+      },
+    };
+    setCompany(newcompany);
+    navigation.navigate('Employees' as never);
+  };
 
   if (!company) {
     return null;
@@ -122,6 +140,7 @@ const ShortCuts = () => {
   useEffect(() => {
     // if (company) register(company);
     // else console.log('company is null');
+    setShowArrow(company.settings?.guide ?? true);
   }, [company]);
 
   const ask = (question: string) => {
@@ -354,6 +373,7 @@ const ShortCuts = () => {
       <KeyboardAvoidingView
         style={styles.shortcuts}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        {showArrow && <ArrowGuide />}
         <FlatList
           style={[styles.frameParent, styles.mt8]}
           data={messages}
@@ -388,6 +408,7 @@ const ShortCuts = () => {
           q={q}
           onVuesaxboldsendPress={ask}
           avatar={currentEmployee.avatar}
+          onAvatarPress={onQuestionBoxAvatarClick}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

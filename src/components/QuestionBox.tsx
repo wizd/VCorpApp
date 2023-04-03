@@ -22,10 +22,15 @@ type QuestionBoxType = {
   q: string;
   onVuesaxboldsendPress: (q: string) => void;
   avatar: string;
+  onAvatarPress?: () => void;
 };
 
-const QuestionBox = ({q, onVuesaxboldsendPress, avatar}: QuestionBoxType) => {
-  const navigation = useNavigation();
+const QuestionBox = ({
+  q,
+  onVuesaxboldsendPress,
+  avatar,
+  onAvatarPress,
+}: QuestionBoxType) => {
   const {company, setCompany} = React.useContext(AppContext);
 
   const defImg = require('../../assets/vuesaxboldsend.png');
@@ -82,7 +87,7 @@ const QuestionBox = ({q, onVuesaxboldsendPress, avatar}: QuestionBoxType) => {
   return (
     <TouchableWithoutFeedback>
       <View style={[styles.inputcontainer, styles.mt8]}>
-        <Pressable onPress={() => navigation.navigate('Employees' as never)}>
+        <Pressable onPress={onAvatarPress}>
           <Image
             source={{
               uri: avatar.startsWith('http')
