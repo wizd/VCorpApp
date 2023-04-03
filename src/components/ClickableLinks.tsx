@@ -7,7 +7,7 @@ interface ClickableLinksProps {
 }
 
 const findLinks = (text: string) => {
-  const urlPattern = /(https?:\/\/[^\s]+)/g;
+  const urlPattern = /(https?:\/\/[^\s]+[^.,\s])/g;
   return text.split(urlPattern);
 };
 
