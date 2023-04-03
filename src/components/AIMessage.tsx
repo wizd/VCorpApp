@@ -7,6 +7,7 @@ import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import GearMenu from './GearMenu';
 import Markdown from './Markdown';
 import StopButton from './StopButton';
+import LikeDislikeButtons from './LikeDislikeButtons';
 
 const AIMessage = (props: any) => {
   const {company, setCompany} = useContext(AppContext);
@@ -44,6 +45,7 @@ const AIMessage = (props: any) => {
         <Markdown text={props.text} />
         <View style={styles.gearMenu}>
           {props.isLoading && <StopButton onPress={handleStop} />}
+          {!props.isLoading && <LikeDislikeButtons />}
         </View>
         {/* <View style={styles.gearMenu}>
           {!props.isLoading && (
