@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
-import AppContext from '../persist/AppContext';
+import AppContext, {Employee} from '../persist/AppContext';
 import InputWithClear from './InputWithClear';
 import {Dimensions} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
@@ -21,14 +21,14 @@ const deviceWidth = Dimensions.get('window').width;
 type QuestionBoxType = {
   q: string;
   onVuesaxboldsendPress: (q: string) => void;
-  avatar: string;
+  employee: Employee;
   onAvatarPress?: () => void;
 };
 
 const QuestionBox = ({
   q,
   onVuesaxboldsendPress,
-  avatar,
+  employee,
   onAvatarPress,
 }: QuestionBoxType) => {
   const {company, setCompany} = React.useContext(AppContext);
@@ -90,9 +90,9 @@ const QuestionBox = ({
         <Pressable onPress={onAvatarPress}>
           <Image
             source={{
-              uri: avatar.startsWith('http')
-                ? avatar
-                : company.config.API_URL + '/assets/avatar/' + avatar,
+              uri: employee.avatar.startsWith('http')
+                ? employee.avatar
+                : company.config.API_URL + '/assets/avatar/' + employee.avatar,
             }}
             style={styles.itemImage}
           />

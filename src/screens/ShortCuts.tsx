@@ -407,7 +407,7 @@ const ShortCuts = () => {
         <QuestionBox
           q={q}
           onVuesaxboldsendPress={ask}
-          avatar={currentEmployee.avatar}
+          employee={currentEmployee}
           onAvatarPress={onQuestionBoxAvatarClick}
         />
       </KeyboardAvoidingView>
