@@ -25,7 +25,7 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [collapsedHeight, setCollapsedHeight] = useState(100);
-  const [expandedHeight, setExpandedHeight] = useState(200);
+  const [expandedHeight, setExpandedHeight] = useState(100);
 
   const contentRef = useRef<View>(null);
 
@@ -51,7 +51,7 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
 
   return (
     <View
-      style={[styles.container, {height}, style]}
+      style={[styles.container, style]}
       onLayout={onLayout}
       ref={contentRef}>
       <TouchableOpacity
@@ -64,7 +64,9 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
           />
         </Svg>
       </TouchableOpacity>
-      {isExpanded && expanded && <View style={styles.content}>{expanded}</View>}
+      {isExpanded && expanded && (
+        <View style={styles.contentup}>{expanded}</View>
+      )}
       <View style={styles.content}>{children}</View>
     </View>
   );
@@ -72,12 +74,14 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    // width,
-    // backgroundColor: 'lightgray',
+    backgroundColor: '#fffff3',
+    width: '100%',
     position: 'absolute',
+    left: 0,
+    right: 0,
     bottom: 0,
-    // borderTopWidth: 1,
-    // borderColor: 'gray',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   indicatorContainer: {
     width: 24,
@@ -93,8 +97,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray',
   },
+  contentup: {},
   content: {
     flex: 1,
+    bottom: 4,
+    justifyContent: 'center',
   },
 });
 

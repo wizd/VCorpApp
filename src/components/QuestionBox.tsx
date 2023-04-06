@@ -86,11 +86,9 @@ const QuestionBox = ({
     console.log('handleVEList');
   };
 
-  // expanded={<Text>Expanded!</Text>}
-  // style={styles.questionBox}>
   return (
     <TouchableWithoutFeedback>
-      <View>
+      <ExpandableView expanded={<Text>Expanded!</Text>}>
         <View style={[styles.inputcontainer, styles.mt8]}>
           <Pressable onPress={onAvatarPress}>
             <Image
@@ -134,7 +132,7 @@ const QuestionBox = ({
             )}
           </TouchableHighlight>
         </View>
-      </View>
+      </ExpandableView>
     </TouchableWithoutFeedback>
   );
 };
@@ -197,12 +195,6 @@ const styles = StyleSheet.create({
     minHeight: 50,
     alignSelf: 'flex-start',
     verticalAlign: 'middle',
-  },
-  questionBox: {
-    position: 'absolute',
-    bottom: 10,
-    left: 0,
-    right: 0,
   },
   itemImage: {
     width: 40,

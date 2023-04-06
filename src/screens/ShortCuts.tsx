@@ -432,13 +432,14 @@ const styles = StyleSheet.create({
   frameParent: {
     alignSelf: 'stretch',
     flex: 1,
+    paddingHorizontal: Padding.p_sm,
   },
   shortcuts: {
     //borderRadius: Border.br_lg,
     backgroundColor: Color.white,
     width: '100%',
     overflow: 'hidden',
-    paddingHorizontal: Padding.p_sm,
+    //paddingHorizontal: Padding.p_sm,
     //paddingVertical: Padding.p_xl,
     paddingBottom: Platform.OS === 'ios' ? 30 : 45,
     flex: 1,
