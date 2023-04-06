@@ -82,12 +82,12 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
 const styles = StyleSheet.create({
   kav: {position: 'absolute', left: 0, right: 0, bottom: 0},
   container: {
-    backgroundColor: '#ffffff',
     width: '100%',
     position: 'absolute',
+    paddingTop: 8,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 8,
     alignContent: 'center',
     alignItems: 'center',
   },
