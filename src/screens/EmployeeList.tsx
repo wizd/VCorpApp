@@ -15,7 +15,7 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 
 import EmployeeListItem from '../components/EmployeeListItem';
 import AppContext, {Employee} from '../persist/AppContext';
-import CustomButton from '../components/CustomButton';
+import CustomButton from '../components/tools/CustomButton';
 import EditRoleModal from '../components/EditRoleModel';
 
 // Define the props of the main component that renders the page

@@ -6,8 +6,8 @@ import AppContext from '../persist/AppContext';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import GearMenu from './GearMenu';
 import Markdown from './Markdown';
-import StopButton from './StopButton';
-import LikeDislikeButtons from './LikeDislikeButtons';
+import StopButton from './tools/StopButton';
+import LikeDislikeButtons from './tools/LikeDislikeButtons';
 
 const AIMessage = (props: any) => {
   const {company, setCompany} = useContext(AppContext);

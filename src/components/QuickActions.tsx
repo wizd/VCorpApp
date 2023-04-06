@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
-import QuickQuestonButton from '../components/QuickQuestonButton';
+import QuickQuestonButton from './tools/QuickQuestonButton';
 import {Margin, FontSize, FontFamily, Color} from '../../GlobalStyles';
 
 const QuickActions = (props: any) => {

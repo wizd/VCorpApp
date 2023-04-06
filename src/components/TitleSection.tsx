@@ -3,7 +3,7 @@ import {useContext} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {Margin, FontSize, FontFamily, Color, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
-import ToggleButton from './ToggleButton';
+import ToggleButton from './tools/ToggleButton';
 
 const TitleSection = () => {
   const {company, setCompany} = useContext(AppContext);

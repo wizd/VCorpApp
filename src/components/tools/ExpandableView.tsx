@@ -74,7 +74,7 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fffff3',
+    backgroundColor: '#ffffff',
     width: '100%',
     position: 'absolute',
     left: 0,
@@ -96,8 +96,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'gray',
+    display: 'none',
   },
-  contentup: {},
+  contentup: {
+    width: '100%',
+  },
   content: {
     flex: 1,
     bottom: 4,

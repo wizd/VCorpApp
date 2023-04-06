@@ -15,9 +15,10 @@ import {
 
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import AppContext, {Employee} from '../persist/AppContext';
-import InputWithClear from './InputWithClear';
+import InputWithClear from './tools/InputWithClear';
 import {Dimensions} from 'react-native';
 import ExpandableView from './tools/ExpandableView';
+import Text2ImgConfig from './Text2ImgConfig';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -88,7 +89,7 @@ const QuestionBox = ({
 
   return (
     <TouchableWithoutFeedback>
-      <ExpandableView expanded={<Text>Expanded!</Text>}>
+      <ExpandableView expanded={<Text2ImgConfig />}>
         <View style={[styles.inputcontainer, styles.mt8]}>
           <Pressable onPress={onAvatarPress}>
             <Image

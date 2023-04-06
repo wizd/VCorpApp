@@ -13,7 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import EmployeeListItem from '../components/EmployeeListItem';
 import AppContext, {Employee} from '../persist/AppContext';
-import CustomButton from '../components/CustomButton';
+import CustomButton from '../components/tools/CustomButton';
 
 // Define the props of the main component that renders the page
 type Props = {};

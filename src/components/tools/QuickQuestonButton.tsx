@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useMemo} from 'react';
 import {Pressable, Text, StyleSheet} from 'react-native';
-import {FontSize, FontFamily, Color, Border} from '../../GlobalStyles';
+import {FontSize, FontFamily, Color, Border} from '../../../GlobalStyles';
 
 type QuickQuestonButtonType = {
   q: string;
