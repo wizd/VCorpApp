@@ -367,41 +367,43 @@ const ShortCuts = () => {
   };
   //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.shortcuts}>
-        {showArrow && <ArrowGuide />}
-        <FlatList
-          style={[styles.frameParent, styles.mt8]}
-          data={messages}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item, index}) =>
-            item.isAI ? (
-              <AIMessage
-                key={index}
-                text={item.text}
-                isLoading={item.isLoading}
-                msg={item}
-                onStop={handleStop}
-              />
-            ) : (
-              <UserMessage key={index} text={item.text} />
-            )
-          }
-          ListHeaderComponent={
-            <>
-              <TitleSection />
-              <View style={[styles.shortcutsChild, styles.mt8]} />
-              <QuickActions pressed={setQ} />
-            </>
-          }
-          ListFooterComponent={<></>}
-          contentContainerStyle={{flexGrow: 1, paddingBottom: 16}}
-          keyboardShouldPersistTaps="handled"
-          // onContentSizeChange={() => flatListRef?.current?.scrollToEnd()}
-          ref={flatListRef}
-        />
+        style={styles.kav}
+        behavior={Platform.OS === 'ios' ? 'height' : 'height'}>
+        <View style={styles.shortcuts}>
+          {showArrow && <ArrowGuide />}
+          <FlatList
+            style={[styles.frameParent, styles.mt8]}
+            data={messages}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item, index}) =>
+              item.isAI ? (
+                <AIMessage
+                  key={index}
+                  text={item.text}
+                  isLoading={item.isLoading}
+                  msg={item}
+                  onStop={handleStop}
+                />
+              ) : (
+                <UserMessage key={index} text={item.text} />
+              )
+            }
+            ListHeaderComponent={
+              <>
+                <TitleSection />
+                <View style={[styles.shortcutsChild, styles.mt8]} />
+                <QuickActions pressed={setQ} />
+              </>
+            }
+            ListFooterComponent={<></>}
+            contentContainerStyle={{flexGrow: 1, paddingBottom: 16}}
+            keyboardShouldPersistTaps="handled"
+            // onContentSizeChange={() => flatListRef?.current?.scrollToEnd()}
+            ref={flatListRef}
+          />
+        </View>
       </KeyboardAvoidingView>
       <QuestionBox
         q={q}
@@ -414,6 +416,7 @@ const ShortCuts = () => {
 };
 
 const styles = StyleSheet.create({
+  kav: {paddingBottom: 58, flex: 1},
   frameScrollViewContent: {
     flexDirection: 'column',
     paddingHorizontal: 0,
@@ -441,7 +444,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     //paddingHorizontal: Padding.p_sm,
     //paddingVertical: Padding.p_xl,
-    paddingBottom: Platform.OS === 'ios' ? 78 : 58,
+    //paddingBottom: Platform.OS === 'ios' ? 78 : 58,
     flex: 1,
   },
 });
