@@ -2,12 +2,9 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  TextInput,
   Platform,
   SafeAreaView,
   KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
   FlatList,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -17,8 +14,8 @@ import EventSource, {
 } from 'react-native-sse';
 import React, {useContext} from 'react';
 
-import {Margin, Border, Color, Padding} from '../../GlobalStyles';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {Margin, Color, Padding} from '../../GlobalStyles';
+import {useEffect, useRef, useState} from 'react';
 
 import TitleSection from '../components/TitleSection';
 import QuickActions from '../components/QuickActions';
@@ -26,10 +23,8 @@ import QuestionBox from '../components/QuestionBox';
 import AIMessage from '../components/AIMessage';
 import UserMessage from '../components/UserMessage';
 
-import AppContext, {Company} from '../persist/AppContext';
+import AppContext from '../persist/AppContext';
 import {TextToSpeech} from '../utils/TextToSpeech';
-import {LyraCrypto} from '../crypto/lyra-crypto';
-import axios from 'axios';
 import ArrowGuide from '../components/help/ArrowGuide';
 
 interface ChatCompletionChunk {
@@ -49,9 +44,6 @@ interface Choice {
   finish_reason: 'stop' | 'length' | 'max_tokens' | null;
 }
 
-const systemPrompt = '';
-const assistantPrompt = '';
-
 interface Message {
   _id: number;
   text: string;
@@ -65,12 +57,11 @@ const ShortCuts = () => {
   const navigation = useNavigation();
   const scrollViewRef = useRef<ScrollView>(null);
   const flatListRef = useRef<FlatList>(null);
-  const [jwt, setJwt] = useState<string>('');
 
   const [q, setQ] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [tts] = useState(() => new TextToSpeech(10));
+  const [tts, setTts] = useState<TextToSpeech | null>(null);
 
   const {company, setCompany} = useContext(AppContext);
 
@@ -104,42 +95,23 @@ const ShortCuts = () => {
   }
 
   const beginReading = (txt: string) => {
-    if (company.settings?.tts) {
+    if (tts) {
       tts.emitTextGen(txt);
     }
   };
 
   const textFinished = () => {
-    tts.emitTextEnd();
-  };
-
-  const register = (co: any) => {
-    console.log('registering my company: ', co);
-    const baseUrl = co.config.API_URL + '/vc/v1/user';
-    const usr = {
-      accountId: LyraCrypto.GetAccountIdFromPrivateKey(co.privatekey),
-    };
-    const data = {
-      user: usr,
-      signature: LyraCrypto.Sign(JSON.stringify(usr), co.privatekey),
-    };
-    const api = axios.create({
-      baseURL: baseUrl,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    api.post('/register', data).then(ret => {
-      console.log('register result: ', ret.data);
-      if (ret.data.success) {
-        setJwt(ret.data.data.token);
-      }
-    });
+    if (tts) {
+      tts.emitTextEnd();
+    }
   };
 
   useEffect(() => {
     // if (company) register(company);
     // else console.log('company is null');
+    if (company.settings.tts) {
+      setTts(new TextToSpeech(10));
+    }
     setShowArrow(company.settings?.guide ?? true);
   }, [company]);
 
@@ -172,7 +144,7 @@ const ShortCuts = () => {
 
       for (
         let i = messages.length - 1;
-        i >= 0 && i > messages.length - 6;
+        i >= 0 && i > messages.length - 4;
         i--
       ) {
         const msg = messages[i];
@@ -206,7 +178,7 @@ const ShortCuts = () => {
 
       // Parameters to pass to the API
       const data = {
-        version: 3,
+        version: 4,
         veid: currentEmployee.id,
         vename: currentEmployee.name,
         messages: history,
@@ -214,14 +186,14 @@ const ShortCuts = () => {
 
       const options: EventSourceOptions = {
         method: 'POST', // Request method. Default: GET
-        //timeout: 0, // Time after which the connection will expire without any activity: Default: 0 (no timeout)
+        timeout: 30000, // Time after which the connection will expire without any activity: Default: 0 (no timeout)
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer aaaaaa`, //${jwt}`,
+          //Authorization: `Bearer ${company.jwt}`,
         }, // Your request headers. Default: {}
         body: JSON.stringify(data), // Your request body sent on connection: Default: undefined
         debug: true, // Show console.debug messages for debugging purpose. Default: false
-        pollingInterval: 5000, // Time (ms) between reconnections. Default: 5000
+        pollingInterval: 3600000, // Time (ms) between reconnections. Default: 5000
       };
 
       //Add the last message to the list
@@ -301,15 +273,13 @@ const ShortCuts = () => {
             });
           }
         } else if (event.type === 'error') {
-          console.error('Connection error:', event.message);
+          //console.error('Connection error from server:', event.message);
+          reqErrorHandler(message._id, '对话服务器返回错误：' + event.message);
           es.close();
-
-          reqErrorHandler(message._id, newContent);
         } else if (event.type === 'exception') {
-          console.error('Error:', event.message, event.error);
+          //console.error('Error:', event.message, event.error);
+          reqErrorHandler(message._id, '程序错误：' + event.message);
           es.close();
-
-          reqErrorHandler(message._id, newContent);
         }
       };
 
@@ -329,9 +299,33 @@ const ShortCuts = () => {
     }
   };
 
+  // const textFinished = (id: number, text: string) => {
+  //   textFinished();
+  //   setMessages(previousMessages => {
+  //     // Get the last array
+  //     const last = [...previousMessages];
+
+  //     // Update the list
+  //     const mewLIst = last.map((m, i) => {
+  //       if (m._id === id) {
+  //         m.isLoading = false;
+  //         m.text = text;
+  //       }
+
+  //       return m;
+  //     });
+  //     // Return the new array
+  //     return mewLIst;
+  //   });
+  // };
+
   const reqErrorHandler = (msgid: number, txt: string) => {
     console.log('reqErrorHandler, msgid: ', msgid, ', txt: ', txt);
-    textFinished();
+
+    const msgpadding =
+      txt +
+      ' \n\n(我们的系统目前正处于快速迭代升级中，出现错误很可能意味着您当前的App版本已经过时，请尝试点击这个链接升级到最新版本：https://vcorp.ai/ )';
+
     setMessages(previousMessages => {
       // Get the last array
       const last = [...previousMessages];
@@ -340,7 +334,7 @@ const ShortCuts = () => {
       const mewLIst = last.map((m, i) => {
         if (m._id === msgid) {
           m.isLoading = false;
-          m.text = txt;
+          m.text = msgpadding;
         }
 
         return m;
@@ -348,6 +342,7 @@ const ShortCuts = () => {
       // Return the new array
       return mewLIst;
     });
+    textFinished();
   };
 
   // useEffect(() => {

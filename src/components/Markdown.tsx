@@ -35,7 +35,9 @@ const Markdown: FC<MarkdownProps> = ({text}) => {
         />,
       );
     } else {
-      content.push(<ClickableLinks content={line} />);
+      content.push(
+        <ClickableLinks key={`clickable-links-${i}`} content={line} />,
+      );
     }
   }
 
