@@ -55,7 +55,7 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
   return (
     <KeyboardAvoidingView
       style={styles.kav}
-      behavior={Platform.OS == 'ios' ? 'position' : 'height'}>
+      behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
       <View
         style={[styles.container, style]}
         onLayout={onLayout}

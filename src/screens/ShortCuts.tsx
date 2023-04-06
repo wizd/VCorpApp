@@ -368,7 +368,9 @@ const ShortCuts = () => {
   //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View style={styles.shortcuts}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.shortcuts}>
         {showArrow && <ArrowGuide />}
         <FlatList
           style={[styles.frameParent, styles.mt8]}
@@ -400,7 +402,7 @@ const ShortCuts = () => {
           // onContentSizeChange={() => flatListRef?.current?.scrollToEnd()}
           ref={flatListRef}
         />
-      </View>
+      </KeyboardAvoidingView>
       <QuestionBox
         q={q}
         onVuesaxboldsendPress={ask}
@@ -439,7 +441,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     //paddingHorizontal: Padding.p_sm,
     //paddingVertical: Padding.p_xl,
-    paddingBottom: Platform.OS === 'ios' ? 48 : 48,
+    paddingBottom: Platform.OS === 'ios' ? 78 : 58,
     flex: 1,
   },
 });
