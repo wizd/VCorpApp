@@ -51,6 +51,7 @@ interface Message {
   isAI: boolean;
   veid: string;
   createdAt: Date;
+  bypass: boolean;
 }
 
 const ShortCuts = () => {
@@ -127,6 +128,7 @@ const ShortCuts = () => {
       isLoading: false,
       isAI: false,
       veid: currentEmployee!.id,
+      bypass: false,
     };
 
     setMessages(previousMessages => [...previousMessages, userMsg]);
@@ -148,7 +150,7 @@ const ShortCuts = () => {
         i--
       ) {
         const msg = messages[i];
-        if (msg.veid.startsWith('D')) {
+        if (msg.veid.startsWith('D') || msg.bypass) {
           // drawer
           continue;
         } else if (msg.isAI) {
@@ -189,7 +191,7 @@ const ShortCuts = () => {
         timeout: 30000, // Time after which the connection will expire without any activity: Default: 0 (no timeout)
         headers: {
           'Content-Type': 'application/json',
-          //Authorization: `Bearer ${company.jwt}`,
+          Authorization: `Bearer ${company.jwt}`,
         }, // Your request headers. Default: {}
         body: JSON.stringify(data), // Your request body sent on connection: Default: undefined
         debug: true, // Show console.debug messages for debugging purpose. Default: false
@@ -335,6 +337,7 @@ const ShortCuts = () => {
         if (m._id === msgid) {
           m.isLoading = false;
           m.text = msgpadding;
+          m.bypass = true;
         }
 
         return m;
