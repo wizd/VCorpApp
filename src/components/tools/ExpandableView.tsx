@@ -54,8 +54,8 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
   //
   return (
     <KeyboardAvoidingView
-      style={{position: 'absolute', left: 0, right: 0, bottom: 0}}
-      behavior="position">
+      style={styles.kav}
+      behavior={Platform.OS == 'ios' ? 'position' : 'height'}>
       <View
         style={[styles.container, style]}
         onLayout={onLayout}
@@ -80,13 +80,14 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
 };
 
 const styles = StyleSheet.create({
+  kav: {position: 'absolute', left: 0, right: 0, bottom: 0},
   container: {
     backgroundColor: '#ffffff',
     width: '100%',
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 24,
+    bottom: 0,
     alignContent: 'center',
     alignItems: 'center',
   },
