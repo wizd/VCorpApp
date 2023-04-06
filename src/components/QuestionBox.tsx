@@ -10,12 +10,14 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
+  Text,
 } from 'react-native';
 
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import AppContext, {Employee} from '../persist/AppContext';
 import InputWithClear from './InputWithClear';
 import {Dimensions} from 'react-native';
+import ExpandableView from './tools/ExpandableView';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -84,48 +86,54 @@ const QuestionBox = ({
     console.log('handleVEList');
   };
 
+  // expanded={<Text>Expanded!</Text>}
+  // style={styles.questionBox}>
   return (
     <TouchableWithoutFeedback>
-      <View style={[styles.inputcontainer, styles.mt8]}>
-        <Pressable onPress={onAvatarPress}>
-          <Image
-            source={{
-              uri: employee.avatar.startsWith('http')
-                ? employee.avatar
-                : company.config.API_URL + '/assets/avatar/' + employee.avatar,
-            }}
-            style={styles.itemImage}
-          />
-        </Pressable>
-        <View style={styles.inputWrapper}>
-          <InputWithClear
-            key={key}
-            inputRef={inputRef}
-            placeholder=""
-            keyboardType="default"
-            multiline
-            initialValue={question}
-            placeholderTextColor="#a1a1a1"
-            onChangeText={setQuestion}
-            inputStyle={styles.writeYourMessage}
-          />
-        </View>
-
-        <TouchableHighlight
-          style={[styles.vuesaxlinearmicrophone2Icon, styles.ml10]}
-          underlayColor="#fff"
-          activeOpacity={0.2}
-          onPress={handleSubmit}>
-          {isProcessing ? (
-            <View style={styles.square} />
-          ) : (
+      <View>
+        <View style={[styles.inputcontainer, styles.mt8]}>
+          <Pressable onPress={onAvatarPress}>
             <Image
-              style={styles.icon}
-              resizeMode="cover"
-              source={currentImage}
+              source={{
+                uri: employee.avatar.startsWith('http')
+                  ? employee.avatar
+                  : company.config.API_URL +
+                    '/assets/avatar/' +
+                    employee.avatar,
+              }}
+              style={styles.itemImage}
             />
-          )}
-        </TouchableHighlight>
+          </Pressable>
+          <View style={styles.inputWrapper}>
+            <InputWithClear
+              key={key}
+              inputRef={inputRef}
+              placeholder=""
+              keyboardType="default"
+              multiline
+              initialValue={question}
+              placeholderTextColor="#a1a1a1"
+              onChangeText={setQuestion}
+              inputStyle={styles.writeYourMessage}
+            />
+          </View>
+
+          <TouchableHighlight
+            style={[styles.vuesaxlinearmicrophone2Icon, styles.ml10]}
+            underlayColor="#fff"
+            activeOpacity={0.2}
+            onPress={handleSubmit}>
+            {isProcessing ? (
+              <View style={styles.square} />
+            ) : (
+              <Image
+                style={styles.icon}
+                resizeMode="cover"
+                source={currentImage}
+              />
+            )}
+          </TouchableHighlight>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -134,9 +142,6 @@ const QuestionBox = ({
 const styles = StyleSheet.create({
   ml10: {
     marginLeft: Margin.m_md,
-  },
-  mt8: {
-    marginTop: Margin.m_sm,
   },
   inputWrapper: {
     borderWidth: 0,
@@ -170,6 +175,9 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     backgroundColor: 'red',
+  },
+  mt8: {
+    marginTop: Margin.m_sm,
   },
   inputcontainer: {
     flex: 0,
