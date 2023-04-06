@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     //paddingHorizontal: Padding.p_sm,
     //paddingVertical: Padding.p_xl,
-    paddingBottom: Platform.OS === 'ios' ? 78 : 45,
+    paddingBottom: Platform.OS === 'ios' ? 45 : 45,
     flex: 1,
   },
 });
