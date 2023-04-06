@@ -365,12 +365,10 @@ const ShortCuts = () => {
   const handleStop = (msg: Message) => {
     reqErrorHandler(msg._id, msg.text);
   };
-
+  //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
   return (
     <SafeAreaView style={{flex: 1}}>
-      <KeyboardAvoidingView
-        style={styles.shortcuts}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <View style={styles.shortcuts}>
         {showArrow && <ArrowGuide />}
         <FlatList
           style={[styles.frameParent, styles.mt8]}
@@ -402,13 +400,13 @@ const ShortCuts = () => {
           // onContentSizeChange={() => flatListRef?.current?.scrollToEnd()}
           ref={flatListRef}
         />
-        <QuestionBox
-          q={q}
-          onVuesaxboldsendPress={ask}
-          employee={currentEmployee}
-          onAvatarPress={onQuestionBoxAvatarClick}
-        />
-      </KeyboardAvoidingView>
+      </View>
+      <QuestionBox
+        q={q}
+        onVuesaxboldsendPress={ask}
+        employee={currentEmployee}
+        onAvatarPress={onQuestionBoxAvatarClick}
+      />
     </SafeAreaView>
   );
 };
@@ -441,7 +439,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     //paddingHorizontal: Padding.p_sm,
     //paddingVertical: Padding.p_xl,
-    paddingBottom: Platform.OS === 'ios' ? 30 : 45,
+    paddingBottom: Platform.OS === 'ios' ? 78 : 45,
     flex: 1,
   },
 });

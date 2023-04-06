@@ -7,6 +7,8 @@ import {
   LayoutChangeEvent,
   ViewStyle,
   StyleProp,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 
@@ -49,26 +51,31 @@ const ExpandableView: React.FC<ExpandableViewProps> = ({
     ? collapsedHeight + expandedHeight
     : collapsedHeight;
 
+  //
   return (
-    <View
-      style={[styles.container, style]}
-      onLayout={onLayout}
-      ref={contentRef}>
-      <TouchableOpacity
-        style={styles.indicatorContainer}
-        onPress={toggleExpansion}>
-        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <Path
-            d={isExpanded ? 'M12 15l5-5H7l5 5z' : 'M12 9l5 5H7l5-5z'}
-            fill="black"
-          />
-        </Svg>
-      </TouchableOpacity>
-      {isExpanded && expanded && (
-        <View style={styles.contentup}>{expanded}</View>
-      )}
-      <View style={styles.content}>{children}</View>
-    </View>
+    <KeyboardAvoidingView
+      style={{position: 'absolute', left: 0, right: 0, bottom: 0}}
+      behavior="position">
+      <View
+        style={[styles.container, style]}
+        onLayout={onLayout}
+        ref={contentRef}>
+        <TouchableOpacity
+          style={styles.indicatorContainer}
+          onPress={toggleExpansion}>
+          <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <Path
+              d={isExpanded ? 'M12 15l5-5H7l5 5z' : 'M12 9l5 5H7l5-5z'}
+              fill="black"
+            />
+          </Svg>
+        </TouchableOpacity>
+        {isExpanded && expanded && (
+          <View style={styles.contentup}>{expanded}</View>
+        )}
+        <View style={styles.content}>{children}</View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
