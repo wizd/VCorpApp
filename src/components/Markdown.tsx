@@ -2,8 +2,8 @@ import React, {FC} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Color, FontFamily, FontSize} from '../../GlobalStyles';
 import CodeBlock, {CodeBlockProps} from './CodeBlock';
-import HyperText from './ClickableLinks';
-import ClickableLinks from './ClickableLinks';
+import HyperText from './tools/ClickableLinks';
+import ClickableLinks from './tools/ClickableLinks';
 
 interface MarkdownProps {
   text: string;

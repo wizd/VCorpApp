@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, Linking, StyleSheet} from 'react-native';
-import {FontFamily, FontSize} from '../../GlobalStyles';
+import {FontFamily, FontSize} from '../../../GlobalStyles';
 
 interface ClickableLinksProps {
   content: string;

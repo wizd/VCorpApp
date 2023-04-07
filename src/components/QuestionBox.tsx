@@ -19,6 +19,7 @@ import InputWithClear from './tools/InputWithClear';
 import {Dimensions} from 'react-native';
 import ExpandableView from './tools/ExpandableView';
 import Text2ImgConfig from './Text2ImgConfig';
+import FileUploader from './tools/FileUploader';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -89,7 +90,7 @@ const QuestionBox = ({
 
   return (
     <TouchableWithoutFeedback>
-      <ExpandableView expanded={<Text2ImgConfig />}>
+      <ExpandableView expanded={<FileUploader />}>
         <View style={[styles.inputcontainer, styles.mt8]}>
           <Pressable onPress={onAvatarPress}>
             <Image
