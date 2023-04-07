@@ -36,6 +36,8 @@ import EmployeeMarket from './src/screens/EmployeeMarket';
 import {AppContextProvider} from './src/persist/AppContext';
 import Toast from 'react-native-toast-message';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Settings} from 'react-native';
+import AppSettings from './src/screens/AppSettings';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
@@ -79,6 +81,11 @@ const App = () => {
                 <Stack.Screen
                   name="EmployeeMarket"
                   component={EmployeeMarket}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="Settings"
+                  component={AppSettings}
                   options={{headerShown: false}}
                 />
               </Stack.Navigator>

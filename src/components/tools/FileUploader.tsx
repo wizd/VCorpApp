@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {View, TouchableOpacity, Text} from 'react-native';
+import {View, TouchableOpacity, Text, ViewStyle} from 'react-native';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
@@ -11,6 +11,7 @@ const FileUploader = () => {
   const {company, setCompany} = useContext(AppContext);
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
+  const [filename, setFilename] = useState('');
 
   const pickDocument = async () => {
     try {
@@ -25,6 +26,7 @@ const FileUploader = () => {
         result.name,
         result.size,
       );
+      setFilename(result.name!);
       uploadFile(result);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
@@ -52,12 +54,13 @@ const FileUploader = () => {
       },
       headers: {
         'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${company!.jwt}`,
       },
     };
 
     setUploading(true);
     try {
-      const url = company!.config.API_URL + '/upload';
+      const url = company!.config.API_URL + '/vc/v1/image/upload';
       await axios.post(url, data, config);
       console.log('File uploaded successfully');
     } catch (error) {
@@ -69,7 +72,7 @@ const FileUploader = () => {
   };
 
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <View style={upstyles}>
       <TouchableOpacity onPress={pickDocument} style={styles.button}>
         <Text style={styles.buttonText}>
           {uploading ? 'Uploading...' : 'Upload File'}
@@ -83,8 +86,17 @@ const FileUploader = () => {
           color="#007AFF"
         />
       )}
+      <Text>{filename}</Text>
     </View>
   );
+};
+
+const upstyles: ViewStyle = {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '100%',
+  backgroundColor: 'lightgray',
 };
 
 const styles = {

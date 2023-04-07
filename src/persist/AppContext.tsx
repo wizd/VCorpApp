@@ -20,6 +20,7 @@ export interface Config {
 export interface Settings {
   tts: boolean;
   guide: boolean;
+  autoSaveImage: boolean;
 }
 export interface Employee {
   id: string;
@@ -60,7 +61,7 @@ export const AppContextProvider: React.FC = ({children}) => {
     console.log('wallet address: ', wallet.accountId);
     const defaultCompany: Company = {
       config: defaultConfig,
-      settings: {tts: true, guide: true},
+      settings: {tts: true, guide: true, autoSaveImage: false},
       privatekey: wallet.privateKey,
       name: 'Default Company',
       curid: 'A0001',

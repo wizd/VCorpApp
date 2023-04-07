@@ -4,18 +4,21 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import {Margin, FontSize, FontFamily, Color, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
 import ToggleButton from './tools/ToggleButton';
+import GearButton from './tools/GearButton';
 
 const TitleSection = () => {
   const {company, setCompany} = useContext(AppContext);
 
   const setTtsEnabled = () => {
-    setCompany({
-      ...company,
-      settings: {
-        ...company.settings,
-        tts: !company?.settings.tts,
-      },
-    });
+    if (company) {
+      setCompany({
+        ...company,
+        settings: {
+          ...company.settings,
+          tts: company?.settings.tts,
+        },
+      });
+    }
   };
 
   return (
@@ -60,19 +63,7 @@ const TitleSection = () => {
           styles.blueRobotMascotLogoIconDeParent,
           styles.frameParentFlexBox,
         ]}>
-        <ToggleButton
-          disabled={company?.settings?.tts === false}
-          disabledImageSource={require('../../assets/vuesaxlinearvolumehigh.png')}
-          enabledImageSource={require('../../assets/vuesaxlinearvolumehigh1.png')}
-          onPress={() => {
-            setTtsEnabled();
-          }}
-        />
-        <Image
-          style={[styles.vuesaxlinearvolumeHighIcon, styles.ml19]}
-          resizeMode="cover"
-          source={require('../../assets/vuesaxlinearexport.png')}
-        />
+        <GearButton navigateTo="Settings" />
       </View>
     </View>
   );
@@ -134,7 +125,7 @@ const styles = StyleSheet.create({
   frameParent: {
     alignSelf: 'stretch',
     height: 51,
-    paddingHorizontal: Padding.p_lg,
+    paddingHorizontal: Padding.p_md,
     paddingVertical: 0,
   },
 });

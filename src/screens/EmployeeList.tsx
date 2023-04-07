@@ -30,24 +30,24 @@ const EmployeeList = (props: Props) => {
   const [curasst, setCurasst] = useState<Employee | undefined>(undefined);
   const [isModalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    const loadData = async () => {
-      if (company) {
-        // we need to update info for all employees
-        const employeeIds = company.employees.map(employee => employee.id);
-        const combinedIds = employeeIds.join(',');
-      }
-    };
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     if (company) {
+  //       // we need to update info for all employees
+  //       const employeeIds = company.employees.map(employee => employee.id);
+  //       const combinedIds = employeeIds.join(',');
+  //     }
+  //   };
 
-    // Use an immediately invoked async function to handle loadData and register
-    (async () => {
-      try {
-        await loadData();
-      } catch (error) {
-        console.log('in await loadData', error);
-      }
-    })();
-  }, [company]);
+  //   // Use an immediately invoked async function to handle loadData and register
+  //   (async () => {
+  //     try {
+  //       await loadData();
+  //     } catch (error) {
+  //       console.log('in await loadData', error);
+  //     }
+  //   })();
+  // }, [company]);
 
   const openModal = () => {
     setModalVisible(true);

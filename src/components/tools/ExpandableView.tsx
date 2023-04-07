@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'gray',
-    //display: 'none',
+    display: 'none',
   },
   contentup: {
     width: '100%',

@@ -54,9 +54,10 @@ const ArrowGuide: React.FC = () => {
 const styles = StyleSheet.create({
   arrowContainer: {
     position: 'absolute',
-    bottom: 60,
+    bottom: 10,
     left: -10,
     right: 0,
+    zIndex: 100,
     //justifyContent: 'left',
     //alignItems: 'center',
   },

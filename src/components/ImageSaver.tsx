@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useContext} from 'react';
 import {
   View,
   Image,
@@ -15,6 +15,7 @@ import {basename} from 'react-native-path';
 import AutoImage from './AutoImage';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import * as Progress from 'react-native-progress';
+import AppContext from '../persist/AppContext';
 
 async function hasAndroidPermission() {
   const permission =
@@ -98,6 +99,7 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
   const [localImagePath, setLocalImagePath] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const isMountedRef = useRef(false);
+  const {company, setCompany} = useContext(AppContext);
 
   useEffect(() => {
     if (!isMountedRef.current) {
@@ -129,6 +131,10 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
             setLocalImagePath(localPath);
             console.log('Image downloaded and saved to:', localPath);
             saved(localPath);
+
+            if (company?.settings.autoSaveImage) {
+              savePicture(localPath);
+            }
           } else {
             console.error('Failed to download image:', result.statusCode);
           }
