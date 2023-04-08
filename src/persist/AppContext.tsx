@@ -95,7 +95,7 @@ export const AppContextProvider: React.FC = ({children}) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        timeout: 5000,
+        timeout: 15000,
       });
       const ret = await api.post('/register', data);
       console.log('register result: ', ret.data);
