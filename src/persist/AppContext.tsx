@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useState} from 'react';
+import React, {createContext, useEffect, useState, useRef} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LyraCrypto} from '../crypto/lyra-crypto';
 import axios from 'axios';
@@ -50,45 +50,49 @@ const AppContext = createContext<AppContextType>({
   setCompany: () => {},
 });
 
+const createDefaultCompany = (): Company => {
+  // create a default company, with 1 employee
+  const wallet = LyraCrypto.GenerateWallet();
+  console.log('wallet address: ', wallet.accountId);
+  const defaultCompany: Company = {
+    config: defaultConfig,
+    settings: {tts: true, guide: true, autoSaveImage: false},
+    privatekey: wallet.privateKey,
+    name: 'Default Company',
+    curid: 'A0001',
+    jwt: '',
+    employees: [
+      {
+        id: 'A0001',
+        name: '晓玲珑',
+        desc: '晓玲珑是一名助理，她的工作是帮助公司的老板完成一些日常的工作。',
+        avatar: `${defaultConfig.API_URL}/assets/avatar/A0001.png`,
+      },
+    ],
+  };
+  return defaultCompany;
+};
+
 const storeName = '@company';
 
-export const AppContextProvider: React.FC = ({children}) => {
-  const [company, setCompany] = useState<Company | null>(null);
-
-  const createDefaultCompany = (): Company => {
-    // create a default company, with 1 employee
-    const wallet = LyraCrypto.GenerateWallet();
-    console.log('wallet address: ', wallet.accountId);
-    const defaultCompany: Company = {
-      config: defaultConfig,
-      settings: {tts: true, guide: true, autoSaveImage: false},
-      privatekey: wallet.privateKey,
-      name: 'Default Company',
-      curid: 'A0001',
-      jwt: '',
-      employees: [
-        {
-          id: 'A0001',
-          name: '晓玲珑',
-          desc: '晓玲珑是一名助理，她的工作是帮助公司的老板完成一些日常的工作。',
-          avatar: `${defaultConfig.API_URL}/assets/avatar/A0001.png`,
-        },
-      ],
-    };
-    return defaultCompany;
-  };
+interface AppContextProviderProps {
+  children: React.ReactNode;
+}
+export const AppContextProvider: React.FC<AppContextProviderProps> = ({
+  children,
+}) => {
+  const [company, setCompany] = useState<Company>(createDefaultCompany());
 
   useEffect(() => {
-    const register = async (co: Company) => {
-      setCompany(co);
-      console.log('registering my company: ', co);
-      const baseUrl = co.config.API_URL + '/vc/v1/user';
+    const register = async () => {
+      console.log('registering my company: ', company);
+      const baseUrl = company.config.API_URL + '/vc/v1/user';
       const usr = {
-        accountId: LyraCrypto.GetAccountIdFromPrivateKey(co.privatekey),
+        accountId: LyraCrypto.GetAccountIdFromPrivateKey(company.privatekey),
       };
       const data = {
         user: usr,
-        signature: LyraCrypto.Sign(JSON.stringify(usr), co.privatekey),
+        signature: LyraCrypto.Sign(JSON.stringify(usr), company.privatekey),
       };
       const api = axios.create({
         baseURL: baseUrl,
@@ -100,19 +104,17 @@ export const AppContextProvider: React.FC = ({children}) => {
       const ret = await api.post('/register', data);
       console.log('register result: ', ret.data);
       if (ret.data.success) {
-        const newc = {...co, jwt: ret.data.data.token};
-        setCompany(newc);
+        setCompany(prev => ({...prev, jwt: ret.data.data.token}));
 
         const exists = await checkTtsEngine();
         console.log('TTS engine: ', exists);
-        const newc2 = {
-          ...newc,
+        setCompany(prev => ({
+          ...prev,
           settings: {
-            ...newc.settings,
-            tts: exists && (newc.settings.tts ?? true),
+            ...prev.settings,
+            tts: exists && (prev.settings.tts ?? true),
           },
-        };
-        setCompany(newc2);
+        }));
       }
     };
 
@@ -121,22 +123,15 @@ export const AppContextProvider: React.FC = ({children}) => {
         const value = await AsyncStorage.getItem(storeName);
         if (value !== null) {
           var companyFromData = JSON.parse(value);
-          if (companyFromData.config === undefined) {
-            companyFromData.config = defaultConfig;
-          }
-          if (companyFromData.settings === undefined) {
-            companyFromData.settings = {tts: true};
-          }
-          await register(companyFromData);
+          setCompany(companyFromData);
           console.log('@company loaded from storage: ', value);
         } else {
-          const defaultCompany = createDefaultCompany();
-          await register(defaultCompany);
+          throw new Error('no company data');
         }
       } catch (error) {
-        const defaultCompany = createDefaultCompany();
-        await register(defaultCompany);
+        console.log('in loadData', error);
       }
+      await register();
     };
 
     // Use an immediately invoked async function to handle loadData and register
