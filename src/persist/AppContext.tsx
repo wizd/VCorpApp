@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LyraCrypto} from '../crypto/lyra-crypto';
 import axios from 'axios';
 import checkTtsEngine from '../utils/checkTtsEngine';
+import {Text} from 'react-native';
 
 // fuck various dotenv configs. let's just hardcode the default config here.
 const defaultConfig = {
@@ -81,7 +82,7 @@ interface AppContextProviderProps {
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   children,
 }) => {
-  const [company, setCompany] = useState<Company>(createDefaultCompany());
+  const [company, setCompany] = useState<Company | null>(null);
 
   useEffect(() => {
     const register = async () => {
@@ -104,45 +105,63 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
       const ret = await api.post('/register', data);
       console.log('register result: ', ret.data);
       if (ret.data.success) {
-        setCompany(prev => ({...prev, jwt: ret.data.data.token}));
+        setCompany(prev => ({...prev!, jwt: ret.data.data.token}));
 
         const exists = await checkTtsEngine();
         console.log('TTS engine: ', exists);
         setCompany(prev => ({
-          ...prev,
+          ...prev!,
           settings: {
-            ...prev.settings,
-            tts: exists && (prev.settings.tts ?? true),
+            ...prev!.settings,
+            tts: exists && (prev!.settings.tts ?? true),
           },
         }));
       }
     };
-
-    const loadData = async () => {
+    const loadCompanyData = async () => {
       try {
-        const value = await AsyncStorage.getItem(storeName);
-        if (value !== null) {
-          var companyFromData = JSON.parse(value);
-          setCompany(companyFromData);
-          console.log('@company loaded from storage: ', value);
+        const storedCompanyData = await AsyncStorage.getItem(storeName);
+        if (storedCompanyData) {
+          setCompany(JSON.parse(storedCompanyData));
         } else {
-          throw new Error('no company data');
+          setCompany(createDefaultCompany());
         }
       } catch (error) {
-        console.log('in loadData', error);
+        console.error('Error loading company data:', error);
+        setCompany(createDefaultCompany());
       }
       await register();
     };
 
-    // Use an immediately invoked async function to handle loadData and register
-    (async () => {
-      try {
-        await loadData();
-      } catch (error) {
-        console.log('in await loadData', error);
-      }
-    })();
+    loadCompanyData();
   }, []);
+
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     try {
+  //       const value = await AsyncStorage.getItem(storeName);
+  //       if (value !== null) {
+  //         var companyFromData = JSON.parse(value);
+  //         setCompany(companyFromData);
+  //         console.log('@company loaded from storage: ', value);
+  //       } else {
+  //         throw new Error('no company data');
+  //       }
+  //     } catch (error) {
+  //       console.log('in loadData', error);
+  //     }
+  //     await register();
+  //   };
+
+  //   // Use an immediately invoked async function to handle loadData and register
+  //   (async () => {
+  //     try {
+  //       await loadData();
+  //     } catch (error) {
+  //       console.log('in await loadData', error);
+  //     }
+  //   })();
+  // }, []);
 
   useEffect(() => {
     async function saveData() {
@@ -159,7 +178,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
   return (
     <AppContext.Provider value={{company, setCompany}}>
-      {children}
+      {company ? children : <Text>Loading data...</Text>}
     </AppContext.Provider>
   );
 };
