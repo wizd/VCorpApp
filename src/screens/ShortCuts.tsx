@@ -96,13 +96,13 @@ const ShortCuts = () => {
   }
 
   const beginReading = (txt: string) => {
-    if (tts) {
+    if (company.settings.tts && tts) {
       tts.emitTextGen(txt);
     }
   };
 
   const textFinished = () => {
-    if (tts) {
+    if (company.settings.tts && tts) {
       tts.emitTextEnd();
     }
   };

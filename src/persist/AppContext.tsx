@@ -85,39 +85,6 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   const [company, setCompany] = useState<Company | null>(null);
 
   useEffect(() => {
-    const register = async () => {
-      console.log('registering my company: ', company);
-      const baseUrl = company.config.API_URL + '/vc/v1/user';
-      const usr = {
-        accountId: LyraCrypto.GetAccountIdFromPrivateKey(company.privatekey),
-      };
-      const data = {
-        user: usr,
-        signature: LyraCrypto.Sign(JSON.stringify(usr), company.privatekey),
-      };
-      const api = axios.create({
-        baseURL: baseUrl,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        timeout: 15000,
-      });
-      const ret = await api.post('/register', data);
-      console.log('register result: ', ret.data);
-      if (ret.data.success) {
-        setCompany(prev => ({...prev!, jwt: ret.data.data.token}));
-
-        const exists = await checkTtsEngine();
-        console.log('TTS engine: ', exists);
-        setCompany(prev => ({
-          ...prev!,
-          settings: {
-            ...prev!.settings,
-            tts: exists && (prev!.settings.tts ?? true),
-          },
-        }));
-      }
-    };
     const loadCompanyData = async () => {
       try {
         const storedCompanyData = await AsyncStorage.getItem(storeName);
@@ -130,7 +97,6 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         console.error('Error loading company data:', error);
         setCompany(createDefaultCompany());
       }
-      await register();
     };
 
     loadCompanyData();
@@ -164,10 +130,48 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   // }, []);
 
   useEffect(() => {
+    const register = async () => {
+      console.log('registering my company: ', company);
+      const baseUrl = company.config.API_URL + '/vc/v1/user';
+      const usr = {
+        accountId: LyraCrypto.GetAccountIdFromPrivateKey(company.privatekey),
+      };
+      const data = {
+        user: usr,
+        signature: LyraCrypto.Sign(JSON.stringify(usr), company.privatekey),
+      };
+      const api = axios.create({
+        baseURL: baseUrl,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 15000,
+      });
+      const ret = await api.post('/register', data);
+      console.log('register result: ', ret.data);
+      if (ret.data.success) {
+        setCompany(prev => ({...prev!, jwt: ret.data.data.token}));
+
+        const exists = await checkTtsEngine();
+        console.log('TTS engine: ', exists);
+        setCompany(prev => ({
+          ...prev!,
+          settings: {
+            ...prev!.settings,
+            tts: exists && (prev!.settings.tts ?? true),
+          },
+        }));
+      }
+    };
+
     async function saveData() {
       try {
         console.log('Company updated and saved: ', company);
         await AsyncStorage.setItem(storeName, JSON.stringify(company));
+
+        if (!company?.jwt) {
+          await register();
+        }
       } catch (error) {
         console.log(error);
       }
