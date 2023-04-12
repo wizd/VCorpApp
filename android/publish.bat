@@ -1,1 +1,2 @@
+copy .\app\build\outputs\apk\release\vcorp_1.0-release.apk \\192.168.3.60\Sites\vcorp.ai\download\
 copy .\app\build\outputs\apk\release\vcorp_1.0-release.apk \\192.168.3.60\Sites\vcorp.ai\download\vcorp-release-latest.apk

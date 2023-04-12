@@ -56,7 +56,6 @@ interface Message {
 
 const ShortCuts = () => {
   const navigation = useNavigation();
-  const scrollViewRef = useRef<ScrollView>(null);
   const flatListRef = useRef<FlatList>(null);
 
   const [q, setQ] = useState<string>('');
@@ -81,10 +80,6 @@ const ShortCuts = () => {
     navigation.navigate('Employees' as never);
   };
 
-  if (!company) {
-    return null;
-  }
-
   let currentEmployee = company.employees.find(e => e.id == company.curid);
   if (!currentEmployee) {
     const newcompany = {
@@ -108,12 +103,8 @@ const ShortCuts = () => {
   };
 
   useEffect(() => {
-    // if (company) register(company);
-    // else console.log('company is null');
-    if (company.settings.tts) {
-      setTts(new TextToSpeech(10));
-    }
-    setShowArrow(company.settings?.guide ?? true);
+    setTts(new TextToSpeech(10));
+    setShowArrow(company.settings.guide);
   }, [company]);
 
   const ask = (question: string) => {
@@ -206,6 +197,7 @@ const ShortCuts = () => {
         isLoading: true,
         isAI: true,
         veid: currentEmployee.id,
+        bypass: currentEmployee.id.startsWith('D'),
       };
       setMessages(previousMessages => [...previousMessages, message]);
 
@@ -249,8 +241,10 @@ const ShortCuts = () => {
               const last = [...previousMessages];
 
               // Update the list
-              const mewLIst = last.map((m, i) => {
-                if (m._id === message._id) m.text = newContent;
+              const mewLIst = last.map((m, _i) => {
+                if (m._id === message._id) {
+                  m.text = newContent;
+                }
                 return m;
               });
               // Return the new array
@@ -265,7 +259,7 @@ const ShortCuts = () => {
               const last = [...previousMessages];
 
               // Update the list
-              const mewLIst = last.map((m, i) => {
+              const mewLIst = last.map((m, _i) => {
                 if (m._id === message._id) m.isLoading = false;
 
                 return m;
@@ -333,7 +327,7 @@ const ShortCuts = () => {
       const last = [...previousMessages];
 
       // Update the list
-      const mewLIst = last.map((m, i) => {
+      const mewLIst = last.map((m, _i) => {
         if (m._id === msgid) {
           m.isLoading = false;
           m.text = msgpadding;
@@ -354,14 +348,14 @@ const ShortCuts = () => {
   //   }
   // }, [messages]);
 
-  const handleContentSizeChange = () => {
-    console.log('handleContentSizeChange');
-    scrollViewRef.current?.scrollToEnd({animated: true});
-  };
-  const handleLayout = () => {
-    console.log('handleLayout');
-    scrollViewRef.current?.scrollToEnd({animated: true});
-  };
+  // const handleContentSizeChange = () => {
+  //   console.log('handleContentSizeChange');
+  //   scrollViewRef.current?.scrollToEnd({animated: true});
+  // };
+  // const handleLayout = () => {
+  //   console.log('handleLayout');
+  //   scrollViewRef.current?.scrollToEnd({animated: true});
+  // };
   const handleStop = (msg: Message) => {
     reqErrorHandler(msg._id, msg.text);
   };
