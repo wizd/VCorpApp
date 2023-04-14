@@ -1,13 +1,14 @@
 import React from 'react';
 import {View, Text, Linking, StyleSheet} from 'react-native';
 import {FontFamily, FontSize} from '../../../GlobalStyles';
+import ImageSaver from '../ImageSaver';
 
 interface ClickableLinksProps {
   content: string;
 }
 
 const findLinks = (text: string) => {
-  const urlPattern = /(https?:\/\/[^\s]+[^.,\s])/g;
+  const urlPattern = /(https?:\/\/[^\s]+[^.,)"'\s])/g;
   return text.split(urlPattern);
 };
 
@@ -23,14 +24,18 @@ const ClickableLinks: React.FC<ClickableLinksProps> = ({content}) => {
       <Text style={styles.helloChatgpthowAre}>
         {textParts.map((part, index) => {
           if (index % 2 === 1) {
-            return (
-              <Text
-                key={index}
-                style={styles.link}
-                onPress={() => handleLinkPress(part)}>
-                {part}
-              </Text>
-            );
+            if (part.endsWith('.png')) {
+              return <ImageSaver key={index} source={{uri: part}} />;
+            } else {
+              return (
+                <Text
+                  key={index}
+                  style={styles.link}
+                  onPress={() => handleLinkPress(part)}>
+                  {part}
+                </Text>
+              );
+            }
           } else {
             return part;
           }
