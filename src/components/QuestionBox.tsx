@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {useCallback, useRef, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useCallback, useEffect, useRef, useState} from 'react';
+
 import {
   TextInput,
   StyleSheet,
@@ -10,16 +10,12 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
-  Text,
 } from 'react-native';
 
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import AppContext, {Employee} from '../persist/AppContext';
 import InputWithClear from './tools/InputWithClear';
-import {Dimensions} from 'react-native';
-import ExpandableView from './tools/ExpandableView';
-import Text2ImgConfig from './Text2ImgConfig';
-import FileUploader from './tools/FileUploader';
+import {Dimensions, EmitterSubscription} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -43,6 +39,24 @@ const QuestionBox = ({
   const inputRef = useRef<TextInput>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentImage, setCurrentImage] = useState(defImg);
+
+  const [inputWidth, setInputWidth] = useState(deviceWidth - 110);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      const newDeviceWidth = Dimensions.get('window').width;
+      setInputWidth(newDeviceWidth - 110);
+    };
+
+    // 监听 Dimensions 变化
+    const dimensionsSubscription: EmitterSubscription =
+      Dimensions.addEventListener('change', updateWidth);
+
+    return () => {
+      // 在组件卸载时移除监听器
+      dimensionsSubscription.remove();
+    };
+  }, []);
 
   React.useEffect(() => {
     setQuestion(q);
@@ -88,10 +102,86 @@ const QuestionBox = ({
     console.log('handleVEList');
   };
 
+  const styles = StyleSheet.create({
+    kav: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'white',
+      flex: 1,
+      padding: 4,
+    },
+    ml10: {
+      marginLeft: Margin.m_md,
+    },
+    inputWrapper: {
+      borderWidth: 0,
+      padding: 4,
+      borderColor: 'gray',
+      borderRadius: 5,
+      width: inputWidth, // 设置宽度为父容器宽度
+    },
+    writeYourMessage: {
+      flex: 1,
+      backgroundColor: Color.white,
+      //padding: 4,
+      borderRadius: 4,
+      marginEnd: 0,
+      width: '100%',
+      minHeight: 36,
+      fontSize: 18,
+    },
+    vuesaxlinearmicrophone2Icon: {
+      flex: 0,
+      margin: 0,
+      padding: 0,
+    },
+    icon: {
+      flex: 0,
+      marginRight: 12,
+      alignSelf: 'center',
+      alignContent: 'center',
+    },
+    square: {
+      width: 24,
+      height: 24,
+      backgroundColor: 'red',
+    },
+    mt8: {
+      marginTop: Margin.m_sm,
+    },
+    inputcontainer: {
+      flex: 1,
+      borderRadius: Border.br_md,
+      backgroundColor: '#e0e0e0',
+      shadowColor: 'rgba(0, 0, 0, 0.13)',
+      shadowOffset: {
+        width: 5,
+        height: 4,
+      },
+      fontSize: 16,
+      shadowRadius: 20,
+      shadowOpacity: 1,
+      flexDirection: 'row',
+      borderWidth: 0,
+      minHeight: 50,
+      //alignSelf: 'flex-start',
+      alignItems: 'center',
+      verticalAlign: 'middle',
+    },
+    itemImage: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      margin: 8,
+    },
+  });
+
   return (
     <TouchableWithoutFeedback>
-      <ExpandableView expanded={<FileUploader />}>
-        <View style={[styles.inputcontainer, styles.mt8]}>
+      <View style={styles.kav}>
+        <View style={[styles.inputcontainer]}>
           <Pressable onPress={onAvatarPress}>
             <Image
               source={{
@@ -134,76 +224,9 @@ const QuestionBox = ({
             )}
           </TouchableHighlight>
         </View>
-      </ExpandableView>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
-
-const styles = StyleSheet.create({
-  ml10: {
-    marginLeft: Margin.m_md,
-  },
-  inputWrapper: {
-    borderWidth: 0,
-    padding: 4,
-    borderColor: 'gray',
-    borderRadius: 5,
-    width: deviceWidth - 125, // 设置宽度为父容器宽度
-  },
-  writeYourMessage: {
-    flex: 1,
-    backgroundColor: Color.white,
-    //padding: 4,
-    borderRadius: 4,
-    marginEnd: 0,
-    width: '100%',
-    minHeight: 36,
-    fontSize: 18,
-  },
-  vuesaxlinearmicrophone2Icon: {
-    flex: 0,
-    margin: 0,
-    padding: 0,
-  },
-  icon: {
-    flex: 0,
-    marginRight: 12,
-    alignSelf: 'center',
-    alignContent: 'center',
-  },
-  square: {
-    width: 24,
-    height: 24,
-    backgroundColor: 'red',
-  },
-  mt8: {
-    marginTop: Margin.m_sm,
-  },
-  inputcontainer: {
-    flex: 0,
-    borderRadius: Border.br_md,
-    backgroundColor: '#e0e0e0',
-    shadowColor: 'rgba(0, 0, 0, 0.13)',
-    shadowOffset: {
-      width: 5,
-      height: 4,
-    },
-    fontSize: 16,
-    shadowRadius: 20,
-    shadowOpacity: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 0,
-    minHeight: 50,
-    alignSelf: 'flex-start',
-    verticalAlign: 'middle',
-  },
-  itemImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    margin: 8,
-  },
-});
 
 export default QuestionBox;
