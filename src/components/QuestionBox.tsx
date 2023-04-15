@@ -10,6 +10,7 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 import {Margin, Border, Color, Padding} from '../../GlobalStyles';
@@ -180,7 +181,7 @@ const QuestionBox = ({
 
   return (
     <TouchableWithoutFeedback>
-      <View style={styles.kav}>
+      <KeyboardAvoidingView style={styles.kav}>
         <View style={[styles.inputcontainer]}>
           <Pressable onPress={onAvatarPress}>
             <Image
@@ -224,7 +225,7 @@ const QuestionBox = ({
             )}
           </TouchableHighlight>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
