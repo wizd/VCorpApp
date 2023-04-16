@@ -1,7 +1,6 @@
 import {EventEmitter} from 'events';
 import Tts from 'react-native-tts';
 import {franc} from 'franc';
-import langs from 'langs';
 
 const regex = /(`{1,3}|~{1,3}|```)([\s\S]*?)\1/gm;
 export class TextToSpeech {
@@ -30,6 +29,7 @@ export class TextToSpeech {
     this.isReading = false;
     this.isTextEnded = true;
     this.minimumTextLength = minimumTextLength;
+    this.isDetectNeeded = true;
 
     this.eventEmitter.addListener('textGen', (text: string) => {
       const detect = this.isTextEnded && !this.isReading;

@@ -35,25 +35,42 @@ const UserRegister = () => {
     if (ret.data.success) {
       setCompany(prev => ({...prev!, jwt: ret.data.data.token}));
 
-      const exists = await checkTtsEngine();
-      console.log('TTS engine: ', exists);
-      setCompany(prev => ({
-        ...prev!,
-        settings: {
-          ...prev!.settings,
-          tts: exists && (prev!.settings.tts ?? true),
-        },
-      }));
+      // const exists = await checkTtsEngine();
+      // console.log('TTS engine: ', exists);
+      // setCompany(prev => ({
+      //   ...prev!,
+      //   settings: {
+      //     ...prev!.settings,
+      //     tts: exists && (prev!.settings.tts ?? true),
+      //   },
+      // }));
     }
   };
 
   useEffect(() => {
-    auth();
+    const fetchData = async () => {
+      await auth();
+    };
+
+    // 添加一个小延迟
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 700); // 可以根据需要调整延迟时间
+
+    // 清除定时器
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
+  
 
   return (
     <View>
-      <Text style={[styles.online, styles.ml5]}>Online</Text>
+      {company.jwt ? (
+        <Text style={[styles.online, styles.ml5]}>Online</Text>
+      ) : (
+        <Text style={[styles.offline, styles.ml5]}>Offline</Text>
+      )}
     </View>
   );
 };
@@ -98,6 +115,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontFamily: FontFamily.nunitoMedium,
     color: Color.limegreen,
+    textAlign: 'left',
+  },
+  offline: {
+    fontSize: FontSize.size_lg,
+    fontWeight: '500',
+    fontFamily: FontFamily.nunitoMedium,
+    color: 'red',
     textAlign: 'left',
   },
   blueRobotMascotLogoIconDeParent: {

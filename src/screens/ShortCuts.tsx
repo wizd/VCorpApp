@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   View,
-  ScrollView,
   Platform,
   SafeAreaView,
   KeyboardAvoidingView,
@@ -24,8 +23,8 @@ import AIMessage from '../components/AIMessage';
 import UserMessage from '../components/UserMessage';
 
 import AppContext from '../persist/AppContext';
-import {TextToSpeech} from '../utils/TextToSpeech';
 import ArrowGuide from '../components/help/ArrowGuide';
+import { useTts } from '../utils/useTts';
 
 interface ChatCompletionChunk {
   id: string;
@@ -61,11 +60,12 @@ const ShortCuts = () => {
   const [q, setQ] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [tts, setTts] = useState<TextToSpeech | null>(null);
-
   const {company, setCompany} = useContext(AppContext);
-
   const [showArrow, setShowArrow] = useState(true);
+
+  const {beginReading, endReading} = useTts({
+    isEnabled: company.settings.tts,
+  });
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);
@@ -90,20 +90,7 @@ const ShortCuts = () => {
     currentEmployee = company.employees[0];
   }
 
-  const beginReading = (txt: string) => {
-    if (company.settings.tts && tts) {
-      tts.emitTextGen(txt);
-    }
-  };
-
-  const textFinished = () => {
-    if (company.settings.tts && tts) {
-      tts.emitTextEnd();
-    }
-  };
-
   useEffect(() => {
-    setTts(new TextToSpeech(10));
     setShowArrow(company.settings.guide);
   }, [company]);
 
