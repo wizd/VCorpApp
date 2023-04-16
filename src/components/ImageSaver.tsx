@@ -16,6 +16,7 @@ import AutoImage from './AutoImage';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import * as Progress from 'react-native-progress';
 import AppContext from '../persist/AppContext';
+import { useToast } from '../utils/useToast';
 
 async function hasAndroidPermission() {
   const permission =
@@ -47,9 +48,12 @@ interface SaveToCameraRollButtonProps {
 const SaveToCameraRollButton: React.FC<SaveToCameraRollButtonProps> = ({
   uri,
 }) => {
+  const showToast = useToast();
+
   const handleSaveToCameraRoll = async () => {
     console.log('saving image from uri: ', uri);
     await savePicture(uri);
+    showToast('图片已保存到相册');
   };
 
   return (

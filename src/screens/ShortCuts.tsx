@@ -24,7 +24,7 @@ import UserMessage from '../components/UserMessage';
 
 import AppContext from '../persist/AppContext';
 import ArrowGuide from '../components/help/ArrowGuide';
-import { useTts } from '../utils/useTts';
+import {useTts} from '../utils/useTts';
 
 interface ChatCompletionChunk {
   id: string;
@@ -240,7 +240,7 @@ const ShortCuts = () => {
           } else {
             es.close();
             console.log('done. the answer is: ', newContent);
-            textFinished();
+            endReading();
             setMessages(previousMessages => {
               // Get the last array
               const last = [...previousMessages];
@@ -282,8 +282,8 @@ const ShortCuts = () => {
     }
   };
 
-  // const textFinished = (id: number, text: string) => {
-  //   textFinished();
+  // const endReading = (id: number, text: string) => {
+  //   endReading();
   //   setMessages(previousMessages => {
   //     // Get the last array
   //     const last = [...previousMessages];
@@ -326,7 +326,7 @@ const ShortCuts = () => {
       // Return the new array
       return mewLIst;
     });
-    textFinished();
+    endReading();
   };
 
   // useEffect(() => {
