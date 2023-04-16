@@ -12,6 +12,7 @@ import EventSource, {
   EventSourceOptions,
 } from 'react-native-sse';
 import React, {useContext} from 'react';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {Margin, Color, Padding} from '../../GlobalStyles';
 import {useEffect, useRef, useState} from 'react';
@@ -56,6 +57,7 @@ interface Message {
 const ShortCuts = () => {
   const navigation = useNavigation();
   const flatListRef = useRef<FlatList>(null);
+  const insets = useSafeAreaInsets();
 
   const [q, setQ] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -346,6 +348,44 @@ const ShortCuts = () => {
   const handleStop = (msg: Message) => {
     reqErrorHandler(msg._id, msg.text);
   };
+
+  const styles = StyleSheet.create({
+    kav: {
+      paddingBottom: Platform.OS === 'ios' ? 58 + insets.bottom : 80,
+      flex: 1,
+    },
+    frameScrollViewContent: {
+      flexDirection: 'column',
+      paddingHorizontal: 0,
+      paddingVertical: 16,
+    },
+    mt8: {
+      marginTop: Margin.m_sm,
+    },
+    shortcutsChild: {
+      borderStyle: 'solid',
+      borderColor: '#ececec',
+      borderTopWidth: 1,
+      width: 376,
+      height: 1,
+    },
+    frameParent: {
+      alignSelf: 'stretch',
+      flex: 1,
+      paddingHorizontal: Padding.p_sm,
+    },
+    shortcuts: {
+      //borderRadius: Border.br_lg,
+      backgroundColor: Color.white,
+      width: '100%',
+      overflow: 'hidden',
+      //paddingHorizontal: Padding.p_sm,
+      //paddingVertical: Padding.p_xl,
+      //paddingBottom: Platform.OS === 'ios' ? 78 : 58,
+      flex: 1,
+    },
+  });
+
   //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -395,39 +435,5 @@ const ShortCuts = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  kav: {paddingBottom: Platform.OS === 'ios' ? 58 : 80, flex: 1},
-  frameScrollViewContent: {
-    flexDirection: 'column',
-    paddingHorizontal: 0,
-    paddingVertical: 16,
-  },
-  mt8: {
-    marginTop: Margin.m_sm,
-  },
-  shortcutsChild: {
-    borderStyle: 'solid',
-    borderColor: '#ececec',
-    borderTopWidth: 1,
-    width: 376,
-    height: 1,
-  },
-  frameParent: {
-    alignSelf: 'stretch',
-    flex: 1,
-    paddingHorizontal: Padding.p_sm,
-  },
-  shortcuts: {
-    //borderRadius: Border.br_lg,
-    backgroundColor: Color.white,
-    width: '100%',
-    overflow: 'hidden',
-    //paddingHorizontal: Padding.p_sm,
-    //paddingVertical: Padding.p_xl,
-    //paddingBottom: Platform.OS === 'ios' ? 78 : 58,
-    flex: 1,
-  },
-});
 
 export default ShortCuts;
