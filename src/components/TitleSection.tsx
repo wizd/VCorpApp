@@ -3,8 +3,8 @@ import {useContext} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {Margin, FontSize, FontFamily, Color, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
-import ToggleButton from './tools/ToggleButton';
 import GearButton from './tools/GearButton';
+import UserRegister from './UserRegister';
 
 const TitleSection = () => {
   const {company, setCompany} = useContext(AppContext);
@@ -52,7 +52,7 @@ const TitleSection = () => {
                   resizeMode="cover"
                   source={require('../../assets/ellipse-11.png')}
                 />
-                <Text style={[styles.online, styles.ml5]}>Online</Text>
+                <UserRegister />
               </View>
             </View>
           </View>
