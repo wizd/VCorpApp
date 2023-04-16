@@ -2,7 +2,6 @@ import {
   StyleSheet,
   View,
   Platform,
-  SafeAreaView,
   KeyboardAvoidingView,
   FlatList,
 } from 'react-native';
@@ -11,8 +10,8 @@ import EventSource, {
   EventSourceListener,
   EventSourceOptions,
 } from 'react-native-sse';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import React, {useContext} from 'react';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {Margin, Color, Padding} from '../../GlobalStyles';
 import {useEffect, useRef, useState} from 'react';
@@ -57,7 +56,6 @@ interface Message {
 const ShortCuts = () => {
   const navigation = useNavigation();
   const flatListRef = useRef<FlatList>(null);
-  const insets = useSafeAreaInsets();
 
   const [q, setQ] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -351,7 +349,7 @@ const ShortCuts = () => {
 
   const styles = StyleSheet.create({
     kav: {
-      paddingBottom: Platform.OS === 'ios' ? 58 + insets.bottom : 80,
+      paddingBottom: Platform.OS === 'ios' ? 58 : 80,
       flex: 1,
     },
     frameScrollViewContent: {
