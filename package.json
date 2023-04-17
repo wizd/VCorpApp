@@ -34,6 +34,7 @@
     "bs58": "^5.0.0",
     "events": "^3.3.0",
     "franc": "^6.1.0",
+    "jsonwebtoken": "^9.0.0",
     "jsrsasign": "^10.7.0",
     "langs": "^2.0.0",
     "module-alias": "^2.2.2",

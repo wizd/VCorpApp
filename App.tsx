@@ -36,7 +36,6 @@ import EmployeeMarket from './src/screens/EmployeeMarket';
 import {AppContextProvider} from './src/persist/AppContext';
 import Toast from 'react-native-toast-message';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {Settings} from 'react-native';
 import AppSettings from './src/screens/AppSettings';
 
 const App = () => {

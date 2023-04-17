@@ -305,9 +305,22 @@ const ShortCuts = () => {
   const reqErrorHandler = (msgid: number, txt: string) => {
     console.log('reqErrorHandler, msgid: ', msgid, ', txt: ', txt);
 
-    const msgpadding =
-      txt +
-      ' \n\n(我们的系统目前正处于快速迭代升级中，出现错误很可能意味着您当前的App版本已经过时，请尝试点击这个链接升级到最新版本：https://vcorp.ai/ )';
+    let msgpadding =
+    txt +
+    ' \n\n(我们的系统目前正处于快速迭代升级中，出现错误很可能意味着您当前的App版本已经过时，请尝试点击这个链接升级到最新版本：https://vcorp.ai/ )';
+
+    // check 401 error and retry
+    if (txt.indexOf('401') > 0) {
+      console.log('401 error, retrying...');     
+
+      const newcompany = {
+        ...company,
+        jwt: null,
+      };
+      setCompany(newcompany);
+
+      msgpadding = '正在重新登陆服务器。。。请稍侯再试一次。';
+    }
 
     setMessages(previousMessages => {
       // Get the last array
