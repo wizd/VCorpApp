@@ -18,6 +18,7 @@ import {Margin, Border, Color, Padding} from '../../GlobalStyles';
 import AppContext, {Employee} from '../persist/AppContext';
 import InputWithClear from './tools/InputWithClear';
 import {Dimensions, EmitterSubscription} from 'react-native';
+import { CustomKeyboardAvoidingView } from './CustomKeyboardAvoidingView';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -182,7 +183,7 @@ const QuestionBox = ({
 
   return (
     <TouchableWithoutFeedback>
-      <KeyboardAvoidingView
+      <CustomKeyboardAvoidingView
         style={styles.kav}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={[styles.inputcontainer]}>
@@ -228,7 +229,7 @@ const QuestionBox = ({
             )}
           </TouchableHighlight>
         </View>
-      </KeyboardAvoidingView>
+      </CustomKeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };

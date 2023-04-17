@@ -386,7 +386,7 @@ const ShortCuts = () => {
 
   //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
       <KeyboardAvoidingView
         style={styles.kav}
         behavior={Platform.OS === 'ios' ? 'height' : 'height'}>
@@ -430,7 +430,7 @@ const ShortCuts = () => {
         employee={currentEmployee}
         onAvatarPress={onQuestionBoxAvatarClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
