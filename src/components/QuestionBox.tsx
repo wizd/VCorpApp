@@ -113,6 +113,8 @@ const QuestionBox = ({
       bottom: 0,
       backgroundColor: 'white',
       flex: 1,
+      paddingLeft: 8,
+      paddingRight: 8,
     },
     ml10: {
       marginLeft: Margin.m_md,
@@ -181,7 +183,7 @@ const QuestionBox = ({
   });
 
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={handlePress}>
       <CustomKeyboardAvoidingView
         style={styles.kavq}>
         <View style={[styles.inputcontainer]}>
