@@ -106,14 +106,13 @@ const QuestionBox = ({
   };
 
   const styles = StyleSheet.create({
-    kav: {
+    kavq: {
       position: 'absolute',
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'white',
+      backgroundColor: 'green',
       flex: 1,
-      padding: 4,
     },
     ml10: {
       marginLeft: Margin.m_md,
@@ -184,8 +183,7 @@ const QuestionBox = ({
   return (
     <TouchableWithoutFeedback>
       <CustomKeyboardAvoidingView
-        style={styles.kav}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        style={styles.kavq}>
         <View style={[styles.inputcontainer]}>
           <Pressable onPress={onAvatarPress}>
             <Image
