@@ -1,4 +1,4 @@
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import AppContext from '../persist/AppContext';
 import {LyraCrypto} from '../crypto/lyra-crypto';
@@ -8,6 +8,7 @@ import {Color, FontFamily, FontSize, Margin, Padding} from '../../GlobalStyles';
 
 const UserRegister = () => {
   const {company, setCompany} = useContext(AppContext);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const auth = async () => {
     console.log('registering my company: ', company);
@@ -48,25 +49,16 @@ const UserRegister = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      await auth();
-    };
-
-    // 添加一个小延迟
-    const timer = setTimeout(() => {
-      fetchData();
-    }, 700); // 可以根据需要调整延迟时间
-
-    // 清除定时器
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
-  
+    if (company && !isInitialized) {
+      // auth when jwt is not set or expired.      
+      setIsInitialized(true);
+      auth();
+    }
+  }, [company]);
 
   return (
     <View>
-      {company.jwt ? (
+      {isInitialized ? (
         <Text style={[styles.online, styles.ml5]}>Online</Text>
       ) : (
         <Text style={[styles.offline, styles.ml5]}>Offline</Text>
