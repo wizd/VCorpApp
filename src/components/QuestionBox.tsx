@@ -10,15 +10,13 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 
-import {Margin, Border, Color, Padding} from '../../GlobalStyles';
+import {Margin, Border, Color} from '../../GlobalStyles';
 import AppContext, {Employee} from '../persist/AppContext';
 import InputWithClear from './tools/InputWithClear';
 import {Dimensions, EmitterSubscription} from 'react-native';
-import { CustomKeyboardAvoidingView } from './CustomKeyboardAvoidingView';
+import {CustomKeyboardAvoidingView} from './CustomKeyboardAvoidingView';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -34,7 +32,7 @@ const QuestionBox = ({
   employee,
   onAvatarPress,
 }: QuestionBoxType) => {
-  const {company, setCompany} = React.useContext(AppContext);
+  const {company} = React.useContext(AppContext);
 
   const defImg = require('../../assets/vuesaxboldsend.png');
   const [key, setKey] = useState(0);
@@ -95,14 +93,10 @@ const QuestionBox = ({
     } else {
       setCurrentImage(defImg);
     }
-  }, [isProcessing]);
+  }, [defImg, isProcessing]);
 
   const handlePress = () => {
     Keyboard.dismiss();
-  };
-
-  const handleVEList = () => {
-    console.log('handleVEList');
   };
 
   const styles = StyleSheet.create({
@@ -119,6 +113,9 @@ const QuestionBox = ({
     ml10: {
       marginLeft: Margin.m_md,
     },
+    mr10: {
+      marginRight: Margin.m_md,
+    },
     inputWrapper: {
       borderWidth: 0,
       padding: 4,
@@ -132,13 +129,13 @@ const QuestionBox = ({
       //padding: 4,
       borderRadius: 4,
       marginEnd: 0,
-      width: '100%',
+      //width: '100%',
       minHeight: 36,
       fontSize: 18,
     },
     vuesaxlinearmicrophone2Icon: {
-      flex: 0,
-      margin: 0,
+      flex: 1,
+      margin: 4,
       padding: 0,
     },
     icon: {
@@ -184,15 +181,14 @@ const QuestionBox = ({
 
   return (
     <TouchableWithoutFeedback onPress={handlePress}>
-      <CustomKeyboardAvoidingView
-        style={styles.kavq}>
+      <CustomKeyboardAvoidingView style={styles.kavq}>
         <View style={[styles.inputcontainer]}>
           <Pressable onPress={onAvatarPress}>
             <Image
               source={{
                 uri: employee.avatar.startsWith('http')
                   ? employee.avatar
-                  : company.config.API_URL +
+                  : company!.config.API_URL +
                     '/assets/avatar/' +
                     employee.avatar,
               }}
@@ -214,7 +210,7 @@ const QuestionBox = ({
           </View>
 
           <TouchableHighlight
-            style={[styles.vuesaxlinearmicrophone2Icon, styles.ml10]}
+            style={[styles.vuesaxlinearmicrophone2Icon]}
             underlayColor="#fff"
             activeOpacity={0.2}
             onPress={handleSubmit}>

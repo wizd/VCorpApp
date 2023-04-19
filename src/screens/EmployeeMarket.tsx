@@ -14,6 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 import EmployeeListItem from '../components/EmployeeListItem';
 import AppContext, {Employee} from '../persist/AppContext';
 import CustomButton from '../components/tools/CustomButton';
+import FilterRoleModal from '../components/FilterRoleModal';
 
 // Define the props of the main component that renders the page
 type Props = {};
@@ -23,8 +24,10 @@ const EmployeeMarket = (props: Props) => {
   const navigation = useNavigation();
   const {company, setCompany} = useContext(AppContext);
 
+  const [datafull, setDataFull] = useState<Employee[]>([]);
   const [data, setData] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const url = company.config.API_URL + '/vc/v1/ve/list';
@@ -38,6 +41,7 @@ const EmployeeMarket = (props: Props) => {
     })
       .then(response => response.json())
       .then(json => {
+        setDataFull(json);
         setData(json);
         setIsLoading(false);
       })
@@ -46,6 +50,26 @@ const EmployeeMarket = (props: Props) => {
 
   const onEdit = (veid: string) => {
     console.log('edit ' + veid);
+  };
+
+  const onFilter = (
+    hired: boolean | null,
+    category: string | null,
+    isFree: boolean | null,
+  ) => {
+    console.log('filter ');
+    let result = datafull;
+    if (hired != null) {
+      if (hired) {
+        result = datafull.filter(e => company.employees.find(ee => ee.id === e.id));
+      } else {
+        result = datafull.filter(e => !company.employees.find(ee => ee.id === e.id));
+      }
+    }
+    if (category != null) {
+      result = result.filter(e => e.id.startsWith(category));
+    }
+    setData(result);
   };
 
   const veSelected = (veid: string) => {
@@ -84,9 +108,9 @@ const EmployeeMarket = (props: Props) => {
           text: '虚拟员工市场',
           style: {color: '#fff', fontSize: 20},
         }}
-        // rightComponent={
-        //   <Button onPress={() => alert('This is a button!')} title="" />
-        // }
+        rightComponent={
+          <CustomButton onPress={() => setModalVisible(true)} title="过滤" />
+        }
         backgroundColor="#3D6DCC"
       />
       <View style={styles.outerContainer}>
@@ -108,6 +132,11 @@ const EmployeeMarket = (props: Props) => {
           />
         )}
       </View>
+      <FilterRoleModal
+        isVisible={isModalVisible}
+        onFilter={onFilter}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };
