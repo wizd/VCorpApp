@@ -362,7 +362,7 @@ const ShortCuts = () => {
 
   const styles = StyleSheet.create({
     kav: {
-      paddingBottom: Platform.OS === 'ios' ? 58 : 80,
+      paddingBottom: Platform.OS === 'ios' ? 80 : 80,
       flex: 1,
     },
     frameScrollViewContent: {
