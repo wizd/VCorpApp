@@ -1,7 +1,7 @@
 // FilterRoleModal.tsx
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Modal, StyleSheet} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import {View, Text, Modal, StyleSheet} from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 import CustomButton from './tools/CustomButton';
 
 interface FilterRoleModalProps {
@@ -20,8 +20,13 @@ const FilterRoleModal: React.FC<FilterRoleModalProps> = ({
   onFilter,
 }) => {
   const [hired, setHired] = useState<boolean | null>(null);
+  const [hiredopen, setHiredOpen] = useState(false);
+
   const [category, setCategory] = useState<string | null>(null);
+  const [categoryopen, setCategoryOpen] = useState(false);
+
   const [isFree, setIsFree] = useState<boolean | null>(null);
+  const [isFreeopen, setIsFreeOpen] = useState(false);
 
   const handleFilter = () => {
     onFilter(hired, category, isFree);
@@ -42,36 +47,51 @@ const FilterRoleModal: React.FC<FilterRoleModalProps> = ({
 
           <View style={styles.content}>
             <Text style={styles.label}>是否已被雇佣：</Text>
-            <Picker
-              selectedValue={hired}
-              style={styles.picker}
-              onValueChange={itemValue => setHired(itemValue)}>
-              <Picker.Item label="全部" value={null} />
-              <Picker.Item label="已被雇佣" value={true} />
-              <Picker.Item label="未被雇佣" value={false} />
-            </Picker>
+            <View style={{zIndex: 107}}>
+              <DropDownPicker
+                items={[
+                  {label: '全部', value: undefined},
+                  {label: '已被雇佣', value: true},
+                  {label: '未被雇佣', value: false},
+                ]}
+                open={hiredopen}
+                setOpen={setHiredOpen}
+                value={hired}
+                setValue={setHired}
+              />
+            </View>
 
             <Text style={styles.label}>类别：</Text>
-            <Picker
-              selectedValue={category}
-              style={styles.picker}
-              onValueChange={itemValue => setCategory(itemValue)}>
-              <Picker.Item label="全部" value={null} />
-              <Picker.Item label="文字类助理" value="A" />
-              <Picker.Item label="画图类助理" value="D" />
-              <Picker.Item label="图文混合类助理" value="M" />
-              <Picker.Item label="高级定制助理" value="C" />
-            </Picker>
+            <View style={{zIndex: 103}}>
+              <DropDownPicker
+                items={[
+                  {label: '全部', value: undefined},
+                  {label: '文字类助理', value: 'A'},
+                  {label: '画图类助理', value: 'D'},
+                  {label: '图文混合类助理', value: 'M'},
+                  {label: '高级定制助理', value: 'C'},
+                ]}
+                open={categoryopen}
+                setOpen={setCategoryOpen}
+                value={category}
+                setValue={setCategory}
+              />
+            </View>
 
             <Text style={styles.label}>免费还是收费：</Text>
-            <Picker
-              selectedValue={isFree}
-              style={styles.picker}
-              onValueChange={itemValue => setIsFree(itemValue)}>
-              <Picker.Item label="全部" value={null} />
-              <Picker.Item label="免费" value={true} />
-              <Picker.Item label="收费" value={false} />
-            </Picker>
+            <View style={{zIndex: 102}}>
+              <DropDownPicker
+                items={[
+                  {label: '全部', value: undefined},
+                  {label: '免费', value: true},
+                  {label: '收费', value: false},
+                ]}
+                open={isFreeopen}
+                setOpen={setIsFreeOpen}
+                value={isFree}
+                setValue={setIsFree}
+              />
+            </View>
 
             <View style={styles.buttonsContainer}>
               <CustomButton title="取消" onPress={onClose} />
@@ -120,10 +140,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 10,
-  },
-  picker: {
-    height: 50,
-    width: '100%',
   },
   buttonsContainer: {
     flexDirection: 'row',
