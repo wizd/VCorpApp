@@ -306,12 +306,12 @@ const ShortCuts = () => {
     console.log('reqErrorHandler, msgid: ', msgid, ', txt: ', txt);
 
     let msgpadding =
-    txt +
-    ' \n\n(我们的系统目前正处于快速迭代升级中，出现错误很可能意味着您当前的App版本已经过时，请尝试点击这个链接升级到最新版本：https://vcorp.ai/ )';
+      txt +
+      ' \n\n(我们的系统目前正处于快速迭代升级中，出现错误很可能意味着您当前的App版本已经过时，请尝试点击这个链接升级到最新版本：https://vcorp.ai/ )';
 
     // check 401 error and retry
     if (txt.indexOf('401') > 0) {
-      console.log('401 error, retrying...');     
+      console.log('401 error, retrying...');
 
       const newcompany = {
         ...company,

@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import AppContext from '../persist/AppContext';
+import AppContext, {Company} from '../persist/AppContext';
 import {LyraCrypto} from '../crypto/lyra-crypto';
 import axios from 'axios';
 import React from 'react';
@@ -37,7 +37,12 @@ const UserRegister = () => {
       const ret = await api.post('/register', data);
       console.log('register result: ', ret.data);
       if (ret.data.success) {
-        setCompany(prev => ({...prev!, jwt: ret.data.data.token}));
+        setCompany((prevCompany: Company) => {
+          return {
+            ...prevCompany,
+            jwt: ret.data.data.token as string,
+          };
+        });
 
         showToast('成功登录对话服务器，可以开启 AI 奇幻旅程了！');
         // const exists = await checkTtsEngine();

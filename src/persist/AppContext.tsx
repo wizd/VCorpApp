@@ -1,8 +1,6 @@
-import React, {createContext, useEffect, useState, useRef} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LyraCrypto} from '../crypto/lyra-crypto';
-import axios from 'axios';
-import checkTtsEngine from '../utils/checkTtsEngine';
 import {Text} from 'react-native';
 
 // fuck various dotenv configs. let's just hardcode the default config here.
@@ -43,7 +41,7 @@ export interface Company {
 
 interface AppContextType {
   company: Company | null;
-  setCompany: (company: Company) => void;
+  setCompany: (updateFunction: (company: Company | null) => Company) => void;
 }
 
 const AppContext = createContext<AppContextType>({
@@ -102,42 +100,11 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     loadCompanyData();
   }, []);
 
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     try {
-  //       const value = await AsyncStorage.getItem(storeName);
-  //       if (value !== null) {
-  //         var companyFromData = JSON.parse(value);
-  //         setCompany(companyFromData);
-  //         console.log('@company loaded from storage: ', value);
-  //       } else {
-  //         throw new Error('no company data');
-  //       }
-  //     } catch (error) {
-  //       console.log('in loadData', error);
-  //     }
-  //     await register();
-  //   };
-
-  //   // Use an immediately invoked async function to handle loadData and register
-  //   (async () => {
-  //     try {
-  //       await loadData();
-  //     } catch (error) {
-  //       console.log('in await loadData', error);
-  //     }
-  //   })();
-  // }, []);
-
   useEffect(() => {
     async function saveData() {
       try {
         console.log('Company updated and saved: ', company);
         await AsyncStorage.setItem(storeName, JSON.stringify(company));
-
-        // if (!company?.jwt) {
-        //   await register();
-        // }
       } catch (error) {
         console.log(error);
       }
