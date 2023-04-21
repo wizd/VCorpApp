@@ -307,7 +307,7 @@ const ShortCuts = () => {
 
     let msgpadding =
       txt +
-      ' \n\n(我们的系统目前正处于快速迭代升级中，出现错误很可能意味着您当前的App版本已经过时，请尝试点击这个链接升级到最新版本：https://vcorp.ai/ )';
+      ' \n\n（出现网络错误。如果您安装App的时间超过了三天，请尝试点击这个链接升级到最新版本：https://vcorp.ai/ )';
 
     // check 401 error and retry
     if (txt.indexOf('401') > 0) {
@@ -319,7 +319,7 @@ const ShortCuts = () => {
       };
       setCompany(newcompany);
 
-      msgpadding = '正在重新登陆服务器。。。请稍侯再试一次。';
+      msgpadding = '已尝试重新登陆服务器。。。请再试一次。';
     }
 
     setMessages(previousMessages => {

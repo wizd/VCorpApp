@@ -2,12 +2,13 @@ import React, {createContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LyraCrypto} from '../crypto/lyra-crypto';
 import {Text} from 'react-native';
+import axios from 'axios';
 
 // fuck various dotenv configs. let's just hardcode the default config here.
 const defaultConfig = {
   // for local dev: remove app, set this to http://10.0.2.2:3001, run just once.
   // default set to 'https://smart.lyra.live'
-  API_URL: 'https://smart.lyra.live',
+  API_URL: 'https://mars.vcorp.ai',
   SECRET_KEY: '5f7b9b9b-3b5c-4b9c-9c9b-5f7b9b9b3b5c',
 };
 
@@ -49,7 +50,36 @@ const AppContext = createContext<AppContextType>({
   setCompany: () => {},
 });
 
-const createDefaultCompany = (): Company => {
+const registerUser = async (apiUrl: URL, privatekey: string) => {
+  const baseUrl = apiUrl + '/vc/v1/user';
+  const usr = {
+    accountId: LyraCrypto.GetAccountIdFromPrivateKey(privatekey),
+  };
+  const data = {
+    user: usr,
+    signature: LyraCrypto.Sign(JSON.stringify(usr), privatekey),
+  };
+  const api = axios.create({
+    baseURL: baseUrl,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    timeout: 15000,
+  });
+  try {
+    const ret = await api.post('/register', data);
+    console.log('register result: ', ret.data);
+    if (ret.data.success) {
+      return ret.data.data.token as string;
+    } else {
+      return '';
+    }
+  } catch (error) {
+    return '';
+  }
+};
+
+const createDefaultCompany = async (): Promise<Company> => {
   // create a default company, with 1 employee
   const wallet = LyraCrypto.GenerateWallet();
   console.log('wallet address: ', wallet.accountId);
@@ -59,7 +89,7 @@ const createDefaultCompany = (): Company => {
     privatekey: wallet.privateKey,
     name: 'Default Company',
     curid: 'A0001',
-    jwt: '',
+    jwt: await registerUser(new URL(defaultConfig.API_URL), wallet.privateKey),
     employees: [
       {
         id: 'A0001',
@@ -89,11 +119,11 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         if (storedCompanyData) {
           setCompany(JSON.parse(storedCompanyData));
         } else {
-          setCompany(createDefaultCompany());
+          setCompany(await createDefaultCompany());
         }
       } catch (error) {
         console.error('Error loading company data:', error);
-        setCompany(createDefaultCompany());
+        setCompany(await createDefaultCompany());
       }
     };
 
