@@ -161,7 +161,7 @@ const ShortCuts = () => {
         version: 4,
         veid: currentEmployee.id,
         vename: currentEmployee.name,
-        messages: history,
+        messages: history
       };
 
       const options: EventSourceOptions = {
@@ -307,7 +307,7 @@ const ShortCuts = () => {
 
     let msgpadding =
       txt +
-      ' \n\n（出现网络错误。如果您安装App的时间超过了三天，请尝试点击这个链接升级到最新版本：https://vcorp.ai/ )';
+      ' \n\n（非常抱歉，出现了网络错误。请稍候重试一次。或者请尝试点击这个链接升级 App 到最新版本：https://vcorp.ai/ )';
 
     // check 401 error and retry
     if (txt.indexOf('401') > 0) {
@@ -319,7 +319,7 @@ const ShortCuts = () => {
       };
       setCompany(newcompany);
 
-      msgpadding = '已尝试重新登陆服务器。。。请再试一次。';
+      msgpadding = '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';
     }
 
     setMessages(previousMessages => {
@@ -357,7 +357,21 @@ const ShortCuts = () => {
   //   scrollViewRef.current?.scrollToEnd({animated: true});
   // };
   const handleStop = (msg: Message) => {
-    reqErrorHandler(msg._id, msg.text);
+    setMessages(previousMessages => {
+      // Get the last array
+      const last = [...previousMessages];
+
+      // Update the list
+      const mewLIst = last.map((m, _i) => {
+        if (m._id === msg._id) {
+          m.isLoading = false;
+        }
+
+        return m;
+      });
+      // Return the new array
+      return mewLIst;
+    });
   };
 
   const styles = StyleSheet.create({

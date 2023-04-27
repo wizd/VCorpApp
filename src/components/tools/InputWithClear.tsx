@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   input: {
     //flex: 1,
     //padding: 10,
+    maxHeight: 200,
   },
   clearButton: {
     paddingRight: 10,
