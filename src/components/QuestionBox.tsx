@@ -178,6 +178,12 @@ const QuestionBox = ({
       borderRadius: 20,
       margin: 8,
     },
+    submitImage: {
+      width: 30,
+      height: 30,
+      margin: 8,
+      paddingRight: 8,
+    },
   });
 
   return (
@@ -210,21 +216,15 @@ const QuestionBox = ({
             />
           </View>
 
-          <TouchableHighlight
-            style={[styles.vuesaxlinearmicrophone2Icon]}
-            underlayColor="#fff"
-            activeOpacity={0.2}
-            onPress={handleSubmit}>
-            {isProcessing ? (
-              <View style={styles.square} />
-            ) : (
-              <Image
-                style={styles.icon}
-                resizeMode="cover"
-                source={currentImage}
-              />
-            )}
-          </TouchableHighlight>
+          <Pressable onPress={handleSubmit}>
+            <Image
+              source={{
+                uri: currentImage,
+              }}
+              style={styles.submitImage}
+            />
+          </Pressable>
+
         </View>
       </CustomKeyboardAvoidingView>
     </TouchableWithoutFeedback>
