@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Dialog} from '@rneui/themed';
 
 interface GearMenuProps {
@@ -25,7 +25,7 @@ const GearMenu: React.FC<GearMenuProps> = ({
   return (
     <View>
       <TouchableOpacity onPress={showDialog} style={styles.iconContainer}>
-        <Icon name="gear" size={24} />
+        <FontAwesomeIcon icon="fa-solid fa-gear" size={24} color="black" />
       </TouchableOpacity>
       <Dialog isVisible={dialogVisible} onBackdropPress={hideDialog}>
         <Dialog.Title title="操作" />

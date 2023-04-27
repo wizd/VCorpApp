@@ -1,6 +1,6 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {Pressable} from 'react-native';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {useNavigation} from '@react-navigation/native';
 
 interface GearButtonProps {
@@ -15,9 +15,9 @@ const GearButton: React.FC<GearButtonProps> = ({navigateTo}) => {
   };
 
   return (
-    <TouchableOpacity onPress={handlePress}>
-      <FontAwesome name="cog" size={24} color="black" />
-    </TouchableOpacity>
+    <Pressable onPress={handlePress}>
+      <FontAwesomeIcon icon="fa-solid fa-gear" size={24} color="black" />
+    </Pressable>
   );
 };
 

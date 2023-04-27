@@ -1,45 +1,22 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-const Stack = createNativeStackNavigator();
-import React, {useEffect, useState} from 'react';
-/*import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen'; */
+import React, { useEffect, useState } from 'react';
 import RNLocalize from 'react-native-localize';
 import translations from './src/i18n/translations';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import Onboarding from './src/screens/Onboarding';
 import ChatPage from './src/screens/ChatPage';
 import ShortCuts from './src/screens/ShortCuts';
 import EmployeeList from './src/screens/EmployeeList';
 import EmployeeMarket from './src/screens/EmployeeMarket';
-import {AppContextProvider} from './src/persist/AppContext';
+import { AppContextProvider } from './src/persist/AppContext';
 import Toast from 'react-native-toast-message';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
 
+const Stack = createStackNavigator();
+
 const App = () => {
-  const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
+  const [hideSplashScreen, _setHideSplashScreen] = useState(true);
   const [appName, setAppName] = useState('VCorp');
 
   useEffect(() => {
@@ -48,6 +25,7 @@ const App = () => {
       setAppName(translations[deviceLanguage].appName);
     }
   }, []);
+
   return (
     <>
       <AppContextProvider>
@@ -56,36 +34,36 @@ const App = () => {
             {hideSplashScreen ? (
               <Stack.Navigator
                 initialRouteName="Onboarding"
-                screenOptions={{headerShown: false}}>
+                screenOptions={{ headerShown: false }}>
                 <Stack.Screen
                   name="Onboarding"
                   component={Onboarding}
-                  options={{headerShown: false}}
+                  options={{ headerShown: false }}
                 />
                 <Stack.Screen
                   name="ChatPage"
                   component={ChatPage}
-                  options={{headerShown: false}}
+                  options={{ headerShown: false }}
                 />
                 <Stack.Screen
                   name="ShortCuts"
                   component={ShortCuts}
-                  options={{headerShown: false}}
+                  options={{ headerShown: false }}
                 />
                 <Stack.Screen
                   name="Employees"
                   component={EmployeeList}
-                  options={{headerShown: false}}
+                  options={{ headerShown: false }}
                 />
                 <Stack.Screen
                   name="EmployeeMarket"
                   component={EmployeeMarket}
-                  options={{headerShown: false}}
+                  options={{ headerShown: false }}
                 />
                 <Stack.Screen
                   name="Settings"
                   component={AppSettings}
-                  options={{headerShown: false}}
+                  options={{ headerShown: false }}
                 />
               </Stack.Navigator>
             ) : null}
@@ -96,103 +74,5 @@ const App = () => {
     </>
   );
 };
-export default App;
-
-/*type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  // useEffect(() => {
-  //   const wallet = LyraCrypto.GenerateWallet();
-  //   console.log('your private key is: ', wallet.privateKey);
-  // }, []);
-
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
-*/

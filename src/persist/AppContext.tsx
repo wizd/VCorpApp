@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LyraCrypto} from '../crypto/lyra-crypto';
 import {Text} from 'react-native';
 import axios from 'axios';
+import { Platform } from 'react-native';
 
 // fuck various dotenv configs. let's just hardcode the default config here.
 const defaultConfig = {
@@ -85,7 +86,7 @@ const createDefaultCompany = async (): Promise<Company> => {
   console.log('wallet address: ', wallet.accountId);
   const defaultCompany: Company = {
     config: defaultConfig,
-    settings: {tts: true, guide: true, autoSaveImage: false},
+    settings: {tts: !Platform.isWeb, guide: true, autoSaveImage: false},
     privatekey: wallet.privateKey,
     name: 'Default Company',
     curid: 'A0001',
