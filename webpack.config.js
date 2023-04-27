@@ -28,15 +28,14 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: 'static/media/[name].[hash:8].[ext]',
-            },
+        test: /\.(gif|jpe?g|png|svg)$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            name: '[name].[ext]',
+            esModule: false,
           },
-        ],
+        },
       },
     ],
   },

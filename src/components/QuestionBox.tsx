@@ -137,6 +137,7 @@ const QuestionBox = ({
       flex: 1,
       margin: 4,
       padding: 0,
+      backgroundColor: 'red',
     },
     icon: {
       flex: 0,
