@@ -1,35 +1,43 @@
+import {TouchableHighlightBase} from 'react-native';
 import {io, Socket} from 'socket.io-client';
 
 // 定义聊天消息类型
-interface ChatMessage {
+export interface ChatMessage {
   sender: string;
   content: string;
   timestamp: string;
 }
 
 // 定义异步回调类型
-type ChatMessageCallback = (message: ChatMessage) => Promise<void>;
+export type MessageCallback = (message: ChatMessage) => void | Promise<void>;
 
 // 聊天客户端类
 class ChatClient {
   private socket: Socket;
-  private messageCallback?: ChatMessageCallback;
+  private messageSubscribers: Set<MessageCallback> = new Set();
 
-  constructor(
-    serverUrl: string,
-    messageCallback?: ChatMessageCallback, // 添加回调参数
-  ) {
+  onNewMessage(callback: MessageCallback): void {
+    this.messageSubscribers.add(callback);
+  }
+
+  offNewMessage(callback: MessageCallback): void {
+    this.messageSubscribers.delete(callback);
+  }
+
+  constructor(serverUrl: string) {
     this.socket = io(serverUrl);
-    this.messageCallback = messageCallback;
 
     // 客户端监听服务器发来的聊天消息
     this.socket.on('chatMessage', async (message: ChatMessage) => {
       console.log('Received chat message from server:', message);
       // 调用回调函数（如果已提供）
-      if (this.messageCallback) {
-        await this.messageCallback(message);
+      for (const subscriber of this.messageSubscribers) {
+        subscriber(message);
       }
     });
+
+    this.socket.connect();
+    console.log('Connected to chat server: ', serverUrl);
   }
 
   // 向服务器发送聊天消息

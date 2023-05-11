@@ -5,27 +5,7 @@
  * @format
  */
 const Stack = createNativeStackNavigator();
-import React, {useEffect, useState} from 'react';
-/*import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen'; */
-import RNLocalize from 'react-native-localize';
-import translations from './src/i18n/translations';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Onboarding from './src/screens/Onboarding';
@@ -37,61 +17,64 @@ import {AppContextProvider} from './src/persist/AppContext';
 import Toast from 'react-native-toast-message';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
+import {ChatProvider} from './src/persist/ChatContext';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
-  const [appName, setAppName] = useState('VCorp');
+  //const [appName, setAppName] = useState('VCorp');
 
   useEffect(() => {
-    const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
-    if (translations.hasOwnProperty(deviceLanguage)) {
-      setAppName(translations[deviceLanguage].appName);
-    }
+    //const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+    // if (translations.hasOwnProperty(deviceLanguage)) {
+    //   setAppName(translations[deviceLanguage].appName);
+    // }
   }, []);
   return (
     <>
       <AppContextProvider>
-        <SafeAreaProvider>
-          <NavigationContainer>
-            {hideSplashScreen ? (
-              <Stack.Navigator
-                initialRouteName="Onboarding"
-                screenOptions={{headerShown: false}}>
-                <Stack.Screen
-                  name="Onboarding"
-                  component={Onboarding}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="ChatPage"
-                  component={ChatPage}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="ShortCuts"
-                  component={ShortCuts}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="Employees"
-                  component={EmployeeList}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="EmployeeMarket"
-                  component={EmployeeMarket}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="Settings"
-                  component={AppSettings}
-                  options={{headerShown: false}}
-                />
-              </Stack.Navigator>
-            ) : null}
-          </NavigationContainer>
-          <Toast />
-        </SafeAreaProvider>
+        <ChatProvider>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              {hideSplashScreen ? (
+                <Stack.Navigator
+                  initialRouteName="Onboarding"
+                  screenOptions={{headerShown: false}}>
+                  <Stack.Screen
+                    name="Onboarding"
+                    component={Onboarding}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="ChatPage"
+                    component={ChatPage}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="ShortCuts"
+                    component={ShortCuts}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Employees"
+                    component={EmployeeList}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="EmployeeMarket"
+                    component={EmployeeMarket}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Settings"
+                    component={AppSettings}
+                    options={{headerShown: false}}
+                  />
+                </Stack.Navigator>
+              ) : null}
+            </NavigationContainer>
+            <Toast />
+          </SafeAreaProvider>
+        </ChatProvider>
       </AppContextProvider>
     </>
   );

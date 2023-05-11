@@ -10,7 +10,6 @@ import EventSource, {
   EventSourceListener,
   EventSourceOptions,
 } from 'react-native-sse';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import React, {useContext} from 'react';
 
 import {Margin, Color, Padding} from '../../GlobalStyles';
@@ -25,6 +24,8 @@ import UserMessage from '../components/UserMessage';
 import AppContext from '../persist/AppContext';
 import ArrowGuide from '../components/help/ArrowGuide';
 import {useTts} from '../utils/useTts';
+import {ChatContext, useChat} from '../persist/ChatContext';
+import {MessageCallback} from '../comm/chatClient';
 
 interface ChatCompletionChunk {
   id: string;
@@ -67,6 +68,20 @@ const ShortCuts = () => {
     isEnabled: company.settings.tts,
   });
 
+  const {sendMessage, onNewMessage, offNewMessage} = useChat();
+
+  useEffect(() => {
+    const handleNewMessage: MessageCallback = message => {
+      // 处理新消息，例如更新状态或显示通知
+      console.log('New message received:', message);
+    };
+
+    onNewMessage(handleNewMessage);
+    return () => {
+      offNewMessage(handleNewMessage);
+    };
+  }, [onNewMessage, offNewMessage]);
+
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);
     const newcompany = {
@@ -97,6 +112,9 @@ const ShortCuts = () => {
   const ask = (question: string) => {
     setQ('');
     let newContent = '';
+
+    // sendMessage({sender: 'aaa', content: question, timestamp: 'time'});
+    // return;
 
     //Add the last message to the list
     const userMsg = {
@@ -161,7 +179,7 @@ const ShortCuts = () => {
         version: 4,
         veid: currentEmployee.id,
         vename: currentEmployee.name,
-        messages: history
+        messages: history,
       };
 
       const options: EventSourceOptions = {
@@ -319,7 +337,8 @@ const ShortCuts = () => {
       };
       setCompany(newcompany);
 
-      msgpadding = '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';
+      msgpadding =
+        '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';
     }
 
     setMessages(previousMessages => {
