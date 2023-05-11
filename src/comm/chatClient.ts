@@ -15,6 +15,7 @@ export type MessageCallback = (message: ChatMessage) => void | Promise<void>;
 class ChatClient {
   private socket: Socket;
   private messageSubscribers: Set<MessageCallback> = new Set();
+  private autoReconnectInterval: number = 5000; // 设置自动重连时间间隔，单位：毫秒
 
   onNewMessage(callback: MessageCallback): void {
     this.messageSubscribers.add(callback);
@@ -36,8 +37,17 @@ class ChatClient {
       }
     });
 
-    this.socket.connect();
-    console.log('Connected to chat server: ', serverUrl);
+    // 监听断线事件
+    this.socket.on('disconnect', () => {
+      console.log('Disconnected from chat server. Attempting to reconnect...');
+      setTimeout(() => {
+        this.socket.connect();
+      }, this.autoReconnectInterval);
+    });
+
+    this.socket.on('connect', () => {
+      console.log('Connected to chat server: ', serverUrl);
+    });
   }
 
   // 向服务器发送聊天消息
