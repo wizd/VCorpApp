@@ -113,15 +113,15 @@ const ShortCuts = () => {
     setQ('');
     let newContent = '';
 
-    sendMessage({
-      id: '123',
-      sid: '123',
-      ts: Date.now(),
-      t: 'text',
-      c: question,
-      final: true,
-    });
-    return;
+    // sendMessage({
+    //   id: '123',
+    //   sid: '123',
+    //   ts: Date.now(),
+    //   t: 'text',
+    //   c: question,
+    //   final: true,
+    // });
+    // return;
 
     //Add the last message to the list
     const userMsg = {
