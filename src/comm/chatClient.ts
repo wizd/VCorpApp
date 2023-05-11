@@ -6,6 +6,7 @@ export type MessageCallback = (message: VwsMessage) => void | Promise<void>;
 
 // 聊天客户端类
 class ChatClient {
+  private jwt: string;
   private socket: Socket;
   private messageSubscribers: Set<MessageCallback> = new Set();
   private autoReconnectInterval: number = 5000; // 设置自动重连时间间隔，单位：毫秒
@@ -18,8 +19,13 @@ class ChatClient {
     this.messageSubscribers.delete(callback);
   }
 
-  constructor(serverUrl: string, jwt: string) {
-    this.socket = io(serverUrl, {query: {jwt}});
+  updateJwt(jwt: string) {
+    this.jwt = jwt;
+  }
+
+  constructor(serverUrl: string, token: string) {
+    this.jwt = token;
+    this.socket = io(serverUrl, {query: {jwt: this.jwt}});
 
     // 客户端监听服务器发来的聊天消息
     this.socket.on('smsg', async (message: VwsMessage) => {
@@ -45,7 +51,7 @@ class ChatClient {
 
   // 向服务器发送聊天消息
   public sendChatMessage(message: VwsMessage): void {
-    this.socket.emit('chatMessage', message);
+    this.socket.emit('cmsg', message);
   }
 
   // 断开与服务器的连接

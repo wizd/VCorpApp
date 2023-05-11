@@ -1,4 +1,10 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import ChatClient, {MessageCallback} from '../comm/chatClient';
 import {Text} from 'react-native';
 import AppContext, {API_URL_DEFAULT} from './AppContext';
@@ -24,9 +30,23 @@ interface ChatProviderProps {
   children: React.ReactNode;
 }
 
+const createChatClientInstance = (() => {
+  let chatClientInstance: ChatClient | null = null;
+
+  return (apiUrl: string, jwt: string) => {
+    if (!chatClientInstance) {
+      chatClientInstance = new ChatClient(apiUrl, jwt);
+    } else {
+      chatClientInstance.updateJwt(jwt);
+    }
+    return chatClientInstance;
+  };
+})();
+
 const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
   const {company} = useContext(AppContext);
-  const [chatClient, setChatClient] = useState<ChatClient | null>(null);
+  const chatClientRef = useRef<ChatClient | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     console.log('ChatProvider: useEffect');
@@ -39,27 +59,34 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
         company.jwt,
       );
     }
-    if (chatClient) {
-      chatClient.disconnect();
+
+    if (chatClientRef.current) {
+      chatClientRef.current.disconnect();
     }
 
-    const client = new ChatClient(API_URL_DEFAULT, company?.jwt!);
-    setChatClient(client);
+    const client = createChatClientInstance(API_URL_DEFAULT, company.jwt);
+    chatClientRef.current = client;
+    setIsLoaded(true);
 
     return () => {
       client.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [company]);
 
-  if (!chatClient) {
+  if (!isLoaded) {
     return <Text>Loading...</Text>;
   }
 
   const chatContextValue: IChatContext = {
-    sendMessage: chatClient.sendChatMessage.bind(chatClient),
-    onNewMessage: chatClient.onNewMessage.bind(chatClient),
-    offNewMessage: chatClient.offNewMessage.bind(chatClient),
+    sendMessage: chatClientRef.current!.sendChatMessage.bind(
+      chatClientRef.current,
+    ),
+    onNewMessage: chatClientRef.current!.onNewMessage.bind(
+      chatClientRef.current,
+    ),
+    offNewMessage: chatClientRef.current!.offNewMessage.bind(
+      chatClientRef.current,
+    ),
   };
 
   return (

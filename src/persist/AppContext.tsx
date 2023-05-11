@@ -4,7 +4,7 @@ import {LyraCrypto} from '../crypto/lyra-crypto';
 import {Text} from 'react-native';
 import axios from 'axios';
 
-export let API_URL_DEFAULT = 'https://mars.vcorp.ai';
+export let API_URL_DEFAULT = 'http://10.0.2.2:3001';
 // fuck various dotenv configs. let's just hardcode the default config here.
 const defaultConfig = {
   // for local dev: remove app, set this to http://10.0.2.2:3001, run just once.
@@ -51,7 +51,7 @@ const AppContext = createContext<AppContextType>({
   setCompany: () => {},
 });
 
-const registerUser = async (apiUrl: URL, privatekey: string) => {
+const registerUser = async (apiUrl: string, privatekey: string) => {
   const baseUrl = apiUrl + '/vc/v1/user';
   const usr = {
     accountId: LyraCrypto.GetAccountIdFromPrivateKey(privatekey),
@@ -60,6 +60,7 @@ const registerUser = async (apiUrl: URL, privatekey: string) => {
     user: usr,
     signature: LyraCrypto.Sign(JSON.stringify(usr), privatekey),
   };
+  console.log('registering user to: ', baseUrl);
   const api = axios.create({
     baseURL: baseUrl,
     headers: {
@@ -67,17 +68,20 @@ const registerUser = async (apiUrl: URL, privatekey: string) => {
     },
     timeout: 15000,
   });
+  let jwt = '';
   try {
     const ret = await api.post('/register', data);
     console.log('register result: ', ret.data);
     if (ret.data.success) {
-      return ret.data.data.token as string;
+      jwt = ret.data.data.token as string;
     } else {
-      return '';
+      jwt = 'not success';
     }
   } catch (error) {
-    return '';
+    jwt = 'error';
   }
+  console.log('jwt is: ', jwt);
+  return jwt;
 };
 
 const createDefaultCompany = async (): Promise<Company> => {
@@ -90,13 +94,13 @@ const createDefaultCompany = async (): Promise<Company> => {
     privatekey: wallet.privateKey,
     name: 'Default Company',
     curid: 'A0001',
-    jwt: await registerUser(new URL(defaultConfig.API_URL), wallet.privateKey),
+    jwt: await registerUser(API_URL_DEFAULT, wallet.privateKey),
     employees: [
       {
         id: 'A0001',
         name: '晓玲珑',
         desc: '晓玲珑是一名助理，她的工作是帮助公司的老板完成一些日常的工作。',
-        avatar: `${defaultConfig.API_URL}/assets/avatar/A0001.png`,
+        avatar: `${API_URL_DEFAULT}/assets/avatar/A0001.png`,
       },
     ],
   };
@@ -122,11 +126,13 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
           setCompany(saved);
           API_URL_DEFAULT = saved.config.API_URL;
         } else {
-          setCompany(await createDefaultCompany());
+          throw 'storedCompanyData is not right.';
         }
       } catch (error) {
         console.error('Error loading company data:', error);
-        setCompany(await createDefaultCompany());
+        const defaultCompany = await createDefaultCompany();
+        console.log('defaultCompany: ', defaultCompany);
+        setCompany(defaultCompany);
       }
     };
 
@@ -143,7 +149,11 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
       }
     }
 
-    saveData();
+    if (company !== null) {
+      saveData();
+    } else {
+      console.log('company is null, not saving.');
+    }
   }, [company]);
 
   return (
