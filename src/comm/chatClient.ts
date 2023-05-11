@@ -1,4 +1,3 @@
-import {TouchableHighlightBase} from 'react-native';
 import {io, Socket} from 'socket.io-client';
 
 // 定义聊天消息类型
@@ -25,8 +24,8 @@ class ChatClient {
     this.messageSubscribers.delete(callback);
   }
 
-  constructor(serverUrl: string) {
-    this.socket = io(serverUrl);
+  constructor(serverUrl: string, jwt: string) {
+    this.socket = io(serverUrl, {query: {jwt}});
 
     // 客户端监听服务器发来的聊天消息
     this.socket.on('chatMessage', async (message: ChatMessage) => {

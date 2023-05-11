@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import ChatClient, {MessageCallback, ChatMessage} from '../comm/chatClient';
 import {Text} from 'react-native';
-import {API_URL_DEFAULT} from './AppContext';
+import AppContext, {API_URL_DEFAULT} from './AppContext';
 
 export interface IChatContext {
   sendMessage: (message: ChatMessage) => void;
@@ -24,17 +24,27 @@ interface ChatProviderProps {
 }
 
 const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
+  const {company, setCompany} = useContext(AppContext);
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
 
   useEffect(() => {
     console.log('ChatProvider: useEffect');
-    const client = new ChatClient(API_URL_DEFAULT);
+    if (company === null) {
+      console.log('ChatProvider: useEffect: company is null');
+      return;
+    } else {
+      console.log(
+        'ChatProvider: useEffect: company is not null: ',
+        company.jwt,
+      );
+    }
+    const client = new ChatClient(API_URL_DEFAULT, company?.jwt!);
     setChatClient(client);
 
     return () => {
       client.disconnect();
     };
-  }, []);
+  }, [company]);
 
   if (!chatClient) {
     return <Text>Loading...</Text>;
