@@ -63,6 +63,7 @@
     "react-native-web": "^0.19.2",
     "react-native-webview": "^11.26.1",
     "react-scripts": "^5.0.1",
+    "socket.io-client": "^4.6.1",
     "web-encoding": "^1.1.5"
   },
   "devDependencies": {
