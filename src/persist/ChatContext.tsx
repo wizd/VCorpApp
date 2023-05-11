@@ -24,7 +24,7 @@ interface ChatProviderProps {
 }
 
 const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
-  const {company, setCompany} = useContext(AppContext);
+  const {company} = useContext(AppContext);
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
 
   useEffect(() => {
@@ -38,12 +38,17 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
         company.jwt,
       );
     }
+    if (chatClient) {
+      chatClient.disconnect();
+    }
+
     const client = new ChatClient(API_URL_DEFAULT, company?.jwt!);
     setChatClient(client);
 
     return () => {
       client.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [company]);
 
   if (!chatClient) {
