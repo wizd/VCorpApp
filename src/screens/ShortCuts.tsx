@@ -24,7 +24,7 @@ import UserMessage from '../components/UserMessage';
 import AppContext from '../persist/AppContext';
 import ArrowGuide from '../components/help/ArrowGuide';
 import {useTts} from '../utils/useTts';
-import {ChatContext, useChat} from '../persist/ChatContext';
+import {useChat} from '../persist/ChatContext';
 import {MessageCallback} from '../comm/chatClient';
 
 interface ChatCompletionChunk {
@@ -65,7 +65,7 @@ const ShortCuts = () => {
   const [showArrow, setShowArrow] = useState(true);
 
   const {beginReading, endReading} = useTts({
-    isEnabled: company.settings.tts,
+    isEnabled: company?.settings.tts ?? false,
   });
 
   const {sendMessage, onNewMessage, offNewMessage} = useChat();

@@ -1,10 +1,11 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import ChatClient, {MessageCallback, ChatMessage} from '../comm/chatClient';
+import ChatClient, {MessageCallback} from '../comm/chatClient';
 import {Text} from 'react-native';
 import AppContext, {API_URL_DEFAULT} from './AppContext';
+import {VwsMessage} from '../comm/wsproto';
 
 export interface IChatContext {
-  sendMessage: (message: ChatMessage) => void;
+  sendMessage: (message: VwsMessage) => void;
   onNewMessage: (callback: MessageCallback) => void;
   offNewMessage: (callback: MessageCallback) => void;
 }

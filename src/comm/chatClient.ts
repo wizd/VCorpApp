@@ -1,14 +1,8 @@
 import {io, Socket} from 'socket.io-client';
-
-// 定义聊天消息类型
-export interface ChatMessage {
-  sender: string;
-  content: string;
-  timestamp: string;
-}
+import {VwsMessage} from './wsproto';
 
 // 定义异步回调类型
-export type MessageCallback = (message: ChatMessage) => void | Promise<void>;
+export type MessageCallback = (message: VwsMessage) => void | Promise<void>;
 
 // 聊天客户端类
 class ChatClient {
@@ -28,7 +22,7 @@ class ChatClient {
     this.socket = io(serverUrl, {query: {jwt}});
 
     // 客户端监听服务器发来的聊天消息
-    this.socket.on('chatMessage', async (message: ChatMessage) => {
+    this.socket.on('smsg', async (message: VwsMessage) => {
       console.log('Received chat message from server:', message);
       // 调用回调函数（如果已提供）
       for (const subscriber of this.messageSubscribers) {
@@ -50,7 +44,7 @@ class ChatClient {
   }
 
   // 向服务器发送聊天消息
-  public sendChatMessage(message: ChatMessage): void {
+  public sendChatMessage(message: VwsMessage): void {
     this.socket.emit('chatMessage', message);
   }
 
