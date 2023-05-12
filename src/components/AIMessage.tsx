@@ -22,6 +22,7 @@ const AIMessage = (props: any) => {
   }, [company, props]);
 
   const handleStop = () => {
+    console.log('handleStop');
     if (props.onStop) {
       props.onStop(props.msg);
     }
@@ -98,6 +99,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 12,
     right: 12,
+    zIndex: 100,
   },
   container: {
     flexDirection: 'row',

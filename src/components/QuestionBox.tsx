@@ -22,7 +22,7 @@ const deviceWidth = Dimensions.get('window').width;
 type QuestionBoxType = {
   q: string;
   onVuesaxboldsendPress: (q: string) => void;
-  employee: Employee;
+  employee: Employee | undefined;
   onAvatarPress?: () => void;
 };
 
@@ -186,11 +186,11 @@ const QuestionBox = ({
           <Pressable onPress={onAvatarPress}>
             <Image
               source={{
-                uri: employee.avatar.startsWith('http')
+                uri: employee?.avatar?.startsWith('http')
                   ? employee.avatar
-                  : company!.config.API_URL +
+                  : company?.config?.API_URL +
                     '/assets/avatar/' +
-                    employee.avatar,
+                    employee?.avatar,
               }}
               style={styles.itemImage}
             />

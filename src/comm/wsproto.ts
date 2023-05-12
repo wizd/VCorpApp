@@ -1,9 +1,11 @@
-export type VwsMessageType = 'text' | 'image' | 'blob' | 'system';
+export type VwsMessageType = 'text' | 'image' | 'blob' | 'system' | 'json';
 
 export interface VwsBaseMessage {
   id: string; // 唯一消息 ID
+  // 补充文本 src 和 dst 字段都可以省略（用‘’），以消息ID为准（节省网络流量）
+  src: string;
+  dst: string;
   t: VwsMessageType; // 消息类型
-  sid: string; // 发送者 ID
   ts: number; // 时间戳
 }
 
@@ -29,8 +31,38 @@ export interface VwsSystemMessage extends VwsBaseMessage {
   n: string; // 通知内容
 }
 
+export interface VwsJsonMessage extends VwsBaseMessage {
+  t: 'json';
+  data: unknown; // 任何类型的数据
+}
+
 export type VwsMessage =
   | VwsTextMessage
   | VwsImageMessage
   | VwsBlobMessage
-  | VwsSystemMessage;
+  | VwsSystemMessage
+  | VwsJsonMessage;
+
+export function isVwsTextMessage(
+  message: VwsMessage,
+): message is VwsTextMessage {
+  return message.t === 'text';
+}
+
+export function isVwsImageMessage(
+  message: VwsMessage,
+): message is VwsImageMessage {
+  return message.t === 'image';
+}
+
+export function isVwsBlobMessage(
+  message: VwsMessage,
+): message is VwsBlobMessage {
+  return message.t === 'blob';
+}
+
+export function isVwsSystemMessage(
+  message: VwsMessage,
+): message is VwsSystemMessage {
+  return message.t === 'system';
+}

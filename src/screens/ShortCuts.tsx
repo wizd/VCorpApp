@@ -6,10 +6,6 @@ import {
   FlatList,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import EventSource, {
-  EventSourceListener,
-  EventSourceOptions,
-} from 'react-native-sse';
 import React, {useContext} from 'react';
 
 import {Margin, Color, Padding} from '../../GlobalStyles';
@@ -26,23 +22,7 @@ import ArrowGuide from '../components/help/ArrowGuide';
 import {useTts} from '../utils/useTts';
 import {useChat} from '../persist/ChatContext';
 import {MessageCallback} from '../comm/chatClient';
-
-interface ChatCompletionChunk {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: Choice[];
-}
-
-interface Choice {
-  delta?: {
-    content?: string;
-    role?: string;
-  };
-  index: number;
-  finish_reason: 'stop' | 'length' | 'max_tokens' | null;
-}
+import {VwsTextMessage, isVwsTextMessage} from '../comm/wsproto';
 
 interface Message {
   _id: number;
@@ -64,30 +44,62 @@ const ShortCuts = () => {
   const {company, setCompany} = useContext(AppContext);
   const [showArrow, setShowArrow] = useState(true);
 
-  const {beginReading, endReading} = useTts({
+  const {endReading} = useTts({
     isEnabled: company?.settings.tts ?? false,
   });
 
   const {sendMessage, onNewMessage, offNewMessage} = useChat();
 
   useEffect(() => {
-    const handleNewMessage: MessageCallback = message => {
+    const handleNewMessage: MessageCallback = smessage => {
       // 处理新消息，例如更新状态或显示通知
-      console.log('New message received:', message);
+      console.log('New message received:', smessage);
+
+      if (isVwsTextMessage(smessage)) {
+        if (smessage.cid !== undefined) {
+          setMessages(previousMessages => {
+            // Get the last array
+            const last = [...previousMessages];
+
+            // Update the list
+            const mewLIst = last.map((m, _i) => {
+              if (m._id === +smessage.id) {
+                m.text += (smessage as VwsTextMessage).c;
+                m.isLoading = smessage.final === false;
+              }
+              return m;
+            });
+            // Return the new array
+            return mewLIst;
+          });
+        } else {
+          //Add the last message to the list
+          const message = {
+            _id: +smessage.id,
+            text: (smessage as VwsTextMessage).c,
+            createdAt: new Date(),
+            isLoading: !(smessage as VwsTextMessage).final,
+            isAI: true,
+            veid: company?.curid ?? 'A0001',
+            bypass: company?.curid.startsWith('D') ?? false,
+          };
+          setMessages(previousMessages => [...previousMessages, message]);
+        }
+      }
     };
 
     onNewMessage(handleNewMessage);
     return () => {
       offNewMessage(handleNewMessage);
     };
-  }, [onNewMessage, offNewMessage]);
+  }, [onNewMessage, offNewMessage, company?.curid]);
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);
     const newcompany = {
       ...company,
       settings: {
-        ...company.settings,
+        ...company?.settings,
         guide: false,
       },
     };
@@ -95,33 +107,22 @@ const ShortCuts = () => {
     navigation.navigate('Employees' as never);
   };
 
-  let currentEmployee = company.employees.find(e => e.id == company.curid);
-  if (!currentEmployee) {
-    const newcompany = {
-      ...company,
-      curid: company.employees[0].id,
-    };
-    setCompany(newcompany);
-    currentEmployee = company.employees[0];
-  }
+  // setCurrentEmployee(company.employees.find(e => e.id == company.curid));
+  // if (!currentEmployee) {
+  //   const newcompany = {
+  //     ...company,
+  //     curid: company.employees[0].id,
+  //   };
+  //   setCompany(newcompany);
+  //   currentEmployee = company.employees[0];
+  // }
 
   useEffect(() => {
-    setShowArrow(company.settings.guide);
+    setShowArrow(company?.settings.guide ?? true);
   }, [company]);
 
   const ask = (question: string) => {
     setQ('');
-    let newContent = '';
-
-    // sendMessage({
-    //   id: '123',
-    //   sid: '123',
-    //   ts: Date.now(),
-    //   t: 'text',
-    //   c: question,
-    //   final: true,
-    // });
-    // return;
 
     //Add the last message to the list
     const userMsg = {
@@ -130,181 +131,21 @@ const ShortCuts = () => {
       createdAt: new Date(),
       isLoading: false,
       isAI: false,
-      veid: currentEmployee!.id,
+      veid: company?.curid ?? 'A0001',
       bypass: false,
     };
 
     setMessages(previousMessages => [...previousMessages, userMsg]);
 
-    if (currentEmployee) {
-      const url = company.config.API_URL + '/vc/v1/chat'; // replace with your API url
-
-      // construct message history to send to the API
-      let history = [
-        {
-          role: 'user',
-          content: question,
-        },
-      ];
-
-      for (
-        let i = messages.length - 1;
-        i >= 0 && i > messages.length - 4;
-        i--
-      ) {
-        const msg = messages[i];
-        if (msg.veid.startsWith('D') || msg.bypass) {
-          // drawer
-          continue;
-        } else if (msg.isAI) {
-          history = [
-            {
-              role: 'assistant',
-              content: msg.text,
-            },
-            ...history,
-          ];
-        } else {
-          history = [
-            {
-              role: 'user',
-              content: msg.text,
-            },
-            ...history,
-          ];
-        }
-
-        const msgTxt = JSON.stringify(history);
-        console.log('msgTxt length: ', msgTxt.length);
-        if (msgTxt.length > 512) {
-          break;
-        }
-      }
-
-      // Parameters to pass to the API
-      const data = {
-        version: 4,
-        veid: currentEmployee.id,
-        vename: currentEmployee.name,
-        messages: history,
-      };
-
-      const options: EventSourceOptions = {
-        method: 'POST', // Request method. Default: GET
-        timeout: 30000, // Time after which the connection will expire without any activity: Default: 0 (no timeout)
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${company.jwt}`,
-        }, // Your request headers. Default: {}
-        body: JSON.stringify(data), // Your request body sent on connection: Default: undefined
-        debug: true, // Show console.debug messages for debugging purpose. Default: false
-        pollingInterval: 3600000, // Time (ms) between reconnections. Default: 5000
-      };
-
-      //Add the last message to the list
-      const message = {
-        _id: userMsg._id + 1,
-        text: '',
-        createdAt: new Date(),
-        isLoading: true,
-        isAI: true,
-        veid: currentEmployee.id,
-        bypass: currentEmployee.id.startsWith('D'),
-      };
-      setMessages(previousMessages => [...previousMessages, message]);
-
-      //Initiate the requests
-      const es = new EventSource(url, options);
-
-      let reason = '';
-      // Listen the server until the last piece of text
-      const listener: EventSourceListener = event => {
-        //console.log('SSE Event:', event);
-        if (event.type === 'open') {
-          console.log('Open SSE connection.');
-        } else if (event.type === 'message') {
-          if (event.data !== '[DONE]') {
-            // get every piece of text
-            const serverResponse: ChatCompletionChunk = JSON.parse(event.data!);
-            const delta = serverResponse.choices[0].delta;
-
-            // Check if is the last text to close the events request
-            const finish_reason = serverResponse.choices[0].finish_reason;
-            reason = finish_reason!;
-
-            if (finish_reason != null) {
-              if (reason != 'stop')
-                newContent = newContent + ' [ends with ' + reason + ']';
-              es.close();
-            } else {
-              if (delta && delta.content) {
-                beginReading(delta.content);
-                // Update content with new data
-                newContent = newContent + delta.content;
-              } else {
-              }
-              //setMessages([...message, newContent]);
-            }
-
-            // Continuously update the last message in the state
-            // with new piece of data
-            setMessages(previousMessages => {
-              // Get the last array
-              const last = [...previousMessages];
-
-              // Update the list
-              const mewLIst = last.map((m, _i) => {
-                if (m._id === message._id) {
-                  m.text = newContent;
-                }
-                return m;
-              });
-              // Return the new array
-              return mewLIst;
-            });
-          } else {
-            es.close();
-            console.log('done. the answer is: ', newContent);
-            endReading();
-            setMessages(previousMessages => {
-              // Get the last array
-              const last = [...previousMessages];
-
-              // Update the list
-              const mewLIst = last.map((m, _i) => {
-                if (m._id === message._id) m.isLoading = false;
-
-                return m;
-              });
-              // Return the new array
-              return mewLIst;
-            });
-          }
-        } else if (event.type === 'error') {
-          //console.error('Connection error from server:', event.message);
-          reqErrorHandler(message._id, '对话服务器返回错误：' + event.message);
-          es.close();
-        } else if (event.type === 'exception') {
-          //console.error('Error:', event.message, event.error);
-          reqErrorHandler(message._id, '程序错误：' + event.message);
-          es.close();
-        }
-      };
-
-      // Add listener
-      es.addEventListener('open', listener);
-      es.addEventListener('message', listener);
-      es.addEventListener('error', listener);
-
-      return () => {
-        es.removeEventListener('open', listener);
-        es.removeEventListener('message', listener);
-        es.removeEventListener('error', listener);
-        es.close();
-      };
-    } else {
-      console.error('请选择一个虚拟员工');
-    }
+    sendMessage({
+      id: '123',
+      src: company?.name ?? 'test',
+      dst: userMsg.veid,
+      ts: Date.now(),
+      t: 'text',
+      c: question,
+      final: true,
+    });
   };
 
   // const endReading = (id: number, text: string) => {
@@ -327,46 +168,46 @@ const ShortCuts = () => {
   //   });
   // };
 
-  const reqErrorHandler = (msgid: number, txt: string) => {
-    console.log('reqErrorHandler, msgid: ', msgid, ', txt: ', txt);
+  // const reqErrorHandler = (msgid: number, txt: string) => {
+  //   console.log('reqErrorHandler, msgid: ', msgid, ', txt: ', txt);
 
-    let msgpadding =
-      txt +
-      ' \n\n（非常抱歉，出现了网络错误。请稍候重试一次。或者请尝试点击这个链接升级 App 到最新版本：https://vcorp.ai/ )';
+  //   let msgpadding =
+  //     txt +
+  //     ' \n\n（非常抱歉，出现了网络错误。请稍候重试一次。或者请尝试点击这个链接升级 App 到最新版本：https://vcorp.ai/ )';
 
-    // check 401 error and retry
-    if (txt.indexOf('401') > 0) {
-      console.log('401 error, retrying...');
+  //   // check 401 error and retry
+  //   if (txt.indexOf('401') > 0) {
+  //     console.log('401 error, retrying...');
 
-      const newcompany = {
-        ...company,
-        jwt: null,
-      };
-      setCompany(newcompany);
+  //     const newcompany = {
+  //       ...company,
+  //       jwt: null,
+  //     };
+  //     setCompany(newcompany);
 
-      msgpadding =
-        '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';
-    }
+  //     msgpadding =
+  //       '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';
+  //   }
 
-    setMessages(previousMessages => {
-      // Get the last array
-      const last = [...previousMessages];
+  //   setMessages(previousMessages => {
+  //     // Get the last array
+  //     const last = [...previousMessages];
 
-      // Update the list
-      const mewLIst = last.map((m, _i) => {
-        if (m._id === msgid) {
-          m.isLoading = false;
-          m.text = msgpadding;
-          m.bypass = true;
-        }
+  //     // Update the list
+  //     const mewLIst = last.map((m, _i) => {
+  //       if (m._id === msgid) {
+  //         m.isLoading = false;
+  //         m.text = msgpadding;
+  //         m.bypass = true;
+  //       }
 
-        return m;
-      });
-      // Return the new array
-      return mewLIst;
-    });
-    endReading();
-  };
+  //       return m;
+  //     });
+  //     // Return the new array
+  //     return mewLIst;
+  //   });
+  //   endReading();
+  // };
 
   // useEffect(() => {
   //   if (scrollViewRef.current) {
@@ -480,7 +321,7 @@ const ShortCuts = () => {
       <QuestionBox
         q={q}
         onVuesaxboldsendPress={ask}
-        employee={currentEmployee}
+        employee={company?.employees?.find(e => e.id === company?.curid)}
         onAvatarPress={onQuestionBoxAvatarClick}
       />
     </View>
