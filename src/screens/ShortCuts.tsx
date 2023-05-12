@@ -69,7 +69,7 @@ const ShortCuts = () => {
             // Update the list
             const mewLIst = last.map((m, _i) => {
               if (m._id === +smessage.id) {
-                m.text += (smessage as VwsTextMessage).c;
+                m.text += (smessage as VwsTextMessage).content;
                 m.isLoading = smessage.final === false;
               }
               return m;
@@ -81,7 +81,7 @@ const ShortCuts = () => {
           //Add the last message to the list
           const message = {
             _id: +smessage.id,
-            text: (smessage as VwsTextMessage).c,
+            text: (smessage as VwsTextMessage).content,
             createdAt: new Date(),
             isLoading: !(smessage as VwsTextMessage).final,
             isAI: true,
@@ -159,9 +159,9 @@ const ShortCuts = () => {
       id: userMsg._id.toString() + '-0',
       src: company?.name ?? 'test',
       dst: userMsg.veid,
-      ts: Date.now(),
-      t: 'text',
-      c: question,
+      time: Date.now(),
+      type: 'text',
+      content: question,
       final: true,
     });
   };

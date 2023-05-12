@@ -4,7 +4,7 @@ import {LyraCrypto} from '../crypto/lyra-crypto';
 import {Text} from 'react-native';
 import axios from 'axios';
 
-export let API_URL_DEFAULT = 'http://10.0.2.2:3001';
+export let API_URL_DEFAULT = 'https://mars.vcorp.ai';
 // fuck various dotenv configs. let's just hardcode the default config here.
 const defaultConfig = {
   // for local dev: remove app, set this to http://10.0.2.2:3001, run just once.
