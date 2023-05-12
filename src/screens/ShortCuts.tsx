@@ -22,7 +22,12 @@ import ArrowGuide from '../components/help/ArrowGuide';
 import {useTts} from '../utils/useTts';
 import {useChat} from '../persist/ChatContext';
 import {MessageCallback} from '../comm/chatClient';
-import {VwsTextMessage, isVwsTextMessage} from '../comm/wsproto';
+import {
+  VwsImageMessage,
+  VwsTextMessage,
+  isVwsImageMessage,
+  isVwsTextMessage,
+} from '../comm/wsproto';
 
 interface Message {
   _id: number;
@@ -85,6 +90,19 @@ const ShortCuts = () => {
           };
           setMessages(previousMessages => [...previousMessages, message]);
         }
+      } else if (isVwsImageMessage(smessage)) {
+        // display the image
+        const imgurl = (smessage as VwsImageMessage).url;
+        const message = {
+          _id: +smessage.id,
+          text: '```image\n' + imgurl + '\n```',
+          createdAt: new Date(),
+          isLoading: false,
+          isAI: true,
+          veid: smessage.src,
+          bypass: company?.curid.startsWith('D') ?? false,
+        };
+        setMessages(previousMessages => [...previousMessages, message]);
       }
     };
 
@@ -138,7 +156,7 @@ const ShortCuts = () => {
     setMessages(previousMessages => [...previousMessages, userMsg]);
 
     sendMessage({
-      id: '123',
+      id: userMsg._id.toString() + '-0',
       src: company?.name ?? 'test',
       dst: userMsg.veid,
       ts: Date.now(),
