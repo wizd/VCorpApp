@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import ChatClient, {MessageCallback} from '../comm/chatClient';
 import {Text} from 'react-native';
-import AppContext, {API_URL_DEFAULT} from './AppContext';
+import AppContext from './AppContext';
 import {VwsMessage} from '../comm/wsproto';
 
 export interface IChatContext {
@@ -64,7 +64,11 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
       chatClientRef.current.disconnect();
     }
 
-    const client = createChatClientInstance(API_URL_DEFAULT, company.jwt);
+    console.log('createChatClientInstance use url: ', company.config.API_URL);
+    const client = createChatClientInstance(
+      company.config.API_URL,
+      company.jwt,
+    );
     chatClientRef.current = client;
     setIsLoaded(true);
 

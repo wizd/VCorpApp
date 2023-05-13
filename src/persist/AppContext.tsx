@@ -4,12 +4,12 @@ import {LyraCrypto} from '../crypto/lyra-crypto';
 import {Text} from 'react-native';
 import axios from 'axios';
 
-export let API_URL_DEFAULT = 'https://mars.vcorp.ai';
+//export let API_URL_DEFAULT = 'https://mars.vcorp.ai';
 // fuck various dotenv configs. let's just hardcode the default config here.
 const defaultConfig = {
   // for local dev: remove app, set this to http://10.0.2.2:3001, run just once.
   // default set to 'https://mars.vcorp.ai'
-  API_URL: API_URL_DEFAULT,
+  API_URL: 'http://10.0.2.2:3001',
   SECRET_KEY: '5f7b9b9b-3b5c-4b9c-9c9b-5f7b9b9b3b5c',
 };
 
@@ -94,13 +94,13 @@ const createDefaultCompany = async (): Promise<Company> => {
     privatekey: wallet.privateKey,
     name: 'Default Company',
     curid: 'A0001',
-    jwt: await registerUser(API_URL_DEFAULT, wallet.privateKey),
+    jwt: await registerUser(defaultConfig.API_URL, wallet.privateKey),
     employees: [
       {
         id: 'A0001',
         name: '晓玲珑',
         desc: '晓玲珑是一名助理，她的工作是帮助公司的老板完成一些日常的工作。',
-        avatar: `${API_URL_DEFAULT}/assets/avatar/A0001.png`,
+        avatar: `${defaultConfig.API_URL}/assets/avatar/A0001.png`,
       },
     ],
   };
@@ -124,7 +124,6 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         if (storedCompanyData) {
           const saved = JSON.parse(storedCompanyData);
           setCompany(saved);
-          API_URL_DEFAULT = saved.config.API_URL;
         } else {
           throw 'storedCompanyData is not right.';
         }
