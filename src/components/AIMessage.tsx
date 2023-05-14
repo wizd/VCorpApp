@@ -23,6 +23,7 @@ const AIMessage = (props: any) => {
   const [imgsrc, setImgsrc] = React.useState('');
   const [name, setName] = React.useState('');
   const [sound, setSound] = React.useState<Sound | null>(null);
+  const [started, setStarted] = React.useState(false);
 
   React.useEffect(() => {
     //console.log('AIMessage useEffect msg wave url is: ', props.msg.wavurl);
@@ -62,7 +63,7 @@ const AIMessage = (props: any) => {
       } else {
         sound.play();
       }
-    } else {
+    } else if (!started) {
       const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
       const s = new Sound(props.msg.wavurl, sb, error => {
         if (error) {
@@ -72,6 +73,7 @@ const AIMessage = (props: any) => {
         setSound(s);
         s.play();
       });
+      setStarted(true);
     }
   };
 

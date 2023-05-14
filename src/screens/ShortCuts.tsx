@@ -62,9 +62,9 @@ const ShortCuts = () => {
 
   useEffect(() => {
     const storeData = async () => {
-      if (messages.length > 0) {
-        flatListRef.current?.scrollToEnd({animated: true});
-      }
+      // if (messages.length > 0) {
+      //   flatListRef.current?.scrollToEnd({animated: true});
+      // }
       await storeMsgData(messages);
     };
 
@@ -254,6 +254,8 @@ const ShortCuts = () => {
     };
     setMessages(previousMessages => [...previousMessages, message]);
 
+    autoScroll();
+
     // Parameters to pass to the API
     const data = {
       version: 4,
@@ -351,6 +353,8 @@ const ShortCuts = () => {
         reqErrorHandler(message._id, '程序错误：' + event.message);
         es.close();
       }
+
+      autoScroll();
     };
 
     // Add listener
@@ -445,6 +449,11 @@ const ShortCuts = () => {
     });
   };
 
+  const autoScroll = () => {
+    //console.log('autoScroll, flatListRef: ', flatListRef.current);
+    flatListRef.current?.scrollToEnd({animated: true});
+  };
+
   const styles = StyleSheet.create({
     kav: {
       paddingBottom: Platform.OS === 'ios' ? 80 : 80,
@@ -517,7 +526,7 @@ const ShortCuts = () => {
             ListFooterComponent={<></>}
             contentContainerStyle={{flexGrow: 1, paddingBottom: 16}}
             keyboardShouldPersistTaps="handled"
-            // onContentSizeChange={() => flatListRef?.current?.scrollToEnd()}
+            onContentSizeChange={autoScroll}
             ref={flatListRef}
           />
         </View>
