@@ -16,6 +16,7 @@ import GearMenu from './GearMenu';
 import Markdown from './Markdown';
 import StopButton from './tools/StopButton';
 import LikeDislikeButtons from './tools/LikeDislikeButtons';
+import Toast from 'react-native-toast-message';
 
 const AIMessage = (props: any) => {
   const {company, setCompany} = useContext(AppContext);
@@ -31,10 +32,26 @@ const AIMessage = (props: any) => {
     setName(company?.employees.find(e => e.id === props.msg.veid)?.name || '');
   }, [company, props]);
 
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      position: 'top',
+      text1: '',
+      text2: '已重置播放进度到开头',
+    });
+  };
+
   const handleStop = () => {
     console.log('handleStop');
     if (props.onStop) {
       props.onStop(props.msg);
+    }
+  };
+
+  const playResetProgress = () => {
+    if (sound) {
+      sound.setCurrentTime(0);
+      showToast();
     }
   };
 
@@ -73,7 +90,12 @@ const AIMessage = (props: any) => {
         <Markdown text={props.text} />
         {props.msg.wavurl !== undefined && (
           <View style={styles.soundMenu}>
-            <StopButton onPress={playOrPause} iconName="hearing" color="grey" />
+            <StopButton
+              onPress={playOrPause}
+              onLongPress={playResetProgress}
+              iconName="hearing"
+              color="grey"
+            />
           </View>
         )}
         <View style={styles.gearMenu}>

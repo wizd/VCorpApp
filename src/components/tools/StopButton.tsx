@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface StopButtonProps {
   onPress: () => void;
+  onLongPress?: () => void;
   size?: number;
   color?: string;
   iconName: string;
@@ -11,12 +12,13 @@ interface StopButtonProps {
 
 const StopButton: React.FC<StopButtonProps> = ({
   onPress,
+  onLongPress = () => {},
   size = 24,
   color = 'black',
   iconName,
 }) => {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
       <Icon name={iconName} size={size} color={color} />
     </TouchableOpacity>
   );

@@ -79,7 +79,6 @@ const ShortCuts = () => {
             // Return the new array
             return mewLIst;
           });
-          flatListRef.current?.scrollToEnd({animated: true});
         } else {
           // check if speech for the some message
           const txt = (smessage as VwsTextMessage).content;
@@ -133,7 +132,6 @@ const ShortCuts = () => {
           bypass: company?.curid.startsWith('D') ?? false,
         };
         setMessages(previousMessages => [...previousMessages, message]);
-        flatListRef.current?.scrollToEnd({animated: true});
       } else if (isVwsAudioMessage(smessage)) {
         //
         console.log("Audio message received, don't know how to handle it");
@@ -173,6 +171,12 @@ const ShortCuts = () => {
     setShowArrow(company?.settings.guide ?? true);
   }, [company]);
 
+  useEffect(() => {
+    if (messages.length > 0) {
+      flatListRef.current?.scrollToEnd({animated: true});
+    }
+  }, [messages]);
+
   const ask = (question: string) => {
     setQ('');
 
@@ -188,7 +192,6 @@ const ShortCuts = () => {
     };
 
     setMessages(previousMessages => [...previousMessages, userMsg]);
-    flatListRef.current?.scrollToEnd({animated: true});
 
     sendMessage({
       id: userMsg._id.toString() + '-0',
