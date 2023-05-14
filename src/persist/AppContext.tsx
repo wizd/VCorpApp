@@ -9,7 +9,7 @@ import axios from 'axios';
 const defaultConfig = {
   // for local dev: remove app, set this to http://10.0.2.2:3001, run just once.
   // default set to 'https://mars.vcorp.ai'
-  API_URL: 'http://10.0.2.2:3001',
+  API_URL: 'https://mars.vcorp.ai',
   SECRET_KEY: '5f7b9b9b-3b5c-4b9c-9c9b-5f7b9b9b3b5c',
 };
 
