@@ -33,17 +33,7 @@ import {
   isVwsImageMessage,
   isVwsTextMessage,
 } from '../comm/wsproto';
-
-interface Message {
-  _id: string;
-  text: string;
-  isLoading: boolean;
-  isAI: boolean;
-  veid?: string;
-  createdAt: Date;
-  bypass?: boolean;
-  wavurl?: string;
-}
+import {Message, getMsgData, storeMsgData} from '../persist/msgstore';
 
 const ShortCuts = () => {
   const navigation = useNavigation();
@@ -60,6 +50,26 @@ const ShortCuts = () => {
   // });
 
   const {onNewMessage, offNewMessage} = useChat();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getMsgData();
+      setMessages(data);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const storeData = async () => {
+      if (messages.length > 0) {
+        flatListRef.current?.scrollToEnd({animated: true});
+      }
+      await storeMsgData(messages);
+    };
+
+    storeData();
+  }, [messages]);
 
   useEffect(() => {
     const handleNewMessage: MessageCallback = smessage => {
@@ -174,12 +184,6 @@ const ShortCuts = () => {
   useEffect(() => {
     setShowArrow(company?.settings.guide ?? true);
   }, [company]);
-
-  useEffect(() => {
-    if (messages.length > 0) {
-      flatListRef.current?.scrollToEnd({animated: true});
-    }
-  }, [messages]);
 
   const ask = (question: string) => {
     setQ('');
