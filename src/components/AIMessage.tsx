@@ -1,7 +1,14 @@
 import * as React from 'react';
 import {useContext} from 'react';
 import Sound from 'react-native-sound';
-import {Text, StyleSheet, View, ActivityIndicator, Image} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Image,
+  Platform,
+} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
@@ -39,7 +46,8 @@ const AIMessage = (props: any) => {
         sound.play();
       }
     } else {
-      const s = new Sound(props.msg.wavurl, Sound.MAIN_BUNDLE, error => {
+      const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
+      const s = new Sound(props.msg.wavurl, sb, error => {
         if (error) {
           console.log('failed to load the sound', error);
           return;
