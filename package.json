@@ -39,7 +39,7 @@
     "module-alias": "^2.2.2",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
-    "react-native": "0.71.4",
+    "react-native": "0.71.8",
     "react-native-document-picker": "^8.2.0",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-fast-image": "^8.6.3",
