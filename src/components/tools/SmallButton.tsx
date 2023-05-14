@@ -2,7 +2,7 @@ import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-interface StopButtonProps {
+interface SmallButtonProps {
   onPress: () => void;
   onLongPress?: () => void;
   size?: number;
@@ -10,7 +10,7 @@ interface StopButtonProps {
   iconName: string;
 }
 
-const StopButton: React.FC<StopButtonProps> = ({
+const SmallButton: React.FC<SmallButtonProps> = ({
   onPress,
   onLongPress = () => {},
   size = 24,
@@ -24,4 +24,4 @@ const StopButton: React.FC<StopButtonProps> = ({
   );
 };
 
-export default StopButton;
+export default SmallButton;

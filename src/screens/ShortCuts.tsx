@@ -5,6 +5,10 @@ import {
   KeyboardAvoidingView,
   FlatList,
 } from 'react-native';
+import EventSource, {
+  EventSourceListener,
+  EventSourceOptions,
+} from 'react-native-sse';
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext} from 'react';
 
@@ -19,7 +23,7 @@ import UserMessage from '../components/UserMessage';
 
 import AppContext from '../persist/AppContext';
 import ArrowGuide from '../components/help/ArrowGuide';
-import {useTts} from '../utils/useTts';
+//import {useTts} from '../utils/useTts';
 import {useChat} from '../persist/ChatContext';
 import {MessageCallback} from '../comm/chatClient';
 import {
@@ -35,9 +39,9 @@ interface Message {
   text: string;
   isLoading: boolean;
   isAI: boolean;
-  veid: string;
+  veid?: string;
   createdAt: Date;
-  bypass: boolean;
+  bypass?: boolean;
   wavurl?: string;
 }
 
@@ -51,11 +55,11 @@ const ShortCuts = () => {
   const {company, setCompany} = useContext(AppContext);
   const [showArrow, setShowArrow] = useState(true);
 
-  const {endReading} = useTts({
-    isEnabled: company?.settings.tts ?? false,
-  });
+  // const {beginReading, endReading} = useTts({
+  //   isEnabled: company?.settings.tts ?? false,
+  // });
 
-  const {sendMessage, onNewMessage, offNewMessage} = useChat();
+  const {onNewMessage, offNewMessage} = useChat();
 
   useEffect(() => {
     const handleNewMessage: MessageCallback = smessage => {
@@ -179,6 +183,7 @@ const ShortCuts = () => {
 
   const ask = (question: string) => {
     setQ('');
+    let newContent = '';
 
     //Add the last message to the list
     const userMsg = {
@@ -193,15 +198,168 @@ const ShortCuts = () => {
 
     setMessages(previousMessages => [...previousMessages, userMsg]);
 
-    sendMessage({
-      id: userMsg._id.toString() + '-0',
-      src: company?.name ?? 'test',
-      dst: userMsg.veid,
-      time: Date.now(),
-      type: 'text',
-      content: question,
-      final: true,
-    });
+    const url = company!.config.API_URL + '/vc/v1/chat'; // replace with your API url
+
+    // construct message history to send to the API
+    let history = [
+      {
+        role: 'user',
+        content: question,
+      },
+    ];
+
+    for (let i = messages.length - 1; i >= 0 && i > messages.length - 4; i--) {
+      const msg = messages[i];
+      if (msg.veid?.startsWith('D') || msg.bypass) {
+        // drawer
+        continue;
+      } else if (msg.isAI) {
+        history = [
+          {
+            role: 'assistant',
+            content: msg.text,
+          },
+          ...history,
+        ];
+      } else {
+        history = [
+          {
+            role: 'user',
+            content: msg.text,
+          },
+          ...history,
+        ];
+      }
+
+      const msgTxt = JSON.stringify(history);
+      console.log('msgTxt length: ', msgTxt.length);
+      if (msgTxt.length > 512) {
+        break;
+      }
+    }
+
+    //Add the last message to the list
+    const message = {
+      _id: (+userMsg._id + 1).toString(),
+      text: '',
+      createdAt: new Date(),
+      isLoading: true,
+      isAI: true,
+      veid: company?.curid,
+      bypass: company?.curid.startsWith('D'),
+    };
+    setMessages(previousMessages => [...previousMessages, message]);
+
+    // Parameters to pass to the API
+    const data = {
+      version: 4,
+      id: message._id,
+      veid: company!.curid,
+      vename: company!.employees.find(e => e.id === company!.curid)?.name,
+      messages: history,
+    };
+
+    const options: EventSourceOptions = {
+      method: 'POST', // Request method. Default: GET
+      timeout: 30000, // Time after which the connection will expire without any activity: Default: 0 (no timeout)
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${company!.jwt}`,
+      }, // Your request headers. Default: {}
+      body: JSON.stringify(data), // Your request body sent on connection: Default: undefined
+      debug: true, // Show console.debug messages for debugging purpose. Default: false
+      pollingInterval: 3600000, // Time (ms) between reconnections. Default: 5000
+    };
+
+    //Initiate the requests
+    const es = new EventSource(url, options);
+
+    let reason = '';
+    // Listen the server until the last piece of text
+    const listener: EventSourceListener = event => {
+      //console.log('SSE Event:', event);
+      if (event.type === 'open') {
+        console.log('Open SSE connection.');
+      } else if (event.type === 'message') {
+        if (event.data !== '[DONE]') {
+          // get every piece of text
+          const serverResponse = JSON.parse(event.data!);
+          const delta = serverResponse.choices[0].delta;
+
+          // Check if is the last text to close the events request
+          const finish_reason = serverResponse.choices[0].finish_reason;
+          reason = finish_reason!;
+
+          if (finish_reason != null) {
+            if (reason != 'stop')
+              newContent = newContent + ' [ends with ' + reason + ']';
+            es.close();
+          } else {
+            if (delta && delta.content) {
+              //beginReading(delta.content);
+              // Update content with new data
+              newContent = newContent + delta.content;
+            } else {
+            }
+            //setMessages([...message, newContent]);
+          }
+
+          // Continuously update the last message in the state
+          // with new piece of data
+          setMessages(previousMessages => {
+            // Get the last array
+            const last = [...previousMessages];
+
+            // Update the list
+            const mewLIst = last.map((m, _i) => {
+              if (m._id === message._id) {
+                m.text = newContent;
+              }
+              return m;
+            });
+            // Return the new array
+            return mewLIst;
+          });
+        } else {
+          es.close();
+          console.log('done. the answer is: ', newContent);
+          //endReading();
+          setMessages(previousMessages => {
+            // Get the last array
+            const last = [...previousMessages];
+
+            // Update the list
+            const mewLIst = last.map((m, _i) => {
+              if (m._id === message._id) m.isLoading = false;
+
+              return m;
+            });
+            // Return the new array
+            return mewLIst;
+          });
+        }
+      } else if (event.type === 'error') {
+        //console.error('Connection error from server:', event.message);
+        reqErrorHandler(message._id, '对话服务器返回错误：' + event.message);
+        es.close();
+      } else if (event.type === 'exception') {
+        //console.error('Error:', event.message, event.error);
+        reqErrorHandler(message._id, '程序错误：' + event.message);
+        es.close();
+      }
+    };
+
+    // Add listener
+    es.addEventListener('open', listener);
+    es.addEventListener('message', listener);
+    es.addEventListener('error', listener);
+
+    return () => {
+      es.removeEventListener('open', listener);
+      es.removeEventListener('message', listener);
+      es.removeEventListener('error', listener);
+      es.close();
+    };
   };
 
   // const endReading = (id: number, text: string) => {
@@ -224,61 +382,47 @@ const ShortCuts = () => {
   //   });
   // };
 
-  // const reqErrorHandler = (msgid: number, txt: string) => {
-  //   console.log('reqErrorHandler, msgid: ', msgid, ', txt: ', txt);
+  const reqErrorHandler = (msgid: string, txt: string) => {
+    console.log('reqErrorHandler, msgid: ', msgid, ', txt: ', txt);
 
-  //   let msgpadding =
-  //     txt +
-  //     ' \n\n（非常抱歉，出现了网络错误。请稍候重试一次。或者请尝试点击这个链接升级 App 到最新版本：https://vcorp.ai/ )';
+    let msgpadding =
+      txt +
+      ' \n\n（非常抱歉，出现了网络错误。请稍候重试一次。或者请尝试点击这个链接升级 App 到最新版本：https://vcorp.ai/ )';
 
-  //   // check 401 error and retry
-  //   if (txt.indexOf('401') > 0) {
-  //     console.log('401 error, retrying...');
+    // check 401 error and retry
+    if (txt.indexOf('401') > 0) {
+      console.log('401 error, retrying...');
 
-  //     const newcompany = {
-  //       ...company,
-  //       jwt: null,
-  //     };
-  //     setCompany(newcompany);
+      const newcompany = {
+        ...company,
+        jwt: null,
+      };
+      setCompany(newcompany);
 
-  //     msgpadding =
-  //       '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';
-  //   }
+      msgpadding =
+        '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';
+    }
 
-  //   setMessages(previousMessages => {
-  //     // Get the last array
-  //     const last = [...previousMessages];
+    setMessages(previousMessages => {
+      // Get the last array
+      const last = [...previousMessages];
 
-  //     // Update the list
-  //     const mewLIst = last.map((m, _i) => {
-  //       if (m._id === msgid) {
-  //         m.isLoading = false;
-  //         m.text = msgpadding;
-  //         m.bypass = true;
-  //       }
+      // Update the list
+      const mewLIst = last.map((m, _i) => {
+        if (m._id === msgid) {
+          m.isLoading = false;
+          m.text = msgpadding;
+          m.bypass = true;
+        }
 
-  //       return m;
-  //     });
-  //     // Return the new array
-  //     return mewLIst;
-  //   });
-  //   endReading();
-  // };
+        return m;
+      });
+      // Return the new array
+      return mewLIst;
+    });
+    //endReading();
+  };
 
-  // useEffect(() => {
-  //   if (scrollViewRef.current) {
-  //     scrollViewRef.current.scrollToEnd({animated: true});
-  //   }
-  // }, [messages]);
-
-  // const handleContentSizeChange = () => {
-  //   console.log('handleContentSizeChange');
-  //   scrollViewRef.current?.scrollToEnd({animated: true});
-  // };
-  // const handleLayout = () => {
-  //   console.log('handleLayout');
-  //   scrollViewRef.current?.scrollToEnd({animated: true});
-  // };
   const handleStop = (msg: Message) => {
     setMessages(previousMessages => {
       // Get the last array

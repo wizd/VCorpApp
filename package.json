@@ -37,6 +37,7 @@
     "jsrsasign": "^10.7.0",
     "langs": "^2.0.0",
     "module-alias": "^2.2.2",
+    "nth-check": "2.0.1",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-native": "0.71.8",
@@ -64,6 +65,7 @@
     "react-native-web": "^0.19.2",
     "react-native-webview": "^11.26.1",
     "react-scripts": "^5.0.1",
+    "realm": "^11.9.0",
     "socket.io-client": "^4.6.1",
     "web-encoding": "^1.1.5"
   },

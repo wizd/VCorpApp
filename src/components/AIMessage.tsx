@@ -14,7 +14,7 @@ import AppContext from '../persist/AppContext';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import GearMenu from './GearMenu';
 import Markdown from './Markdown';
-import StopButton from './tools/StopButton';
+import SmallButton from './tools/SmallButton';
 import LikeDislikeButtons from './tools/LikeDislikeButtons';
 import Toast from 'react-native-toast-message';
 
@@ -90,7 +90,7 @@ const AIMessage = (props: any) => {
         <Markdown text={props.text} />
         {props.msg.wavurl !== undefined && (
           <View style={styles.soundMenu}>
-            <StopButton
+            <SmallButton
               onPress={playOrPause}
               onLongPress={playResetProgress}
               iconName="hearing"
@@ -100,7 +100,7 @@ const AIMessage = (props: any) => {
         )}
         <View style={styles.gearMenu}>
           {props.isLoading && (
-            <StopButton onPress={handleStop} iconName="stop" />
+            <SmallButton onPress={handleStop} iconName="stop" />
           )}
           {!props.isLoading && <LikeDislikeButtons content={props.msg.text} />}
         </View>
