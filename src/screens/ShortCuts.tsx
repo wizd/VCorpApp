@@ -25,18 +25,20 @@ import {MessageCallback} from '../comm/chatClient';
 import {
   VwsImageMessage,
   VwsTextMessage,
+  isVwsAudioMessage,
   isVwsImageMessage,
   isVwsTextMessage,
 } from '../comm/wsproto';
 
 interface Message {
-  _id: number;
+  _id: string;
   text: string;
   isLoading: boolean;
   isAI: boolean;
   veid: string;
   createdAt: Date;
   bypass: boolean;
+  wavurl?: string;
 }
 
 const ShortCuts = () => {
@@ -68,7 +70,7 @@ const ShortCuts = () => {
 
             // Update the list
             const mewLIst = last.map((m, _i) => {
-              if (m._id === +smessage.id) {
+              if (m._id === smessage.id) {
                 m.text += (smessage as VwsTextMessage).content;
                 m.isLoading = smessage.final === false;
               }
@@ -78,23 +80,50 @@ const ShortCuts = () => {
             return mewLIst;
           });
         } else {
-          //Add the last message to the list
-          const message = {
-            _id: +smessage.id,
-            text: (smessage as VwsTextMessage).content,
-            createdAt: new Date(),
-            isLoading: !(smessage as VwsTextMessage).final,
-            isAI: true,
-            veid: company?.curid ?? 'A0001',
-            bypass: company?.curid.startsWith('D') ?? false,
-          };
-          setMessages(previousMessages => [...previousMessages, message]);
+          // check if speech for the some message
+          const txt = (smessage as VwsTextMessage).content;
+
+          if (txt.startsWith('https://r.vcorp.ai/') && txt.endsWith('.wav')) {
+            setMessages(currentMessages => {
+              // 使用 currentMessages 而不是 messages
+              const txtmsg2 = currentMessages.find(m => m._id === smessage.id);
+              console.log(
+                'current messages is ',
+                currentMessages,
+                'txtmsg2 is ',
+                txtmsg2,
+              );
+              if (txtmsg2 !== undefined) {
+                // 创建一个新的消息数组
+                console.log("I'll update msg with wavurl");
+                const updatedMessages = currentMessages.map(m =>
+                  m._id === txtmsg2._id ? {...m, wavurl: txt} : m,
+                );
+                // 返回更新后的消息数组
+                return updatedMessages;
+              }
+              // 如果没有找到对应的消息，返回未修改的消息数组
+              return currentMessages;
+            });
+          } else {
+            //Add the last message to the list
+            const message = {
+              _id: smessage.id,
+              text: (smessage as VwsTextMessage).content,
+              createdAt: new Date(),
+              isLoading: !(smessage as VwsTextMessage).final,
+              isAI: true,
+              veid: company?.curid ?? 'A0001',
+              bypass: company?.curid.startsWith('D') ?? false,
+            };
+            setMessages(previousMessages => [...previousMessages, message]);
+          }
         }
       } else if (isVwsImageMessage(smessage)) {
         // display the image
         const imgurl = (smessage as VwsImageMessage).url;
         const message = {
-          _id: +smessage.id,
+          _id: smessage.id,
           text: '```image\n' + imgurl + '\n```',
           createdAt: new Date(),
           isLoading: false,
@@ -103,6 +132,9 @@ const ShortCuts = () => {
           bypass: company?.curid.startsWith('D') ?? false,
         };
         setMessages(previousMessages => [...previousMessages, message]);
+      } else if (isVwsAudioMessage(smessage)) {
+        //
+        console.log("Audio message received, don't know how to handle it");
       }
     };
 
@@ -144,7 +176,7 @@ const ShortCuts = () => {
 
     //Add the last message to the list
     const userMsg = {
-      _id: new Date().getTime(),
+      _id: new Date().getTime().toString(),
       text: question,
       createdAt: new Date(),
       isLoading: false,

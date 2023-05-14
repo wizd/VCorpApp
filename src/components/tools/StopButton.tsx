@@ -6,16 +6,18 @@ interface StopButtonProps {
   onPress: () => void;
   size?: number;
   color?: string;
+  iconName: string;
 }
 
 const StopButton: React.FC<StopButtonProps> = ({
   onPress,
   size = 24,
   color = 'black',
+  iconName,
 }) => {
   return (
     <TouchableOpacity onPress={onPress}>
-      <Icon name="stop" size={size} color={color} />
+      <Icon name={iconName} size={size} color={color} />
     </TouchableOpacity>
   );
 };

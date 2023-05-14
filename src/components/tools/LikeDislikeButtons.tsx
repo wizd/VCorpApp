@@ -42,8 +42,21 @@ const LikeDislikeButtons: React.FC<LikeDislikeButtonsProps> = ({content}) => {
 
   return (
     <View style={styles.container}>
+      {/* <TouchableOpacity onPress={handleCopy}>
+        <MaterialIcons
+          style={styles.icons}
+          name={'hearing'}
+          size={14}
+          color="lightgrey"
+        />
+      </TouchableOpacity> */}
       <TouchableOpacity onPress={handleCopy}>
-        <MaterialIcons name={'content-copy'} size={14} color="grey" />
+        <MaterialIcons
+          style={styles.icons}
+          name={'content-copy'}
+          size={14}
+          color="grey"
+        />
       </TouchableOpacity>
       {/* <TouchableOpacity onPress={onLikePress} style={styles.dislikeIcon}>
         <MaterialIcons
@@ -71,6 +84,9 @@ const styles = StyleSheet.create({
   },
   dislikeIcon: {
     marginLeft: 10,
+  },
+  icons: {
+    padding: 5,
   },
 });
 

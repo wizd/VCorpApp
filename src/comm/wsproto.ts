@@ -1,4 +1,10 @@
-export type VwsMessageType = 'text' | 'image' | 'blob' | 'system' | 'json';
+export type VwsMessageType =
+  | 'text'
+  | 'image'
+  | 'audio'
+  | 'blob'
+  | 'system'
+  | 'json';
 
 export interface VwsBaseMessage {
   id: string; // 唯一消息 ID
@@ -21,6 +27,11 @@ export interface VwsImageMessage extends VwsBaseMessage {
   url: string; // 图片 URL
 }
 
+export interface VwsAudioMessage extends VwsBaseMessage {
+  type: 'audio';
+  data: ArrayBuffer; // .wav binary
+}
+
 export interface VwsBlobMessage extends VwsBaseMessage {
   type: 'blob';
   data: ArrayBuffer; // Blob 数据
@@ -39,6 +50,7 @@ export interface VwsJsonMessage extends VwsBaseMessage {
 export type VwsMessage =
   | VwsTextMessage
   | VwsImageMessage
+  | VwsAudioMessage
   | VwsBlobMessage
   | VwsSystemMessage
   | VwsJsonMessage;
@@ -53,6 +65,12 @@ export function isVwsImageMessage(
   message: VwsMessage,
 ): message is VwsImageMessage {
   return message.type === 'image';
+}
+
+export function isVwsAudioMessage(
+  message: VwsMessage,
+): message is VwsAudioMessage {
+  return message.type === 'audio';
 }
 
 export function isVwsBlobMessage(

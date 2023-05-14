@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {useContext} from 'react';
+import Sound from 'react-native-sound';
 import {Text, StyleSheet, View, ActivityIndicator, Image} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
@@ -13,8 +14,10 @@ const AIMessage = (props: any) => {
   const {company, setCompany} = useContext(AppContext);
   const [imgsrc, setImgsrc] = React.useState('');
   const [name, setName] = React.useState('');
+  const [sound, setSound] = React.useState<Sound | null>(null);
 
   React.useEffect(() => {
+    //console.log('AIMessage useEffect msg wave url is: ', props.msg.wavurl);
     setImgsrc(
       company!.config.API_URL + '/assets/avatar/' + props.msg.veid + '.png',
     );
@@ -25,6 +28,25 @@ const AIMessage = (props: any) => {
     console.log('handleStop');
     if (props.onStop) {
       props.onStop(props.msg);
+    }
+  };
+
+  const playOrPause = () => {
+    if (sound) {
+      if (sound.isPlaying()) {
+        sound.pause();
+      } else {
+        sound.play();
+      }
+    } else {
+      const s = new Sound(props.msg.wavurl, Sound.MAIN_BUNDLE, error => {
+        if (error) {
+          console.log('failed to load the sound', error);
+          return;
+        }
+        setSound(s);
+        s.play();
+      });
     }
   };
 
@@ -41,8 +63,15 @@ const AIMessage = (props: any) => {
       </View>
       <View style={styles.helloimFinehowCanIHelpWrapper}>
         <Markdown text={props.text} />
+        {props.msg.wavurl !== undefined && (
+          <View style={styles.soundMenu}>
+            <StopButton onPress={playOrPause} iconName="hearing" color="grey" />
+          </View>
+        )}
         <View style={styles.gearMenu}>
-          {props.isLoading && <StopButton onPress={handleStop} />}
+          {props.isLoading && (
+            <StopButton onPress={handleStop} iconName="stop" />
+          )}
           {!props.isLoading && <LikeDislikeButtons content={props.msg.text} />}
         </View>
         {/* <View style={styles.gearMenu}>
@@ -98,6 +127,12 @@ const styles = StyleSheet.create({
   gearMenu: {
     position: 'absolute',
     bottom: 12,
+    right: 12,
+    zIndex: 100,
+  },
+  soundMenu: {
+    position: 'absolute',
+    top: -38,
     right: 12,
     zIndex: 100,
   },
