@@ -451,7 +451,9 @@ const ShortCuts = () => {
 
   const autoScroll = () => {
     //console.log('autoScroll, flatListRef: ', flatListRef.current);
-    flatListRef.current?.scrollToEnd({animated: true});
+    if (messages.length > 0) {
+      flatListRef.current?.scrollToEnd({animated: true});
+    }
   };
 
   const styles = StyleSheet.create({
