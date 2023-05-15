@@ -22,7 +22,9 @@ export class Playing {
 interface AudioContextType {
   addToPlayList: (url: string) => void;
   playOrPause: (url: string) => void;
+  playNext: () => void;
   stopAndPlay: (url: string) => void;
+  playList: string[];
   currentPlaying: Playing | null;
   currentUrl: string | null;
   canPlay: boolean;
@@ -32,7 +34,9 @@ interface AudioContextType {
 const AudioContext = createContext<AudioContextType>({
   addToPlayList: () => {},
   playOrPause: () => {},
+  playNext: () => {},
   stopAndPlay: () => {},
+  playList: [],
   currentPlaying: null,
   currentUrl: null,
   canPlay: false,
@@ -129,6 +133,24 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
     }
   };
 
+  const playNext = () => {
+    // stop current sound
+    if (currentPlaying) {
+      currentPlaying.sound?.stop();
+      currentPlaying.sound?.release();
+      setCurrentPlaying(null);
+    }
+
+    if (playList.length > 1) {
+      // Check if there is a next song
+      const nextPlayList = [...playList];
+      nextPlayList.shift(); // Remove the first song from the playlist
+      setPlayList(nextPlayList); // Set the new playlist
+    } else {
+      showToast('This is the last song in the playlist.');
+    }
+  };
+
   const stopAndPlay = (wavurl: string) => {
     // if (sound) {
     //   sound.release();
@@ -142,7 +164,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
       value={{
         playOrPause,
         stopAndPlay,
+        playNext,
         addToPlayList,
+        playList,
         currentPlaying,
         canPlay,
         currentUrl,
