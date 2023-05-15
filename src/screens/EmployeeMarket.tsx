@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {Header} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
@@ -29,7 +30,16 @@ const EmployeeMarket = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
 
+  const [heightDelta, setHeightDelta] = useState(0 as number);
+
   useEffect(() => {
+    if (Platform.OS === 'ios' && +Platform.Version < 11) {
+      // iPhone X 或更高版本（具有刘海屏的设备）
+      setHeightDelta(-20);
+    } else {
+      setHeightDelta(-50);
+    }
+
     const url = company.config.API_URL + '/vc/v1/ve/list';
     // Fetch the data from the url, and set data to the returned data
     fetch(url, {
@@ -105,7 +115,7 @@ const EmployeeMarket = (props: Props) => {
     // Use a View component as a container for the page
     <View style={styles.pageContainer}>
       <Header
-        containerStyle={{marginTop: -50}}
+        containerStyle={{marginTop: heightDelta}}
         leftComponent={
           <CustomButton onPress={() => navigation.goBack()} title="返回" />
         }

@@ -8,6 +8,7 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import {Header} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
@@ -29,6 +30,17 @@ const EmployeeList = (props: Props) => {
   const [id, setId] = useState('' as string);
   const [curasst, setCurasst] = useState<Employee | undefined>(undefined);
   const [isModalVisible, setModalVisible] = useState(false);
+
+  const [heightDelta, setHeightDelta] = useState(0 as number);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios' && +Platform.Version < 11) {
+      // iPhone X 或更高版本（具有刘海屏的设备）
+      setHeightDelta(-20);
+    } else {
+      setHeightDelta(-50);
+    }
+  }, []);
 
   // useEffect(() => {
   //   const loadData = async () => {
@@ -125,7 +137,7 @@ const EmployeeList = (props: Props) => {
     // Use a View component as a container for the page
     <View style={styles.pageContainer}>
       <Header
-        containerStyle={{marginTop: -50}}
+        containerStyle={{marginTop: heightDelta}}
         leftComponent={
           <CustomButton onPress={() => navigation.goBack()} title="返回" />
         }
