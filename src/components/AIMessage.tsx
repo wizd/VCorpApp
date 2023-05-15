@@ -12,7 +12,6 @@ import {
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
-import GearMenu from './GearMenu';
 import Markdown from './Markdown';
 import SmallButton from './tools/SmallButton';
 import LikeDislikeButtons from './tools/LikeDislikeButtons';
