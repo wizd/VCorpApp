@@ -1,6 +1,6 @@
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import AppContext, {Company} from '../persist/AppContext';
+import AppContext from '../persist/AppContext';
 import {LyraCrypto} from '../crypto/lyra-crypto';
 import axios from 'axios';
 import React from 'react';
@@ -9,11 +9,10 @@ import {useToast} from '../utils/useToast';
 
 const UserRegister = () => {
   const {company, setCompany} = useContext(AppContext);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const isInitialized = useRef(false);
   const showToast = useToast();
 
-  const auth = async () => {
-    console.log('registering my company: ', company);
+  const auth = useCallback(async () => {
     if (!company) {
       return;
     }
@@ -35,61 +34,38 @@ const UserRegister = () => {
     });
     try {
       const ret = await api.post('/register', data);
-      console.log('register result: ', ret.data);
       if (ret.data.success) {
-        setCompany((prevCompany: Company) => {
-          return {
-            ...prevCompany,
-            jwt: ret.data.data.token as string,
-          };
+        setCompany({
+          ...company,
+          jwt: ret.data.data.token as string,
         });
-
         showToast('成功登录对话服务器，可以开启 AI 奇幻旅程了！');
-        // const exists = await checkTtsEngine();
-        // console.log('TTS engine: ', exists);
-        // setCompany(prev => ({
-        //   ...prev!,
-        //   settings: {
-        //     ...prev!.settings,
-        //     tts: exists && (prev!.settings.tts ?? true),
-        //   },
-        // }));
       } else {
-        showToast('登录对话服务器失败，原因是：' + ret.data.error.message + '');
+        showToast('登录对话服务器失败，原因是：' + ret.data.error.message);
       }
+      isInitialized.current = true;
     } catch (error) {
-      console.error('Request failed:', error);
-      // Check if error.response exists and the status code is 500
       if (error.response && error.response.status === 500) {
-        // Extract additional information about the error
-        console.log('error.response: ', error.response);
         const errorMessage = error.response.data.error;
         showToast('登录对话服务器失败，原因是：' + errorMessage);
       } else {
         showToast('登录对话服务器失败，请稍后重试');
       }
+      isInitialized.current = true;
     }
-  };
+  }, [company, setCompany, showToast]);
 
   useEffect(() => {
-    if (company && company.jwt) {
-      setIsInitialized(true);
-      return;
-    }
-
     if (company && !company.jwt) {
-      setIsInitialized(false);
-      // auth when jwt is not set or expired.
       auth();
-      return;
+    } else {
+      isInitialized.current = true;
     }
-
-    setIsInitialized(true);
-  }, [company]);
+  }, [auth, company]);
 
   return (
     <View>
-      {isInitialized ? (
+      {isInitialized.current ? (
         <Text style={[styles.online, styles.ml5]}>Online</Text>
       ) : (
         <Text style={[styles.offline, styles.ml5]}>Offline</Text>

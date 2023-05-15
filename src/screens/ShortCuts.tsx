@@ -163,14 +163,16 @@ const ShortCuts = () => {
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);
-    const newcompany = {
-      ...company,
-      settings: {
-        ...company?.settings,
-        guide: false,
-      },
-    };
-    setCompany(newcompany);
+    if (company) {
+      const newcompany = {
+        ...company,
+        settings: {
+          ...company.settings,
+          guide: false,
+        },
+      };
+      setCompany(newcompany);
+    }
     navigation.navigate('Employees' as never);
   };
 
@@ -404,11 +406,13 @@ const ShortCuts = () => {
     if (txt.indexOf('401') > 0) {
       console.log('401 error, retrying...');
 
-      const newcompany = {
-        ...company,
-        jwt: null,
-      };
-      setCompany(newcompany);
+      if (company) {
+        const newcompany = {
+          ...company,
+          jwt: undefined,
+        };
+        setCompany(newcompany);
+      }
 
       msgpadding =
         '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';

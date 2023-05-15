@@ -86,8 +86,10 @@ export const registerUser = async (apiUrl: string, privatekey: string) => {
 };
 
 const createDefaultCompany = async (): Promise<Company> => {
+  console.log('createDefaultCompany is running');
   // create a default company, with 1 employee
   const wallet = LyraCrypto.GenerateWallet();
+  console.log('wallet: ', wallet);
   console.log('wallet address: ', wallet.accountId);
   const defaultCompany: Company = {
     config: defaultConfig,
@@ -104,6 +106,7 @@ const createDefaultCompany = async (): Promise<Company> => {
       },
     ],
   };
+  console.log('defaultCompany: ', defaultCompany);
   return defaultCompany;
 };
 
@@ -119,22 +122,28 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
   useEffect(() => {
     const loadCompanyData = async () => {
+      console.log('loadCompanyData is running');
       try {
         const storedCompanyData = await AsyncStorage.getItem(storeName);
+        console.log('storedCompanyData:', storedCompanyData);
         if (storedCompanyData) {
           const saved = JSON.parse(storedCompanyData);
           if (saved.config.API_URL !== 'http://10.0.2.2:3001') {
-            // leave dev android alone. always update user's saved data.
             saved.config.API_URL = defaultConfig.API_URL;
           }
           setCompany(saved);
-          return;
+        } else {
+          const defaultCompany = await createDefaultCompany();
+          console.log('defaultCompany: ', defaultCompany);
+          const jwt = await registerUser(
+            defaultCompany.config.API_URL,
+            defaultCompany.privatekey,
+          );
+          defaultCompany.jwt = jwt;
+          setCompany(defaultCompany);
         }
       } catch (error) {
         console.error('Error loading company data:', error);
-        const defaultCompany = await createDefaultCompany();
-        console.log('defaultCompany: ', defaultCompany);
-        setCompany(defaultCompany);
       }
     };
 
