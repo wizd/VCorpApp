@@ -125,6 +125,7 @@ const EmployeeList = (props: Props) => {
     // Use a View component as a container for the page
     <View style={styles.pageContainer}>
       <Header
+        containerStyle={{marginTop: -50}}
         leftComponent={
           <CustomButton onPress={() => navigation.goBack()} title="返回" />
         }

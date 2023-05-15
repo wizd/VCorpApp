@@ -61,9 +61,13 @@ const EmployeeMarket = (props: Props) => {
     let result = datafull;
     if (hired != null) {
       if (hired) {
-        result = datafull.filter(e => company.employees.find(ee => ee.id === e.id));
+        result = datafull.filter(e =>
+          company.employees.find(ee => ee.id === e.id),
+        );
       } else {
-        result = datafull.filter(e => !company.employees.find(ee => ee.id === e.id));
+        result = datafull.filter(
+          e => !company.employees.find(ee => ee.id === e.id),
+        );
       }
     }
     if (category != null) {
@@ -101,6 +105,7 @@ const EmployeeMarket = (props: Props) => {
     // Use a View component as a container for the page
     <View style={styles.pageContainer}>
       <Header
+        containerStyle={{marginTop: -50}}
         leftComponent={
           <CustomButton onPress={() => navigation.goBack()} title="返回" />
         }
