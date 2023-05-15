@@ -23,12 +23,12 @@ const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
   //const [appName, setAppName] = useState('VCorp');
 
-  useEffect(() => {
-    //const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
-    // if (translations.hasOwnProperty(deviceLanguage)) {
-    //   setAppName(translations[deviceLanguage].appName);
-    // }
-  }, []);
+  // useEffect(() => {
+  //   //const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+  //   // if (translations.hasOwnProperty(deviceLanguage)) {
+  //   //   setAppName(translations[deviceLanguage].appName);
+  //   // }
+  // }, []);
   return (
     <>
       <AppContextProvider>
