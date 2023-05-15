@@ -12,13 +12,19 @@ const Onboarding = () => {
     async function reg() {
       if (company?.config.API_URL && company?.privatekey) {
         const jwt = await registerUser(
-          company?.config.API_URL,
-          company?.privatekey,
+          company.config.API_URL,
+          company.privatekey,
         );
 
-        setCompany((prevCompany) => {
-          ...company,
-          jwt: jwt,
+        setCompany(prevCompany => {
+          if (prevCompany) {
+            return {
+              ...prevCompany,
+              jwt: jwt,
+            };
+          } else {
+            return prevCompany;
+          }
         });
       }
     }
@@ -127,3 +133,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+export default Onboarding;

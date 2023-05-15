@@ -21,7 +21,7 @@ const QuickActions = (props: any) => {
           frame44MarginTop={8}
         />
         <QuickQuestonButton
-          q="帮我写一首诗，赞颂有了人工智以后的幸福生活。用七律来写，模仿李白的风格。"
+          q="帮我写一首诗，赞颂有了人工智能以后的幸福生活。用七律来写，模仿李白的风格。"
           pressed={props.pressed}
           frame44MarginTop={8}
         />

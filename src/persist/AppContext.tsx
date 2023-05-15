@@ -43,7 +43,7 @@ export interface Company {
 
 interface AppContextType {
   company: Company | null;
-  setCompany: (updateFunction: (company: Company | null) => Company) => void;
+  setCompany: React.Dispatch<React.SetStateAction<Company | null>>;
 }
 
 const AppContext = createContext<AppContextType>({
