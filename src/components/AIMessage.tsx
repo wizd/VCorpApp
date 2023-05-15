@@ -166,8 +166,8 @@ const styles = StyleSheet.create({
   },
   soundControl: {
     position: 'absolute',
-    top: -38,
-    right: 120,
+    top: -42,
+    right: 48,
     zIndex: 100,
   },
   container: {
