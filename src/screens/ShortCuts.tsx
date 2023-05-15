@@ -341,7 +341,9 @@ const ShortCuts = () => {
 
             // Update the list
             const mewLIst = last.map((m, _i) => {
-              if (m._id === message._id) m.isLoading = false;
+              if (m._id === message._id) {
+                m.isLoading = false;
+              }
 
               return m;
             });
