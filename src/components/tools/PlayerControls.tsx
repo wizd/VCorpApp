@@ -4,8 +4,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useAudio} from '../../persist/AudioContext';
 
 const PlayerControls: React.FC = () => {
-  const {playOrPause, playNext, playList, currentPlaying, canPlay, isPaused} =
-    useAudio();
+  const {
+    playOrPause,
+    playNext,
+    stop,
+    playList,
+    currentPlaying,
+    canPlay,
+    isPaused,
+  } = useAudio();
 
   const handlePlayPause = () => {
     // Assuming your playOrPause function accepts a URL
@@ -16,6 +23,10 @@ const PlayerControls: React.FC = () => {
     playNext();
   };
 
+  const handleStop = () => {
+    stop();
+  };
+
   useEffect(() => {
     // Assuming your playOrPause function accepts a URL
     console.log('currentUrl is: ', currentPlaying?.url, 'can play? ', canPlay);
@@ -23,6 +34,13 @@ const PlayerControls: React.FC = () => {
 
   return (
     <View style={{flexDirection: 'row'}}>
+      <TouchableOpacity onPress={handleStop}>
+        <Icon
+          name="stop"
+          size={32}
+          color={currentPlaying !== null ? 'black' : 'lightgrey'}
+        />
+      </TouchableOpacity>
       <TouchableOpacity onPress={handlePlayPause}>
         <Icon
           name={isPaused ? 'play-arrow' : 'pause'}

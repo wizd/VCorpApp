@@ -23,7 +23,7 @@ interface AudioContextType {
   addToPlayList: (url: string) => void;
   playOrPause: (url: string) => void;
   playNext: () => void;
-  stopAndPlay: (url: string) => void;
+  stop: () => void;
   playList: string[];
   currentPlaying: Playing | null;
   currentUrl: string | null;
@@ -35,7 +35,7 @@ const AudioContext = createContext<AudioContextType>({
   addToPlayList: () => {},
   playOrPause: () => {},
   playNext: () => {},
-  stopAndPlay: () => {},
+  stop: () => {},
   playList: [],
   currentPlaying: null,
   currentUrl: null,
@@ -65,10 +65,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
         return [...prevList, url];
       }
     });
-
-    if (currentPlaying === null && canPlay) {
-      console.log('addToPlayList: currentPlaying is null, playNext()');
-    }
   };
 
   // Whenever the playList updates, check if we should start playing
@@ -105,7 +101,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
         s.play(success => {
           if (success) {
             // Remove played sound from playlist
-            showToast('Sound played successfully');
+            //showToast('Sound played successfully');
             currentPlaying?.release();
             setCurrentPlaying(null);
             setPlayList(currentList => currentList.slice(1));
@@ -121,7 +117,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
     setCanPlay(playList.length > 0);
   }, [playList]); // Recreate playNext when playList changes
 
-  const playOrPause = (wavurl: string) => {
+  const playOrPause = () => {
     if (currentPlaying !== null) {
       if (currentPlaying.sound?.isPlaying()) {
         currentPlaying.sound?.pause();
@@ -151,19 +147,22 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
     }
   };
 
-  const stopAndPlay = (wavurl: string) => {
-    // if (sound) {
-    //   sound.release();
-    //   setSound(null);
-    // }
-    // playOrPause(wavurl);
+  const stop = () => {
+    if (currentPlaying?.sound) {
+      currentPlaying.sound.stop();
+      currentPlaying.sound.release();
+      setCurrentPlaying(null);
+      setIsPaused(false);
+      showToast('Stopped');
+      setPlayList(currentList => currentList.slice(1));
+    }
   };
 
   return (
     <AudioContext.Provider
       value={{
         playOrPause,
-        stopAndPlay,
+        stop,
         playNext,
         addToPlayList,
         playList,
