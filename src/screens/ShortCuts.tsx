@@ -21,7 +21,7 @@ import QuestionBox from '../components/QuestionBox';
 import AIMessage from '../components/AIMessage';
 import UserMessage from '../components/UserMessage';
 
-import AppContext from '../persist/AppContext';
+import AppContext, {registerUser} from '../persist/AppContext';
 import ArrowGuide from '../components/help/ArrowGuide';
 //import {useTts} from '../utils/useTts';
 import {useChat} from '../persist/ChatContext';
@@ -55,6 +55,10 @@ const ShortCuts = () => {
     const fetchData = async () => {
       const data = await getMsgData();
       setMessages(data);
+
+      if (company !== null && company.jwt === undefined) {
+        await registerUser(company.config.API_URL, company.privatekey);
+      }
     };
 
     fetchData();

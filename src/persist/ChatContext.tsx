@@ -64,6 +64,10 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
       chatClientRef.current.disconnect();
     }
 
+    if (company.jwt === undefined) {
+      return;
+    }
+
     console.log('createChatClientInstance use url: ', company.config.API_URL);
     const client = createChatClientInstance(
       company.config.API_URL,
