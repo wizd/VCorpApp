@@ -23,14 +23,15 @@ const EmployeeList = (props: Props) => {
   const [curasst, setCurasst] = useState<Employee | undefined>(undefined);
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const [heightDelta, setHeightDelta] = useState(0 as number);
+  const [heightDelta, setHeightDelta] = useState(-50 as number);
 
   useEffect(() => {
-    if (DeviceInfo.hasNotch()) {
-      // iPhone X 或更高版本（具有刘海屏的设备）
-      setHeightDelta(-50);
-    } else {
-      setHeightDelta(10);
+    const devid = DeviceInfo.getDeviceId();
+    if (devid.includes('iPhone')) {
+      const digits = +devid.replace('iPhone', '').replace(',', '');
+      if (digits < 100) {
+        setHeightDelta(0);
+      }
     }
   }, []);
 
