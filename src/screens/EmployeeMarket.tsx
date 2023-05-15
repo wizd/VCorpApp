@@ -2,7 +2,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
-  Button,
   Alert,
   StyleSheet,
   FlatList,
@@ -11,6 +10,7 @@ import {
 } from 'react-native';
 import {Header} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
+import DeviceInfo from 'react-native-device-info';
 
 import EmployeeListItem from '../components/EmployeeListItem';
 import AppContext, {Employee} from '../persist/AppContext';
@@ -33,11 +33,11 @@ const EmployeeMarket = (props: Props) => {
   const [heightDelta, setHeightDelta] = useState(0 as number);
 
   useEffect(() => {
-    if (Platform.OS === 'ios' && +Platform.Version < 11) {
+    if (DeviceInfo.hasNotch()) {
       // iPhone X 或更高版本（具有刘海屏的设备）
-      setHeightDelta(-20);
-    } else {
       setHeightDelta(-50);
+    } else {
+      setHeightDelta(10);
     }
 
     const url = company.config.API_URL + '/vc/v1/ve/list';
