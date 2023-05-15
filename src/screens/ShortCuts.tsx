@@ -97,7 +97,10 @@ const ShortCuts = () => {
           // check if speech for the some message
           const txt = (smessage as VwsTextMessage).content;
 
-          if (txt.startsWith('https://r.vcorp.ai/') && txt.endsWith('.wav')) {
+          if (
+            txt.startsWith('https://r.vcorp.ai/') &&
+            (txt.endsWith('.mp3') || txt.endsWith('.wav'))
+          ) {
             setMessages(currentMessages => {
               // 使用 currentMessages 而不是 messages
               const txtmsg2 = currentMessages.find(m => m._id === smessage.id);
