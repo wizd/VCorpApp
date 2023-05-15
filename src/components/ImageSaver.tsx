@@ -16,11 +16,11 @@ import AutoImage from './AutoImage';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import * as Progress from 'react-native-progress';
 import AppContext from '../persist/AppContext';
-import { useToast } from '../utils/useToast';
+import {useToast} from '../utils/useToast';
 
 async function hasAndroidPermission() {
   const permission =
-    Platform.Version >= 33
+    +Platform.Version >= 33
       ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
       : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
 
