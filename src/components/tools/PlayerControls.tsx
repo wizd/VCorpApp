@@ -4,16 +4,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useAudio} from '../../persist/AudioContext';
 
 const PlayerControls: React.FC = () => {
-  const {playOrPause, playNext, currentPlaying, canPlay} = useAudio();
+  const {playOrPause, currentPlaying, canPlay} = useAudio();
 
   const handlePlayPause = () => {
     // Assuming your playOrPause function accepts a URL
     playOrPause('your-url-here');
   };
 
-  const handleNext = () => {
-    playNext();
-  };
+  const handleNext = () => {};
 
   useEffect(() => {
     // Assuming your playOrPause function accepts a URL

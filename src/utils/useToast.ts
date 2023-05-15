@@ -1,18 +1,21 @@
 import Toast from 'react-native-toast-message';
 
 export const useToast = () => {
-  const showToast = (message: string, type: string = 'success') => {
+  const showToast = (
+    message: string,
+    type: 'success' | 'error' | 'info' = 'success',
+  ) => {
     // Define styles for different toast types
     const toastStyles = {
       success: {
         backgroundColor: '#4CAF50', // Green
         textColor: '#FFFFFF',
       },
-      failed: {
+      error: {
         backgroundColor: '#FF9800', // Orange
         textColor: '#FFFFFF',
       },
-      error: {
+      info: {
         backgroundColor: '#F44336', // Red
         textColor: '#FFFFFF',
       },
@@ -25,10 +28,10 @@ export const useToast = () => {
       type: type,
       position: 'top',
       text1: message,
-      text2: '',
-      style: {
-        backgroundColor: currentStyles.backgroundColor,
-      },
+      visibilityTime: 3000, // 3 seconds
+      autoHide: true,
+      topOffset: 30,
+      bottomOffset: 40,
       textStyle: {
         color: currentStyles.textColor,
       },

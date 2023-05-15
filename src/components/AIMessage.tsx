@@ -27,7 +27,7 @@ const AIMessage = (props: any) => {
   const [imgsrc, setImgsrc] = React.useState('');
   const [name, setName] = React.useState('');
   const [started, setStarted] = React.useState(false);
-  const {addToPlayList, currentPlaying} = useAudio();
+  const {addToPlayList, currentUrl} = useAudio();
 
   React.useEffect(() => {
     //console.log('AIMessage useEffect msg wave url is: ', props.msg.wavurl);
@@ -66,24 +66,6 @@ const AIMessage = (props: any) => {
 
   const playOrPause = () => {
     addToPlayList(props.msg.wavurl);
-    // if (sound) {
-    //   if (sound.isPlaying()) {
-    //     sound.pause();
-    //   } else {
-    //     sound.play();
-    //   }
-    // } else if (!started) {
-    //   const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
-    //   const s = new Sound(props.msg.wavurl, sb, error => {
-    //     if (error) {
-    //       console.log('failed to load the sound', error);
-    //       return;
-    //     }
-    //     setSound(s);
-    //     s.play();
-    //   });
-    //   setStarted(true);
-    // }
   };
 
   return (
@@ -99,7 +81,7 @@ const AIMessage = (props: any) => {
       </View>
       <View style={styles.AITalkContent}>
         <Markdown text={props.text} />
-        {currentPlaying?.url === props.msg.wavurl && (
+        {currentUrl === props.msg.wavurl && (
           <View style={styles.soundControl}>
             <PlayerControls />
           </View>
