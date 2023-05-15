@@ -19,6 +19,7 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
 import {ChatProvider} from './src/persist/ChatContext';
 import Sound from 'react-native-sound';
+import {AudioProvider} from './src/persist/AudioContext';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
@@ -35,49 +36,51 @@ const App = () => {
     <>
       <AppContextProvider>
         <ChatProvider>
-          <SafeAreaProvider>
-            <SafeAreaView style={{flex: 1}}>
-              <NavigationContainer>
-                {hideSplashScreen ? (
-                  <Stack.Navigator
-                    initialRouteName="Onboarding"
-                    screenOptions={{headerShown: false}}>
-                    <Stack.Screen
-                      name="Onboarding"
-                      component={Onboarding}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="ChatPage"
-                      component={ChatPage}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="ShortCuts"
-                      component={ShortCuts}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="Employees"
-                      component={EmployeeList}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="EmployeeMarket"
-                      component={EmployeeMarket}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="Settings"
-                      component={AppSettings}
-                      options={{headerShown: false}}
-                    />
-                  </Stack.Navigator>
-                ) : null}
-              </NavigationContainer>
-              <Toast />
-            </SafeAreaView>
-          </SafeAreaProvider>
+          <AudioProvider>
+            <SafeAreaProvider>
+              <SafeAreaView style={{flex: 1}}>
+                <NavigationContainer>
+                  {hideSplashScreen ? (
+                    <Stack.Navigator
+                      initialRouteName="Onboarding"
+                      screenOptions={{headerShown: false}}>
+                      <Stack.Screen
+                        name="Onboarding"
+                        component={Onboarding}
+                        options={{headerShown: false}}
+                      />
+                      <Stack.Screen
+                        name="ChatPage"
+                        component={ChatPage}
+                        options={{headerShown: false}}
+                      />
+                      <Stack.Screen
+                        name="ShortCuts"
+                        component={ShortCuts}
+                        options={{headerShown: false}}
+                      />
+                      <Stack.Screen
+                        name="Employees"
+                        component={EmployeeList}
+                        options={{headerShown: false}}
+                      />
+                      <Stack.Screen
+                        name="EmployeeMarket"
+                        component={EmployeeMarket}
+                        options={{headerShown: false}}
+                      />
+                      <Stack.Screen
+                        name="Settings"
+                        component={AppSettings}
+                        options={{headerShown: false}}
+                      />
+                    </Stack.Navigator>
+                  ) : null}
+                </NavigationContainer>
+                <Toast />
+              </SafeAreaView>
+            </SafeAreaProvider>
+          </AudioProvider>
         </ChatProvider>
       </AppContextProvider>
     </>

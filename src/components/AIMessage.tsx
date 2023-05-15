@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {useContext} from 'react';
-import Sound from 'react-native-sound';
+import {useCallback, useContext} from 'react';
 import {
   Text,
   StyleSheet,
@@ -16,13 +15,19 @@ import Markdown from './Markdown';
 import SmallButton from './tools/SmallButton';
 import LikeDislikeButtons from './tools/LikeDislikeButtons';
 import Toast from 'react-native-toast-message';
+import {useAudio} from '../persist/AudioContext';
+import PlayerControls from './tools/PlayerControls';
+
+// 关于音频播放：
+// 如果是当前的消息，那么现实出控制台（停止、暂停、上一个、下一个）
+// 如果不是当前的消息，那么只显示小耳朵图标，点击后加入队列，长按强行插入当前播放队列的第一个位置，然后开始播放
 
 const AIMessage = (props: any) => {
-  const {company, setCompany} = useContext(AppContext);
+  const {company} = useContext(AppContext);
   const [imgsrc, setImgsrc] = React.useState('');
   const [name, setName] = React.useState('');
-  const [sound, setSound] = React.useState<Sound | null>(null);
   const [started, setStarted] = React.useState(false);
+  const {addToPlayList, currentPlaying} = useAudio();
 
   React.useEffect(() => {
     //console.log('AIMessage useEffect msg wave url is: ', props.msg.wavurl);
@@ -30,6 +35,10 @@ const AIMessage = (props: any) => {
       company!.config.API_URL + '/assets/avatar/' + props.msg.veid + '.png',
     );
     setName(company?.employees.find(e => e.id === props.msg.veid)?.name || '');
+
+    // if (company?.settings.tts && props.msg.wavurl !== undefined) {
+    //   addToPlayList(props.msg.wavurl);
+    // }
   }, [company, props]);
 
   const showToast = () => {
@@ -49,31 +58,32 @@ const AIMessage = (props: any) => {
   };
 
   const playResetProgress = () => {
-    if (sound) {
-      sound.setCurrentTime(0);
-      showToast();
-    }
+    // if (sound) {
+    //   sound.setCurrentTime(0);
+    //   showToast();
+    // }
   };
 
   const playOrPause = () => {
-    if (sound) {
-      if (sound.isPlaying()) {
-        sound.pause();
-      } else {
-        sound.play();
-      }
-    } else if (!started) {
-      const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
-      const s = new Sound(props.msg.wavurl, sb, error => {
-        if (error) {
-          console.log('failed to load the sound', error);
-          return;
-        }
-        setSound(s);
-        s.play();
-      });
-      setStarted(true);
-    }
+    addToPlayList(props.msg.wavurl);
+    // if (sound) {
+    //   if (sound.isPlaying()) {
+    //     sound.pause();
+    //   } else {
+    //     sound.play();
+    //   }
+    // } else if (!started) {
+    //   const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
+    //   const s = new Sound(props.msg.wavurl, sb, error => {
+    //     if (error) {
+    //       console.log('failed to load the sound', error);
+    //       return;
+    //     }
+    //     setSound(s);
+    //     s.play();
+    //   });
+    //   setStarted(true);
+    // }
   };
 
   return (
@@ -87,8 +97,13 @@ const AIMessage = (props: any) => {
         />
         <Text style={styles.userName}>{name}</Text>
       </View>
-      <View style={styles.helloimFinehowCanIHelpWrapper}>
+      <View style={styles.AITalkContent}>
         <Markdown text={props.text} />
+        {currentPlaying?.url === props.msg.wavurl && (
+          <View style={styles.soundControl}>
+            <PlayerControls />
+          </View>
+        )}
         {props.msg.wavurl !== undefined && (
           <View style={styles.soundMenu}>
             <SmallButton
@@ -134,7 +149,7 @@ const styles = StyleSheet.create({
     color: '#000000',
     textAlign: 'left',
   },
-  helloimFinehowCanIHelpWrapper: {
+  AITalkContent: {
     flex: 1,
     borderBottomLeftRadius: Border.br_sm,
     borderTopRightRadius: Border.br_sm,
@@ -165,6 +180,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -38,
     right: 12,
+    zIndex: 100,
+  },
+  soundControl: {
+    position: 'absolute',
+    top: -38,
+    right: 120,
     zIndex: 100,
   },
   container: {
