@@ -37,7 +37,7 @@ const EmployeeMarket = (props: Props) => {
     if (devid.includes('iPhone')) {
       const digits = +devid.replace('iPhone', '').replace(',', '');
       if (digits < 100) {
-        setHeightDelta(0);
+        setHeightDelta(-10);
       }
     }
 
