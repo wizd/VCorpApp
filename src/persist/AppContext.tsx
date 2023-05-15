@@ -37,7 +37,7 @@ export interface Company {
   privatekey: string;
   name: string;
   curid: string;
-  jwt: string;
+  jwt?: string;
   employees: Employee[];
 }
 
@@ -51,7 +51,7 @@ const AppContext = createContext<AppContextType>({
   setCompany: () => {},
 });
 
-const registerUser = async (apiUrl: string, privatekey: string) => {
+export const registerUser = async (apiUrl: string, privatekey: string) => {
   const baseUrl = apiUrl + '/vc/v1/user';
   const usr = {
     accountId: LyraCrypto.GetAccountIdFromPrivateKey(privatekey),
@@ -94,7 +94,6 @@ const createDefaultCompany = async (): Promise<Company> => {
     privatekey: wallet.privateKey,
     name: 'Default Company',
     curid: 'A0001',
-    jwt: await registerUser(defaultConfig.API_URL, wallet.privateKey),
     employees: [
       {
         id: 'A0001',
@@ -128,8 +127,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
             saved.config.API_URL = defaultConfig.API_URL;
           }
           setCompany(saved);
-        } else {
-          throw 'storedCompanyData is not right.';
+          return;
         }
       } catch (error) {
         console.error('Error loading company data:', error);

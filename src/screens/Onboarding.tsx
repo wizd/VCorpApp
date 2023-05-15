@@ -2,9 +2,28 @@ import * as React from 'react';
 import {Text, StyleSheet, View, Image, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Margin, FontFamily, Color, Border} from '../../GlobalStyles';
+import AppContext, {registerUser} from '../persist/AppContext';
 
 const Onboarding = () => {
   const navigation = useNavigation();
+  const {company, setCompany} = React.useContext(AppContext);
+
+  React.useEffect(() => {
+    async function reg() {
+      if (company?.config.API_URL && company?.privatekey) {
+        const jwt = await registerUser(
+          company?.config.API_URL,
+          company?.privatekey,
+        );
+
+        setCompany((prevCompany) => {
+          ...company,
+          jwt: jwt,
+        });
+      }
+    }
+    reg();
+  }, []);
 
   return (
     <View style={styles.onboarding}>
@@ -108,5 +127,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-export default Onboarding;
