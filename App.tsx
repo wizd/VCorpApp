@@ -18,17 +18,19 @@ import Toast from 'react-native-toast-message';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
 import {ChatProvider} from './src/persist/ChatContext';
+import Sound from 'react-native-sound';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
   //const [appName, setAppName] = useState('VCorp');
 
-  // useEffect(() => {
-  //   //const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
-  //   // if (translations.hasOwnProperty(deviceLanguage)) {
-  //   //   setAppName(translations[deviceLanguage].appName);
-  //   // }
-  // }, []);
+  useEffect(() => {
+    Sound.setCategory('Playback');
+    //const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+    // if (translations.hasOwnProperty(deviceLanguage)) {
+    //   setAppName(translations[deviceLanguage].appName);
+    // }
+  }, []);
   return (
     <>
       <AppContextProvider>
