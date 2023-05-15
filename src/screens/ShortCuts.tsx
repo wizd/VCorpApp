@@ -34,6 +34,7 @@ import {
   isVwsTextMessage,
 } from '../comm/wsproto';
 import {Message, getMsgData, storeMsgData} from '../persist/msgstore';
+import {useAudio} from '../persist/AudioContext';
 
 const ShortCuts = () => {
   const navigation = useNavigation();
@@ -44,6 +45,7 @@ const ShortCuts = () => {
 
   const {company, setCompany} = useContext(AppContext);
   const [showArrow, setShowArrow] = useState(true);
+  const {addToPlayList} = useAudio();
 
   // const {beginReading, endReading} = useTts({
   //   isEnabled: company?.settings.tts ?? false,
@@ -105,6 +107,10 @@ const ShortCuts = () => {
             txt.startsWith('https://r.vcorp.ai/') &&
             (txt.endsWith('.mp3') || txt.endsWith('.wav'))
           ) {
+            if (company?.settings?.tts) {
+              addToPlayList(txt);
+            }
+
             setMessages(currentMessages => {
               // 使用 currentMessages 而不是 messages
               const txtmsg2 = currentMessages.find(m => m._id === smessage.id);

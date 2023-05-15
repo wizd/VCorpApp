@@ -81,11 +81,13 @@ const AIMessage = (props: any) => {
       </View>
       <View style={styles.AITalkContent}>
         <Markdown text={props.text} />
-        {currentUrl === props.msg.wavurl && (
-          <View style={styles.soundControl}>
-            <PlayerControls />
-          </View>
-        )}
+        {currentUrl !== null &&
+          currentUrl !== undefined &&
+          currentUrl === props.msg.wavurl && (
+            <View style={styles.soundControl}>
+              <PlayerControls />
+            </View>
+          )}
         {props.msg.wavurl !== undefined && (
           <View style={styles.soundMenu}>
             <SmallButton
