@@ -52,6 +52,7 @@ const AppContext = createContext<AppContextType>({
 });
 
 export const registerUser = async (apiUrl: string, privatekey: string) => {
+  console.log('registering user to: ', apiUrl);
   const baseUrl = apiUrl + '/vc/v1/user';
   const usr = {
     accountId: LyraCrypto.GetAccountIdFromPrivateKey(privatekey),
@@ -60,7 +61,7 @@ export const registerUser = async (apiUrl: string, privatekey: string) => {
     user: usr,
     signature: LyraCrypto.Sign(JSON.stringify(usr), privatekey),
   };
-  console.log('registering user to: ', baseUrl);
+  console.log('registering user with signature: ', data);
   const api = axios.create({
     baseURL: baseUrl,
     headers: {
