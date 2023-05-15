@@ -1,19 +1,10 @@
 // Import React and React Native components
 import React, {useContext, useEffect, useState} from 'react';
-import {
-  View,
-  Button,
-  Alert,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  Text,
-  Switch,
-} from 'react-native';
+import {View, StyleSheet, Text, Switch} from 'react-native';
 import {Header} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
 
-import AppContext, {Employee} from '../persist/AppContext';
+import AppContext from '../persist/AppContext';
 import CustomButton from '../components/tools/CustomButton';
 
 // Define the main component that renders the page
