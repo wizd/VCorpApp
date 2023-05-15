@@ -26,6 +26,7 @@ interface AudioContextType {
   currentPlaying: Playing | null;
   currentUrl: string | null;
   canPlay: boolean;
+  isPaused: boolean;
 }
 
 const AudioContext = createContext<AudioContextType>({
@@ -35,6 +36,7 @@ const AudioContext = createContext<AudioContextType>({
   currentPlaying: null,
   currentUrl: null,
   canPlay: false,
+  isPaused: false,
 });
 
 interface AudioProviderProps {
@@ -45,9 +47,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
   const [playList, setPlayList] = useState<string[]>([]);
   const [currentPlaying, setCurrentPlaying] = useState<Playing | null>(null);
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [canPlay, setCanPlay] = useState(false);
   const showToast = useToast();
-
-  const canPlay = playList.length > 0;
 
   const addToPlayList = (url: string) => {
     setPlayList(prevList => {
@@ -112,14 +114,17 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
       playNext();
     }
     setCurrentUrl(playList[0]);
+    setCanPlay(playList.length > 0);
   }, [playList]); // Recreate playNext when playList changes
 
   const playOrPause = (wavurl: string) => {
     if (currentPlaying !== null) {
       if (currentPlaying.sound?.isPlaying()) {
         currentPlaying.sound?.pause();
+        setIsPaused(true);
       } else {
         currentPlaying.sound?.play();
+        setIsPaused(false);
       }
     }
   };
@@ -141,6 +146,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
         currentPlaying,
         canPlay,
         currentUrl,
+        isPaused,
       }}>
       {children}
     </AudioContext.Provider>
