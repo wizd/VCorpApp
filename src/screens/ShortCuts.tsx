@@ -518,6 +518,7 @@ const ShortCuts = () => {
       <KeyboardAvoidingView
         style={styles.kav}
         behavior={Platform.OS === 'ios' ? 'height' : 'height'}>
+        <TitleSection />
         <View style={styles.shortcuts}>
           {showArrow && <ArrowGuide />}
           <FlatList
@@ -539,7 +540,6 @@ const ShortCuts = () => {
             }
             ListHeaderComponent={
               <>
-                <TitleSection />
                 <View style={[styles.shortcutsChild, styles.mt8]} />
                 <QuickActions pressed={setQ} />
               </>
