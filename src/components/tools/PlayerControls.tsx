@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {View, TouchableOpacity, Animated} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useAudio} from '../../persist/AudioContext';
 
@@ -13,6 +13,9 @@ const PlayerControls: React.FC = () => {
     canPlay,
     isPaused,
   } = useAudio();
+
+  const translateX = useRef(new Animated.Value(100)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
 
   const handlePlayPause = () => {
     // Assuming your playOrPause function accepts a URL
@@ -32,8 +35,28 @@ const PlayerControls: React.FC = () => {
     console.log('currentUrl is: ', currentPlaying?.url, 'can play? ', canPlay);
   }, [canPlay, currentPlaying]);
 
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(translateX, {
+        toValue: canPlay || currentPlaying !== null ? 0 : 100,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
+        toValue: canPlay || currentPlaying !== null ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [canPlay, currentPlaying]);
+
   return (
-    <View style={{flexDirection: 'row'}}>
+    <Animated.View
+      style={{
+        flexDirection: 'row',
+        transform: [{translateX: translateX}],
+        opacity: opacity,
+      }}>
       <TouchableOpacity onPress={handleStop} disabled={currentPlaying === null}>
         <Icon
           name="stop"
@@ -57,7 +80,7 @@ const PlayerControls: React.FC = () => {
           color={playList.length > 1 ? 'black' : 'lightgrey'}
         />
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 };
 
