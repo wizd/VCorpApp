@@ -35,7 +35,7 @@ const TitleSection = () => {
             source={require('../../assets/logo_sm.png')}
           />
           <View style={[styles.chatgptParent, styles.ml20]}>
-            <Text style={styles.chatgpt}>ChatGPT</Text>
+            <Text style={styles.chatgpt}>微可智能</Text>
             <View
               style={[
                 styles.blueRobotMascotLogoIconDeParent,
@@ -47,11 +47,6 @@ const TitleSection = () => {
                   styles.blueRobotMascotLogoIconDeParent,
                   styles.frameParentFlexBox,
                 ]}>
-                <Image
-                  style={styles.frameChild}
-                  resizeMode="cover"
-                  source={require('../../assets/ellipse-11.png')}
-                />
                 <UserRegister />
               </View>
             </View>

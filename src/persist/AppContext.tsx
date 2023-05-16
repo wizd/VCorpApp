@@ -20,7 +20,7 @@ export interface Config {
 
 export interface Settings {
   tts: boolean;
-  guide: boolean;
+  guide?: boolean;
   autoSaveImage: boolean;
 }
 export interface Employee {

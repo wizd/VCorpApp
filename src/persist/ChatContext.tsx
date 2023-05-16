@@ -5,7 +5,10 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import ChatClient, {MessageCallback} from '../comm/chatClient';
+import ChatClient, {
+  ConnectionStatusCallback,
+  MessageCallback,
+} from '../comm/chatClient';
 import {Text} from 'react-native';
 import AppContext from './AppContext';
 import {VwsMessage} from '../comm/wsproto';
@@ -14,6 +17,8 @@ export interface IChatContext {
   sendMessage: (message: VwsMessage) => void;
   onNewMessage: (callback: MessageCallback) => void;
   offNewMessage: (callback: MessageCallback) => void;
+  onConnectionStatusChange: (callback: ConnectionStatusCallback) => void;
+  offConnectionStatusChange: (callback: ConnectionStatusCallback) => void;
 }
 
 const ChatContext = createContext<IChatContext | null>(null);
@@ -76,7 +81,14 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
     chatClientRef.current = client;
     setIsLoaded(true);
 
+    // const handleConnectionStatusChange = (status: boolean) => {
+    //   setIsOnline(status);
+    // };
+
+    //client.onConnectionStatusChange(handleConnectionStatusChange);
+
     return () => {
+      //client.offConnectionStatusChange(handleConnectionStatusChange);
       client.disconnect();
     };
   }, [company]);
@@ -95,6 +107,14 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
     offNewMessage: chatClientRef.current!.offNewMessage.bind(
       chatClientRef.current,
     ),
+    onConnectionStatusChange:
+      chatClientRef.current!.onConnectionStatusChange.bind(
+        chatClientRef.current,
+      ),
+    offConnectionStatusChange:
+      chatClientRef.current!.offConnectionStatusChange.bind(
+        chatClientRef.current,
+      ),
   };
 
   return (

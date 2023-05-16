@@ -1,74 +1,55 @@
-import {useContext, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {useContext, useEffect, useState} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import AppContext from '../persist/AppContext';
 import {LyraCrypto} from '../crypto/lyra-crypto';
 import axios from 'axios';
 import React from 'react';
 import {Color, FontFamily, FontSize, Margin, Padding} from '../../GlobalStyles';
 import {useToast} from '../utils/useToast';
+import {useChat} from '../persist/ChatContext';
 
 const UserRegister = () => {
   const {company, setCompany} = useContext(AppContext);
-  const isInitialized = useRef(false);
+  const {onConnectionStatusChange, offConnectionStatusChange} = useChat(); // 从 useChat 获取 onConnectionStatusChange 和 offConnectionStatusChange
+  const [isOnline, setIsOnline] = useState(false); // 创建一个新的状态变量来记录连接状态
   const showToast = useToast();
 
-  const auth = useCallback(async () => {
-    if (!company) {
-      return;
-    }
-
-    const baseUrl = company.config.API_URL + '/vc/v1/user';
-    const usr = {
-      accountId: LyraCrypto.GetAccountIdFromPrivateKey(company.privatekey),
-    };
-    const data = {
-      user: usr,
-      signature: LyraCrypto.Sign(JSON.stringify(usr), company.privatekey),
-    };
-    const api = axios.create({
-      baseURL: baseUrl,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      timeout: 15000,
-    });
-    try {
-      const ret = await api.post('/register', data);
-      if (ret.data.success) {
-        setCompany({
-          ...company,
-          jwt: ret.data.data.token as string,
-        });
-        showToast('成功登录对话服务器，可以开启 AI 奇幻旅程了！');
-      } else {
-        showToast('登录对话服务器失败，原因是：' + ret.data.error.message);
-      }
-      isInitialized.current = true;
-    } catch (error) {
-      if (error.response && error.response.status === 500) {
-        const errorMessage = error.response.data.error;
-        showToast('登录对话服务器失败，原因是：' + errorMessage);
-      } else {
-        showToast('登录对话服务器失败，请稍后重试');
-      }
-      isInitialized.current = true;
-    }
-  }, [company, setCompany, showToast]);
-
   useEffect(() => {
-    if (company && !company.jwt) {
-      auth();
-    } else {
-      isInitialized.current = true;
-    }
-  }, [auth, company]);
+    // 创建一个函数来处理连接状态改变
+    const handleStatusChange = status => {
+      console.log('connection status is: ', status);
+      setIsOnline(status);
+    };
+
+    // 注册状态改变监听器
+    onConnectionStatusChange(handleStatusChange);
+
+    // 在组件卸载时，取消监听器
+    return () => {
+      offConnectionStatusChange(handleStatusChange);
+    };
+  }, [onConnectionStatusChange, offConnectionStatusChange]);
 
   return (
-    <View>
-      {isInitialized.current ? (
-        <Text style={[styles.online, styles.ml5]}>Online</Text>
+    <View style={styles.frameParentFlexBox}>
+      {isOnline ? (
+        <>
+          <Image
+            style={styles.frameChild}
+            resizeMode="cover"
+            source={require('../../assets/ellipse-11.png')}
+          />
+          <Text style={[styles.online, styles.ml5]}>在线</Text>
+        </>
       ) : (
-        <Text style={[styles.offline, styles.ml5]}>Offline</Text>
+        <>
+          <Image
+            style={styles.frameChild}
+            resizeMode="cover"
+            source={require('../../assets/ellipse-1.png')}
+          />
+          <Text style={[styles.offline, styles.ml5]}>已离线</Text>
+        </>
       )}
     </View>
   );

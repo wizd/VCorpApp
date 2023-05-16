@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import AppContext from '../persist/AppContext';
 import CustomButton from '../components/tools/CustomButton';
+import DeviceInfo from 'react-native-device-info';
 
 // Define the main component that renders the page
 const AppSettings = () => {
@@ -14,20 +15,32 @@ const AppSettings = () => {
   const [ttsEnabled, setTtsEnabled] = useState(false);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
 
+  const [heightDelta, setHeightDelta] = useState(-50 as number);
+
   useEffect(() => {
-    loadSettings();
+    const devid = DeviceInfo.getDeviceId();
+    if (devid.includes('iPhone')) {
+      const digits = +devid.replace('iPhone', '').replace(',', '');
+      if (digits < 100) {
+        setHeightDelta(-10);
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const tts = company?.settings.tts;
+      const autoSave = company?.settings.autoSaveImage;
+      setTtsEnabled(tts === true);
+      setAutoSaveEnabled(autoSave === true);
+    };
+
+    loadSettings();
+  }, [company?.settings.autoSaveImage, company?.settings.tts]);
 
   useEffect(() => {
     console.log('company object has changed:', company);
   }, [company]);
-
-  const loadSettings = async () => {
-    const tts = company?.settings.tts;
-    const autoSave = company?.settings.autoSaveImage;
-    setTtsEnabled(tts === true);
-    setAutoSaveEnabled(autoSave === true);
-  };
 
   const saveSettings = () => {
     console.log(
@@ -36,15 +49,16 @@ const AppSettings = () => {
       ', autoSaveEnabled: ',
       autoSaveEnabled,
     );
-    setCompany({
-      ...company,
-      settings: {
-        ...company?.settings,
-        tts: ttsEnabled,
-        autoSaveImage: autoSaveEnabled,
-        guide: company?.settings?.guide,
-      },
-    });
+    if (company !== null) {
+      setCompany({
+        ...company,
+        settings: {
+          ...company?.settings,
+          tts: ttsEnabled,
+          autoSaveImage: autoSaveEnabled,
+        },
+      });
+    }
 
     navigation.goBack();
   };
@@ -63,6 +77,7 @@ const AppSettings = () => {
     // Use a View component as a container for the page
     <View style={styles.pageContainer}>
       <Header
+        containerStyle={{marginTop: heightDelta}}
         leftComponent={
           <CustomButton onPress={() => saveSettings()} title="返回" />
         }

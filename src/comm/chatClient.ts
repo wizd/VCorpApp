@@ -3,13 +3,25 @@ import {VwsMessage} from './wsproto';
 
 // 定义异步回调类型
 export type MessageCallback = (message: VwsMessage) => void | Promise<void>;
+export type ConnectionStatusCallback = (status: boolean) => void;
 
 // 聊天客户端类
 class ChatClient {
   private jwt: string;
   private socket: Socket;
   private messageSubscribers: Set<MessageCallback> = new Set();
-  private autoReconnectInterval: number = 5000; // 设置自动重连时间间隔，单位：毫秒
+  private autoReconnectInterval: number = 1000; // 设置自动重连时间间隔，单位：毫秒
+
+  private connectionStatusSubscribers: Set<ConnectionStatusCallback> =
+    new Set();
+
+  onConnectionStatusChange(callback: ConnectionStatusCallback): void {
+    this.connectionStatusSubscribers.add(callback);
+  }
+
+  offConnectionStatusChange(callback: ConnectionStatusCallback): void {
+    this.connectionStatusSubscribers.delete(callback);
+  }
 
   onNewMessage(callback: MessageCallback): void {
     this.messageSubscribers.add(callback);
@@ -39,6 +51,9 @@ class ChatClient {
     // 监听断线事件
     this.socket.on('disconnect', () => {
       console.log('Disconnected from chat server. Attempting to reconnect...');
+      for (const subscriber of this.connectionStatusSubscribers) {
+        subscriber(false);
+      }
       setTimeout(() => {
         this.socket.connect();
       }, this.autoReconnectInterval);
@@ -46,6 +61,10 @@ class ChatClient {
 
     this.socket.on('connect', () => {
       console.log('Connected to chat server: ', serverUrl);
+      for (const subscriber of this.connectionStatusSubscribers) {
+        console.log('notify subscriber ws connected:', subscriber);
+        subscriber(true);
+      }
     });
   }
 
