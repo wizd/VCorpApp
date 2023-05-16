@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Platform} from 'react';
 import {TouchableOpacity, Text} from 'react-native';
 import AudioRecord from 'react-native-audio-record';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
@@ -28,7 +28,11 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
   }, []);
 
   const requestMicrophonePermission = async () => {
-    const result = await request(PERMISSIONS.ANDROID.RECORD_AUDIO);
+    const microphonePermission =
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.MICROPHONE
+        : PERMISSIONS.ANDROID.RECORD_AUDIO;
+    const result = await request(microphonePermission);
     return result === RESULTS.GRANTED;
   };
 
@@ -71,8 +75,8 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
       style={{
         padding: 5,
         backgroundColor: 'lightgray',
-        justifyContent: 'center', // Add this line
-        alignItems: 'center', // Add this line
+        justifyContent: 'center',
+        alignItems: 'center',
       }}>
       <Text style={{fontSize: 20}}>
         {recording ? '正在录音......' : '按住 说话'}
