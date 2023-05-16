@@ -1,5 +1,5 @@
-import React, {useState, useEffect, Platform} from 'react';
-import {TouchableOpacity, Text} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {TouchableOpacity, Text, Platform} from 'react-native';
 import AudioRecord from 'react-native-audio-record';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
@@ -21,6 +21,7 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
       };
 
       await AudioRecord.init(options);
+      AudioRecord.on('data', data => {});
       console.log('AudioRecord is initialized.');
     };
 
