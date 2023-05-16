@@ -63,7 +63,8 @@
 	<string>Saving AI generated image to cameraroll</string>
 	<key>UIBackgroundModes</key>
 	<array>
-	<string>audio</string>
+		<string>audio</string>
+		<string>fetch</string>
 	</array>
 	<key>UIAppFonts</key>
 	<array>
