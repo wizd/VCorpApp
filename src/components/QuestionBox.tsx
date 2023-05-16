@@ -17,6 +17,8 @@ import AppContext, {Employee} from '../persist/AppContext';
 import InputWithClear from './tools/InputWithClear';
 import {Dimensions, EmitterSubscription} from 'react-native';
 import {CustomKeyboardAvoidingView} from './CustomKeyboardAvoidingView';
+import SmallButton from './tools/SmallButton';
+import RecordButton from './tools/AudioRecorder';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -40,6 +42,7 @@ const QuestionBox = ({
   const inputRef = useRef<TextInput>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentImage, setCurrentImage] = useState(defImg);
+  const [isAudioMode, setIsAudioMode] = useState(false);
 
   const [inputWidth, setInputWidth] = useState(deviceWidth - 110);
 
@@ -97,6 +100,13 @@ const QuestionBox = ({
 
   const handlePress = () => {
     Keyboard.dismiss();
+  };
+  const handleRecord = () => {
+    setIsAudioMode(!isAudioMode);
+  };
+
+  const handleRecordDone = (audio: string) => {
+    console.log('audio recorded as ', audio);
   };
 
   const styles = StyleSheet.create({
@@ -196,31 +206,35 @@ const QuestionBox = ({
             />
           </Pressable>
           <View style={styles.inputWrapper}>
-            <InputWithClear
-              key={key}
-              inputRef={inputRef}
-              placeholder=""
-              keyboardType="default"
-              multiline
-              initialValue={question}
-              placeholderTextColor="#a1a1a1"
-              onChangeText={setQuestion}
-              inputStyle={styles.writeYourMessage}
-            />
+            {isAudioMode ? (
+              <RecordButton onRecordComplete={handleRecordDone} />
+            ) : (
+              <InputWithClear
+                key={key}
+                inputRef={inputRef}
+                placeholder=""
+                keyboardType="default"
+                multiline
+                initialValue={question}
+                placeholderTextColor="#a1a1a1"
+                onChangeText={setQuestion}
+                handleSubmit={handleSubmit} // Add this line
+                inputStyle={styles.writeYourMessage}
+              />
+            )}
           </View>
 
           <TouchableHighlight
             style={[styles.vuesaxlinearmicrophone2Icon]}
             underlayColor="#fff"
-            activeOpacity={0.2}
-            onPress={handleSubmit}>
+            activeOpacity={0.2}>
             {isProcessing ? (
               <View style={styles.square} />
             ) : (
-              <Image
-                style={styles.icon}
-                resizeMode="cover"
-                source={currentImage}
+              <SmallButton
+                iconName={isAudioMode ? 'keyboard' : 'record-voice-over'}
+                onPress={handleRecord}
+                color="#555555"
               />
             )}
           </TouchableHighlight>

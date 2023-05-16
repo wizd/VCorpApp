@@ -6,6 +6,8 @@ import {
   TextInputProps,
   TextStyle,
   StyleSheet,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -14,12 +16,14 @@ interface InputWithClearProps extends TextInputProps {
   onChangeText: (text: string) => void;
   inputStyle?: TextStyle;
   initialValue: string;
+  handleSubmit: () => void;
 }
 
 const InputWithClear: React.FC<InputWithClearProps> = ({
   inputRef,
   inputStyle,
   initialValue,
+  handleSubmit,
   ...props
 }) => {
   const [text, setText] = React.useState(props.value || '');
@@ -33,6 +37,14 @@ const InputWithClear: React.FC<InputWithClearProps> = ({
     props.onChangeText('');
   };
 
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>,
+  ) => {
+    if (e.nativeEvent.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -44,6 +56,7 @@ const InputWithClear: React.FC<InputWithClearProps> = ({
           setText(newText);
           props.onChangeText(newText);
         }}
+        onKeyPress={handleKeyDown}
       />
       {text ? (
         <TouchableOpacity style={styles.clearButton} onPress={clearText}>

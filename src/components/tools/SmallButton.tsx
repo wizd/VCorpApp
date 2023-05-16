@@ -3,7 +3,7 @@ import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface SmallButtonProps {
-  onPress: () => void;
+  onPress?: () => void;
   onLongPress?: () => void;
   size?: number;
   color?: string;
