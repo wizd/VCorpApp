@@ -1,9 +1,13 @@
 import React, {useEffect, useRef} from 'react';
-import {View, TouchableOpacity, Animated} from 'react-native';
+import {TouchableOpacity, Animated} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useAudio} from '../../persist/AudioContext';
 
-const PlayerControls: React.FC = () => {
+interface PlayerControlsProps {
+  isVisible: boolean;
+}
+
+const PlayerControls: React.FC<PlayerControlsProps> = ({isVisible}) => {
   const {
     playOrPause,
     playNext,
@@ -14,8 +18,8 @@ const PlayerControls: React.FC = () => {
     isPaused,
   } = useAudio();
 
-  const translateX = useRef(new Animated.Value(100)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
+  const translateX = useRef(new Animated.Value(isVisible ? 0 : 100)).current;
+  const opacity = useRef(new Animated.Value(isVisible ? 1 : 0)).current;
 
   const handlePlayPause = () => {
     // Assuming your playOrPause function accepts a URL
@@ -31,24 +35,19 @@ const PlayerControls: React.FC = () => {
   };
 
   useEffect(() => {
-    // Assuming your playOrPause function accepts a URL
-    console.log('currentUrl is: ', currentPlaying?.url, 'can play? ', canPlay);
-  }, [canPlay, currentPlaying]);
-
-  useEffect(() => {
     Animated.parallel([
       Animated.timing(translateX, {
-        toValue: canPlay || currentPlaying !== null ? 0 : 100,
+        toValue: isVisible ? 0 : 100,
         duration: 300,
         useNativeDriver: true,
       }),
       Animated.timing(opacity, {
-        toValue: canPlay || currentPlaying !== null ? 1 : 0,
+        toValue: isVisible ? 1 : 0,
         duration: 300,
         useNativeDriver: true,
       }),
     ]).start();
-  }, [canPlay, currentPlaying]);
+  }, [isVisible]);
 
   return (
     <Animated.View
