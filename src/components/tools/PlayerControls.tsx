@@ -34,21 +34,23 @@ const PlayerControls: React.FC = () => {
 
   return (
     <View style={{flexDirection: 'row'}}>
-      <TouchableOpacity onPress={handleStop}>
+      <TouchableOpacity onPress={handleStop} disabled={currentPlaying === null}>
         <Icon
           name="stop"
           size={32}
           color={currentPlaying !== null ? 'black' : 'lightgrey'}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={handlePlayPause}>
+      <TouchableOpacity
+        onPress={handlePlayPause}
+        disabled={!canPlay && currentPlaying === null}>
         <Icon
           name={isPaused ? 'play-arrow' : 'pause'}
           size={32}
           color={canPlay || currentPlaying !== null ? 'black' : 'lightgrey'}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleNext}>
+      <TouchableOpacity onPress={handleNext} disabled={playList.length <= 1}>
         <Icon
           name="skip-next"
           size={32}

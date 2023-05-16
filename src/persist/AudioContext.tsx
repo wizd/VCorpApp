@@ -2,6 +2,7 @@ import React, {createContext, useContext, useEffect, useState} from 'react';
 import {Platform} from 'react-native';
 import Sound from 'react-native-sound';
 import {useToast} from '../utils/useToast';
+import {isValidUrl} from '../utils/util';
 
 export class Playing {
   url: string | undefined;
@@ -56,6 +57,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
   const showToast = useToast();
 
   const addToPlayList = (url: string) => {
+    if (!isValidUrl(url)) {
+      showToast('无效的音频地址');
+      return;
+    }
     setPlayList(prevList => {
       if (prevList.length > 0 && prevList[prevList.length - 1] === url) {
         showToast('已经添加到了列表中');
@@ -95,6 +100,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
       const s = new Sound(nextUrl, sb, error => {
         if (error) {
           console.log('failed to load the sound', error);
+          showToast('抱歉，音频加载失败。');
+          currentPlaying?.release();
+          setCurrentPlaying(null);
+          setPlayList(currentList => currentList.slice(1));
           return;
         }
         setCurrentPlaying(new Playing(nextUrl, s));
@@ -105,6 +114,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
             currentPlaying?.release();
             setCurrentPlaying(null);
             setPlayList(currentList => currentList.slice(1));
+          } else {
+            showToast('Sound play failed');
           }
         });
       });
