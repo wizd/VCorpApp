@@ -7,7 +7,8 @@ export type ConnectionStatusCallback = (status: boolean) => void;
 
 // 聊天客户端类
 class ChatClient {
-  private jwt: string;
+  private jwt?: string;
+  private serverUrl?: string;
   private socket: Socket;
   private messageSubscribers: Set<MessageCallback> = new Set();
   private autoReconnectInterval: number = 1000; // 设置自动重连时间间隔，单位：毫秒
@@ -31,41 +32,44 @@ class ChatClient {
     this.messageSubscribers.delete(callback);
   }
 
-  updateJwt(jwt: string) {
-    this.jwt = jwt;
-  }
+  handleNewMessage = async (message: VwsMessage) => {
+    console.log('Received chat message from server:', message);
+    for (const subscriber of this.messageSubscribers) {
+      subscriber(message);
+    }
+  };
 
-  constructor(serverUrl: string, token: string) {
+  handleDisconnect = () => {
+    console.log('Disconnected from chat server. Attempting to reconnect...');
+    for (const subscriber of this.connectionStatusSubscribers) {
+      console.log('notify subscriber ws disconnect:', subscriber);
+      subscriber(false);
+    }
+    setTimeout(() => {
+      this.socket.connect();
+    }, this.autoReconnectInterval);
+  };
+
+  handleConnect = () => {
+    console.log('Connected to chat server: ', this.serverUrl);
+    for (const subscriber of this.connectionStatusSubscribers) {
+      console.log('notify subscriber ws connected:', subscriber);
+      subscriber(true);
+    }
+  };
+
+  constructor(serverUrl?: string, token?: string) {
     this.jwt = token;
-    this.socket = io(serverUrl, {query: {jwt: this.jwt}});
+    this.serverUrl = serverUrl;
+    if (this.jwt === undefined || this.serverUrl === undefined) {
+      throw new Error('JWT and server URL must be provided.');
+    }
+    this.socket = io(serverUrl!, {query: {jwt: this.jwt}});
 
-    // 客户端监听服务器发来的聊天消息
-    this.socket.on('smsg', async (message: VwsMessage) => {
-      console.log('Received chat message from server:', message);
-      // 调用回调函数（如果已提供）
-      for (const subscriber of this.messageSubscribers) {
-        subscriber(message);
-      }
-    });
-
-    // 监听断线事件
-    this.socket.on('disconnect', () => {
-      console.log('Disconnected from chat server. Attempting to reconnect...');
-      for (const subscriber of this.connectionStatusSubscribers) {
-        subscriber(false);
-      }
-      setTimeout(() => {
-        this.socket.connect();
-      }, this.autoReconnectInterval);
-    });
-
-    this.socket.on('connect', () => {
-      console.log('Connected to chat server: ', serverUrl);
-      for (const subscriber of this.connectionStatusSubscribers) {
-        console.log('notify subscriber ws connected:', subscriber);
-        subscriber(true);
-      }
-    });
+    // 绑定事件处理器
+    this.socket.on('smsg', this.handleNewMessage);
+    this.socket.on('disconnect', this.handleDisconnect);
+    this.socket.on('connect', this.handleConnect);
   }
 
   // 向服务器发送聊天消息
@@ -76,6 +80,22 @@ class ChatClient {
   // 断开与服务器的连接
   public disconnect(): void {
     this.socket.disconnect();
+  }
+
+  // 更新JWT并重新连接
+  updateJwt(serverUrl?: string, jwt?: string) {
+    if (serverUrl === undefined || jwt === undefined || this.jwt === jwt) {
+      return;
+    }
+    this.serverUrl = serverUrl;
+    this.jwt = jwt;
+    this.socket.disconnect();
+    this.socket = io(this.serverUrl, {query: {jwt: this.jwt}});
+
+    // 重新绑定事件处理器
+    this.socket.on('smsg', this.handleNewMessage);
+    this.socket.on('disconnect', this.handleDisconnect);
+    this.socket.on('connect', this.handleConnect);
   }
 }
 

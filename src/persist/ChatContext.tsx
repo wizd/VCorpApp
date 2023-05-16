@@ -38,11 +38,11 @@ interface ChatProviderProps {
 const createChatClientInstance = (() => {
   let chatClientInstance: ChatClient | null = null;
 
-  return (apiUrl: string, jwt: string) => {
+  return (apiUrl?: string, jwt?: string) => {
     if (!chatClientInstance) {
       chatClientInstance = new ChatClient(apiUrl, jwt);
     } else {
-      chatClientInstance.updateJwt(jwt);
+      chatClientInstance.updateJwt(apiUrl, jwt);
     }
     return chatClientInstance;
   };
@@ -50,8 +50,12 @@ const createChatClientInstance = (() => {
 
 const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
   const {company} = useContext(AppContext);
-  const chatClientRef = useRef<ChatClient | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // 创建ChatClient实例
+  const chatClient = useRef(
+    createChatClientInstance(company!.config.API_URL, company!.jwt),
+  );
 
   useEffect(() => {
     console.log('ChatProvider: useEffect');
@@ -65,31 +69,15 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
       );
     }
 
-    if (chatClientRef.current) {
-      chatClientRef.current.disconnect();
-    }
-
-    if (company.jwt === undefined) {
-      return;
-    }
-
-    console.log('createChatClientInstance use url: ', company.config.API_URL);
-    const client = createChatClientInstance(
-      company.config.API_URL,
-      company.jwt,
-    );
-    chatClientRef.current = client;
+    chatClient.current.updateJwt(company.config.API_URL, company.jwt);
     setIsLoaded(true);
 
-    // const handleConnectionStatusChange = (status: boolean) => {
-    //   setIsOnline(status);
-    // };
-
-    //client.onConnectionStatusChange(handleConnectionStatusChange);
+    // 使用局部变量保存chatClient.current
+    const currentChatClient = chatClient.current;
 
     return () => {
-      //client.offConnectionStatusChange(handleConnectionStatusChange);
-      client.disconnect();
+      // 使用局部变量
+      currentChatClient.disconnect();
     };
   }, [company]);
 
@@ -98,23 +86,14 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
   }
 
   const chatContextValue: IChatContext = {
-    sendMessage: chatClientRef.current!.sendChatMessage.bind(
-      chatClientRef.current,
+    sendMessage: chatClient.current.sendChatMessage.bind(chatClient.current),
+    onNewMessage: chatClient.current.onNewMessage.bind(chatClient.current),
+    offNewMessage: chatClient.current.offNewMessage.bind(chatClient.current),
+    onConnectionStatusChange: chatClient.current.onConnectionStatusChange.bind(
+      chatClient.current,
     ),
-    onNewMessage: chatClientRef.current!.onNewMessage.bind(
-      chatClientRef.current,
-    ),
-    offNewMessage: chatClientRef.current!.offNewMessage.bind(
-      chatClientRef.current,
-    ),
-    onConnectionStatusChange:
-      chatClientRef.current!.onConnectionStatusChange.bind(
-        chatClientRef.current,
-      ),
     offConnectionStatusChange:
-      chatClientRef.current!.offConnectionStatusChange.bind(
-        chatClientRef.current,
-      ),
+      chatClient.current.offConnectionStatusChange.bind(chatClient.current),
   };
 
   return (

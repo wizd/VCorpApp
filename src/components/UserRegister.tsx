@@ -1,22 +1,15 @@
-import {useContext, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
-import AppContext from '../persist/AppContext';
-import {LyraCrypto} from '../crypto/lyra-crypto';
-import axios from 'axios';
 import React from 'react';
 import {Color, FontFamily, FontSize, Margin, Padding} from '../../GlobalStyles';
-import {useToast} from '../utils/useToast';
 import {useChat} from '../persist/ChatContext';
 
 const UserRegister = () => {
-  const {company, setCompany} = useContext(AppContext);
   const {onConnectionStatusChange, offConnectionStatusChange} = useChat(); // 从 useChat 获取 onConnectionStatusChange 和 offConnectionStatusChange
   const [isOnline, setIsOnline] = useState(false); // 创建一个新的状态变量来记录连接状态
-  const showToast = useToast();
-
   useEffect(() => {
     // 创建一个函数来处理连接状态改变
-    const handleStatusChange = status => {
+    const handleStatusChange = (status: boolean) => {
       console.log('connection status is: ', status);
       setIsOnline(status);
     };
