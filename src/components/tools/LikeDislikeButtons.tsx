@@ -50,7 +50,7 @@ const LikeDislikeButtons: React.FC<LikeDislikeButtonsProps> = ({content}) => {
           color="lightgrey"
         />
       </TouchableOpacity> */}
-      <TouchableOpacity onPress={handleCopy}>
+      <TouchableOpacity onPress={handleCopy} style={styles.button}>
         <MaterialIcons
           style={styles.icons}
           name={'content-copy'}
@@ -81,9 +81,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 200,
   },
   dislikeIcon: {
     marginLeft: 10,
+  },
+  button: {
+    borderWidth: 1, // 设置边框宽度
+    borderColor: 'lightgrey', // 设置边框颜色
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', // 设置背景颜色为半透明白色
+    borderRadius: 15, // 可选，为按钮添加圆角
+    //padding: 5, // 可选，为按钮添加内边距
   },
   icons: {
     padding: 5,
