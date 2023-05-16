@@ -344,9 +344,14 @@ PODS:
     - React-Core
   - react-native-document-picker (8.2.0):
     - React-Core
+  - react-native-file-access (2.6.0):
+    - React-Core
+    - ZIPFoundation (= 0.9.11)
   - react-native-image-picker (5.3.1):
     - React-Core
   - react-native-image-resizer (3.0.5):
+    - React-Core
+  - react-native-quick-base64 (2.0.6):
     - React-Core
   - react-native-safe-area-context (4.5.2):
     - RCT-Folly
@@ -519,6 +524,7 @@ PODS:
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
+  - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
@@ -569,8 +575,10 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-file-access (from `../node_modules/react-native-file-access`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
+  - react-native-quick-base64 (from `../node_modules/react-native-quick-base64`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-track-player (from `../node_modules/react-native-track-player`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -627,6 +635,7 @@ SPEC REPOS:
     - SocketRocket
     - SwiftAudioEx
     - YogaKit
+    - ZIPFoundation
 
 EXTERNAL SOURCES:
   boost:
@@ -675,10 +684,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-file-access:
+    :path: "../node_modules/react-native-file-access"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-image-resizer:
     :path: "../node_modules/@bam.tech/react-native-image-resizer"
+  react-native-quick-base64:
+    :path: "../node_modules/react-native-quick-base64"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-track-player:
@@ -786,8 +799,10 @@ SPEC CHECKSUMS:
   React-logger: 342f358b8decfbf8f272367f4eacf4b6154061be
   react-native-cameraroll: 8ffb0af7a5e5de225fd667610e2979fc1f0c2151
   react-native-document-picker: 495c444c0c773c6e83a5d91165890ecb1c0a399a
+  react-native-file-access: a4398950e02999b5ab97f3055feb7ee28e6615a3
   react-native-image-picker: ec9b713e248760bfa0f879f0715391de4651a7cb
   react-native-image-resizer: 00ceb0e05586c7aadf061eea676957a6c2ec60fa
+  react-native-quick-base64: 62290829c619fbabca4c41cfec75ae759d08fc1c
   react-native-safe-area-context: 1d596539b05a78f2b346e954e7c577f6f9be7544
   react-native-track-player: 0c26d981b5097910486cbbeb6d8f5352d41be069
   react-native-webview: 9f111dfbcfc826084d6c507f569e5e03342ee1c1
@@ -827,6 +842,7 @@ SPEC CHECKSUMS:
   TextToSpeech: 2b930ec3756afde499061f4f01ea895e1f75dccb
   Yoga: 065f0b74dba4832d6e328238de46eb72c5de9556
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
+  ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
 PODFILE CHECKSUM: ead6a5a6eff90bd177df8ee62726e51d9c54c994
 
