@@ -64,7 +64,7 @@ const ShortCuts = () => {
     };
 
     fetchData();
-  }, []);
+  }, [company]);
 
   useEffect(() => {
     const storeData = async () => {
@@ -114,12 +114,12 @@ const ShortCuts = () => {
             setMessages(currentMessages => {
               // 使用 currentMessages 而不是 messages
               const txtmsg2 = currentMessages.find(m => m._id === smessage.id);
-              console.log(
-                'current messages is ',
-                currentMessages,
-                'txtmsg2 is ',
-                txtmsg2,
-              );
+              // console.log(
+              //   'current messages is ',
+              //   currentMessages,
+              //   'txtmsg2 is ',
+              //   txtmsg2,
+              // );
               if (txtmsg2 !== undefined) {
                 // 创建一个新的消息数组
                 console.log("I'll update msg with wavurl");
@@ -133,7 +133,40 @@ const ShortCuts = () => {
               return currentMessages;
             });
           } else {
-            //Add the last message to the list
+            //check if the message is a speech recognition result
+            // this is the result of a speech recognition
+            if (smessage.id.endsWith('-vr')) {
+              setMessages(previousMessages => {
+                // Get the last array
+                const last = [...previousMessages];
+
+                // Update the list
+                const mewLIst = last.map((m, _i) => {
+                  if (m._id === smessage.id && !m.isAI) {
+                    m.text = smessage.content;
+                    m.isLoading = false;
+                  }
+                  return m;
+                });
+                // Return the new array
+                return mewLIst;
+              });
+
+              // and clean any failed voice recognition
+              setMessages(previousMessages => {
+                // Get the last array
+                const last = [...previousMessages];
+
+                // Update the list
+                const mewLIst = last.filter(a => !(!a.isAI && a.isLoading));
+                // Return the new array
+                return mewLIst;
+              });
+
+              return;
+            }
+
+            // a normal AI reply. Add the last message to the list
             const message = {
               _id: smessage.id,
               text: (smessage as VwsTextMessage).content,
@@ -169,7 +202,7 @@ const ShortCuts = () => {
     return () => {
       offNewMessage(handleNewMessage);
     };
-  }, [onNewMessage, offNewMessage, company?.curid]);
+  }, [onNewMessage, offNewMessage, addToPlayList]);
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);
@@ -199,6 +232,21 @@ const ShortCuts = () => {
   useEffect(() => {
     setShowArrow(company?.settings.guide ?? true);
   }, [company]);
+
+  const onVoiceSent = (msgid: string) => {
+    console.log('voice sent. msgid is ', msgid);
+    const userMsg = {
+      _id: msgid + '-vr',
+      text: '',
+      createdAt: new Date(),
+      isLoading: true,
+      isAI: false,
+      veid: company?.curid ?? 'A0001',
+      bypass: false,
+    };
+
+    setMessages(previousMessages => [...previousMessages, userMsg]);
+  };
 
   const ask = (question: string) => {
     setQ('');
@@ -312,8 +360,9 @@ const ShortCuts = () => {
           reason = finish_reason!;
 
           if (finish_reason != null) {
-            if (reason != 'stop')
+            if (reason !== 'stop') {
               newContent = newContent + ' [ends with ' + reason + ']';
+            }
             es.close();
           } else {
             if (delta && delta.content) {
@@ -535,7 +584,11 @@ const ShortCuts = () => {
                   onStop={handleStop}
                 />
               ) : (
-                <UserMessage key={index} text={item.text} />
+                <UserMessage
+                  key={index}
+                  text={item.text}
+                  isLoading={item.isLoading}
+                />
               )
             }
             ListHeaderComponent={
@@ -554,7 +607,8 @@ const ShortCuts = () => {
       </KeyboardAvoidingView>
       <QuestionBox
         q={q}
-        onVuesaxboldsendPress={ask}
+        onSendQuestion={ask}
+        onSendVoice={onVoiceSent}
         employee={company?.employees?.find(e => e.id === company?.curid)}
         onAvatarPress={onQuestionBoxAvatarClick}
       />

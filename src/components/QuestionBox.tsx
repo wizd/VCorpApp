@@ -23,14 +23,16 @@ const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
   q: string;
-  onVuesaxboldsendPress: (q: string) => void;
+  onSendQuestion: (q: string) => void;
+  onSendVoice: (msgid: string) => void;
   employee: Employee | undefined;
   onAvatarPress?: () => void;
 };
 
 const QuestionBox = ({
   q,
-  onVuesaxboldsendPress,
+  onSendQuestion,
+  onSendVoice,
   employee,
   onAvatarPress,
 }: QuestionBoxType) => {
@@ -82,13 +84,13 @@ const QuestionBox = ({
       inputRef.current?.blur();
       setKey(prevKey => prevKey + 1);
 
-      onVuesaxboldsendPress(q);
+      onSendQuestion(q);
     } catch (error) {
       // 如果出现错误或用户中断操作，将 isProcessing 设置回 false
     } finally {
       setIsProcessing(false);
     }
-  }, [question, onVuesaxboldsendPress, inputRef]);
+  }, [question, onSendQuestion, inputRef]);
 
   React.useEffect(() => {
     if (isProcessing) {
@@ -105,8 +107,8 @@ const QuestionBox = ({
     setIsAudioMode(!isAudioMode);
   };
 
-  const handleRecordDone = (audio: string) => {
-    console.log('audio recorded as ', audio);
+  const handleRecordDone = (msgid: string) => {
+    onSendVoice(msgid);
   };
 
   const styles = StyleSheet.create({

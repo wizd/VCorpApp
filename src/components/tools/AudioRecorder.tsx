@@ -1,32 +1,61 @@
-import React, {useState, useEffect} from 'react';
-import {TouchableOpacity, Text, Platform} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {TouchableOpacity, Text, Platform, StyleSheet} from 'react-native';
 import AudioRecord from 'react-native-audio-record';
 import {PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import {toByteArray} from 'react-native-quick-base64';
+import {useChat} from '../../persist/ChatContext';
+import {VwsSpeechMessage} from '../../comm/wsproto';
+import {readFirst44Bytes} from '../../utils/util';
 
 type RecordButtonProps = {
-  onRecordComplete: (audioFile: string) => void;
+  onRecordComplete: (msgid: string) => void;
 };
 
 const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
   const [recording, setRecording] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const batchIdRef = useRef<number>(0);
+  const [cid, setCid] = useState<number>(0);
 
-  useEffect(() => {
-    const init = async () => {
-      const options = {
-        sampleRate: 16000,
-        channels: 1,
-        bitsPerSample: 16,
-        wavFile: 'test.wav',
-      };
+  const {sendMessage} = useChat();
 
-      await AudioRecord.init(options);
-      AudioRecord.on('data', () => {});
-      console.log('AudioRecord is initialized.');
+  const init = async () => {
+    const options = {
+      sampleRate: 16000,
+      channels: 1,
+      bitsPerSample: 16,
+      wavFile: 'test.wav',
     };
 
-    init();
-  }, []);
+    await AudioRecord.init(options);
+    AudioRecord.on('data', data => {
+      //send speech data to server via websocket
+      const bytes = toByteArray(data);
+      //console.log('bytes.length: ' + bytes.length);
+      //console.log(bytes);
+
+      setCid(currentCid => {
+        const newCid = currentCid + 1;
+
+        const msg: VwsSpeechMessage = {
+          id: batchIdRef.current.toString(),
+          src: 'app',
+          dst: 'server',
+          type: 'speech',
+          time: new Date().getTime(),
+          data: bytes,
+          cid: newCid.toString(),
+          final: false,
+        };
+
+        sendMessage(msg);
+
+        return newCid;
+      });
+    });
+
+    console.log('AudioRecord is initialized.');
+  };
 
   const requestMicrophonePermission = async () => {
     const microphonePermission =
@@ -44,6 +73,27 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
       return;
     }
 
+    await init();
+
+    batchIdRef.current = new Date().getTime();
+    setCid(0);
+
+    // send wav header
+    // const first44Bytes = wavHeaderBytes; //.slice(0, 44);
+    // const uint8Array = Uint8Array.from(first44Bytes);
+    // const msg: VwsSpeechMessage = {
+    //   id: batchIdRef.current.toString(),
+    //   src: 'app',
+    //   dst: 'server',
+    //   type: 'speech',
+    //   time: new Date().getTime(),
+    //   data: uint8Array,
+    //   cid: '0',
+    //   final: false,
+    // };
+
+    // sendMessage(msg);
+
     setRecording(true);
     AudioRecord.start();
 
@@ -56,7 +106,9 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
   };
 
   const stopRecording = async () => {
-    if (!recording) return;
+    if (!recording) {
+      return;
+    }
 
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -66,20 +118,30 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
     const audioFile = await AudioRecord.stop();
     setRecording(false);
 
-    onRecordComplete(audioFile);
+    // send final speech data to server via websocket
+    const newCid = cid + 1000;
+
+    const msg: VwsSpeechMessage = {
+      id: batchIdRef.current.toString(),
+      src: 'app',
+      dst: 'server',
+      type: 'speech',
+      time: new Date().getTime(),
+      data: await readFirst44Bytes(audioFile),
+      cid: newCid.toString(),
+      final: true,
+    };
+    sendMessage(msg);
+
+    onRecordComplete(msg.id);
   };
 
   return (
     <TouchableOpacity
       onPressIn={startRecording}
       onPressOut={stopRecording}
-      style={{
-        padding: 5,
-        backgroundColor: 'lightgray',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Text style={{fontSize: 20}}>
+      style={styles.button}>
+      <Text style={styles.text}>
         {recording ? '正在录音......' : '按住 说话'}
       </Text>
     </TouchableOpacity>
@@ -87,3 +149,15 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
 };
 
 export default RecordButton;
+
+const styles = StyleSheet.create({
+  button: {
+    padding: 5,
+    backgroundColor: 'lightgray',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 20,
+  },
+});

@@ -2,6 +2,7 @@ export type VwsMessageType =
   | 'text'
   | 'image'
   | 'audio'
+  | 'speech' // while recording, send chunks to server
   | 'blob'
   | 'system'
   | 'json';
@@ -18,6 +19,13 @@ export interface VwsBaseMessage {
 export interface VwsTextMessage extends VwsBaseMessage {
   type: 'text';
   content: string; // 文本内容
+  cid?: string; // 补充文本的消息 ID（可选）
+  final?: boolean; // 补充消息是否完结（可选）
+}
+
+export interface VwsSpeechMessage extends VwsBaseMessage {
+  type: 'speech';
+  data: Uint8Array; //
   cid?: string; // 补充文本的消息 ID（可选）
   final?: boolean; // 补充消息是否完结（可选）
 }
@@ -51,6 +59,7 @@ export type VwsMessage =
   | VwsTextMessage
   | VwsImageMessage
   | VwsAudioMessage
+  | VwsSpeechMessage
   | VwsBlobMessage
   | VwsSystemMessage
   | VwsJsonMessage;
@@ -71,6 +80,12 @@ export function isVwsAudioMessage(
   message: VwsMessage,
 ): message is VwsAudioMessage {
   return message.type === 'audio';
+}
+
+export function isVwsSpeechMessage(
+  message: VwsMessage,
+): message is VwsSpeechMessage {
+  return message.type === 'speech';
 }
 
 export function isVwsBlobMessage(

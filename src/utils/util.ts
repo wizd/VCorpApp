@@ -1,3 +1,6 @@
+import {FileSystem} from 'react-native-file-access';
+import {atob} from 'react-native-quick-base64';
+
 export const imgPlaceHolder =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
 
@@ -17,3 +20,17 @@ export function isValidUrl(str: string): boolean {
   ); // fragment locator
   return !!pattern.test(str);
 }
+
+export const readFirst44Bytes = async (
+  filename: string,
+): Promise<Uint8Array> => {
+  try {
+    const filePath = filename;
+    const data = await FileSystem.readFile(filePath, 'base64');
+    const dataArray = Uint8Array.from(atob(data), c => c.charCodeAt(0));
+    return dataArray.slice(0, 44);
+  } catch (error) {
+    console.log('Error reading file: ', error);
+    return new Uint8Array();
+  }
+};

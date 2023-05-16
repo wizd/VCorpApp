@@ -97,28 +97,32 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
       // Play next sound
       const nextUrl = playList[0];
       const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
-      const s = new Sound(nextUrl, sb, error => {
-        if (error) {
-          console.log('failed to load the sound', error);
-          showToast('抱歉，音频加载失败。');
-          currentPlaying?.release();
-          setCurrentPlaying(null);
-          setPlayList(currentList => currentList.slice(1));
-          return;
-        }
-        setCurrentPlaying(new Playing(nextUrl, s));
-        s.play(success => {
-          if (success) {
-            // Remove played sound from playlist
-            //showToast('Sound played successfully');
+      try {
+        const s = new Sound(nextUrl, sb, error => {
+          if (error) {
+            console.log('failed to load the sound', error);
+            showToast('抱歉，音频加载失败。');
             currentPlaying?.release();
             setCurrentPlaying(null);
             setPlayList(currentList => currentList.slice(1));
-          } else {
-            showToast('Sound play failed');
+            return;
           }
+          setCurrentPlaying(new Playing(nextUrl, s));
+          s.play(success => {
+            if (success) {
+              // Remove played sound from playlist
+              //showToast('Sound played successfully');
+              currentPlaying?.release();
+              setCurrentPlaying(null);
+              setPlayList(currentList => currentList.slice(1));
+            } else {
+              showToast('Sound play failed');
+            }
+          });
         });
-      });
+      } catch (error) {
+        console.log('Error while creating sound object:', error);
+      }
     };
 
     if (!currentPlaying && playList.length > 0) {

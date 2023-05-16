@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View, ActivityIndicator} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
 import Clipboard from '@react-native-community/clipboard';
 import {useToast} from '../utils/useToast';
+import SmallButton from './tools/SmallButton';
 
 const UserMessage = (props: any) => {
   const showToast = useToast();
@@ -18,6 +19,7 @@ const UserMessage = (props: any) => {
         <Text style={styles.helloChatgpthowAre} onLongPress={handleCopy}>
           {props.text}
         </Text>
+        {props.isLoading && <ActivityIndicator size="small" color="#0000ff" />}
       </View>
     </View>
   );

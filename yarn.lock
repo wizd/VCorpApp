@@ -3866,7 +3866,7 @@ base-x@^4.0.0:
   resolved "https://registry.yarnpkg.com/base-x/-/base-x-4.0.0.tgz#d0e3b7753450c73f8ad2389b5c018a4af7b2224a"
   integrity sha512-FuwxlW4H5kh37X/oW59pwTzzTKRzfrrQwhmyspRM7swOEZcHtDZSCt45U6oKgtuFE+WYPblePMVIPR4RZrh/hw==
 
-base64-js@^1.1.2, base64-js@^1.3.1:
+base64-js@^1.1.2, base64-js@^1.3.1, base64-js@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
@@ -11086,6 +11086,11 @@ react-native-fast-image@^8.6.3:
   resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.6.3.tgz#6edc3f9190092a909d636d93eecbcc54a8822255"
   integrity sha512-Sdw4ESidXCXOmQ9EcYguNY2swyoWmx53kym2zRsvi+VeFCHEdkO+WG1DK+6W81juot40bbfLNhkc63QnWtesNg==
 
+react-native-file-access@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-file-access/-/react-native-file-access-2.6.0.tgz#d5d007f9360299a3baea9e048641cfe6b8074b09"
+  integrity sha512-kZwWIFb4AtaPh+B7EHZBJEiEFdY1FztcF8X35WepdfjDUul0Dk2+CR3Lp45gZ8/nchDthq0iWBhnWr5ffo3+Nw==
+
 react-native-fs@^2.20.0:
   version "2.20.0"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.20.0.tgz#05a9362b473bfc0910772c0acbb73a78dbc810f6"
@@ -11157,6 +11162,13 @@ react-native-prompt-android@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-native-prompt-android/-/react-native-prompt-android-1.1.0.tgz#3c5168029075cb9f72549fd5f92403372fb234e9"
   integrity sha512-4JoyEaT2ZnK9IH+tDFpbTiQBgva8UIFGQf4/Uw/tnEVWBERlVlzcs5B82T9BkeEhEqXhp89JaiSBnLWj30lciw==
+
+react-native-quick-base64@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-quick-base64/-/react-native-quick-base64-2.0.6.tgz#be5d02186697dafea9cce6b982ba6a2322f2ce42"
+  integrity sha512-sCHsp4EzOL5OZF+77UfMolhgFDo1nM9TbwNFNExVqOFbMwj13KTGwStwjM9diunCHR9hKEt4LEGf9Afq3FOXzA==
+  dependencies:
+    base64-js "^1.5.1"
 
 react-native-ratings@^8.1.0:
   version "8.1.0"
