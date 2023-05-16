@@ -66,7 +66,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
         showToast('已经添加到了列表中');
         return prevList;
       } else {
-        showToast('成功加入播放列表');
+        if (prevList.length > 0) {
+          showToast('成功加入播放列表');
+        }
         return [...prevList, url];
       }
     });
