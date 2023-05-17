@@ -100,6 +100,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
       const nextUrl = playList[0];
       const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
       try {
+        Sound.setCategory('Playback');
         const s = new Sound(nextUrl, sb, error => {
           if (error) {
             console.log('failed to load the sound', error);

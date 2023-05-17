@@ -18,7 +18,7 @@ import Toast from 'react-native-toast-message';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
 import {ChatProvider} from './src/persist/ChatContext';
-import Sound from 'react-native-sound';
+
 import {AudioProvider} from './src/persist/AudioContext';
 
 const App = () => {
@@ -26,7 +26,6 @@ const App = () => {
   //const [appName, setAppName] = useState('VCorp');
 
   useEffect(() => {
-    Sound.setCategory('Playback');
     //const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
     // if (translations.hasOwnProperty(deviceLanguage)) {
     //   setAppName(translations[deviceLanguage].appName);
