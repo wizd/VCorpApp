@@ -32,9 +32,10 @@ export const playSound = createAsyncThunk(
   async (url: string, {dispatch, getState}) => {
     dispatch(addToPlayList(url));
 
-    console.log('playSound -> getstate() is:', getState());
+    const state = getState() as {audio: AudioState};
+    console.log('playSound -> getstate() is:', state);
 
-    if (getState().audio.playingStatus === PlayingStatus.InPlaying) {
+    if (state.audio.playingStatus === PlayingStatus.InPlaying) {
       return Promise.resolve();
     }
 
@@ -49,6 +50,14 @@ export const playSound = createAsyncThunk(
         if (success) {
           console.log('Sound played successfully');
           dispatch(playSuccess());
+
+          // Add setTimeout here
+          setTimeout(() => {
+            const state2 = getState() as {audio: AudioState};
+            if (state2.audio.playList.length > 0) {
+              dispatch(playSound(state2.audio.playList[0]));
+            }
+          }, 1000);
         } else {
           console.log('Sound play failed');
           return Promise.reject({error: 'Sound play failed'});
