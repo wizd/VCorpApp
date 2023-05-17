@@ -78,14 +78,15 @@ export const registerUser = async (apiUrl: string, privatekey: string) => {
       console.log('register result: ', ret.data);
       if (ret.data.success) {
         jwt = ret.data.data.token as string;
+        return jwt;
       } else {
         throw 'register failed';
       }
     } catch (error) {
+      console.log('register error, entering endless loop: ', error);
       await delay(2000);
+      continue;
     }
-    console.log('jwt is: ', jwt);
-    return jwt;
   }
 };
 
