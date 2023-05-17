@@ -4,6 +4,9 @@ import {atob} from 'react-native-quick-base64';
 export const imgPlaceHolder =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
 
+export async function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 export function isNullOrEmpty(str: string | null | undefined): boolean {
   return !str || str.trim().length === 0;
 }

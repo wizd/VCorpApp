@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LyraCrypto} from '../crypto/lyra-crypto';
 import {Text} from 'react-native';
 import axios from 'axios';
+import {delay} from '../utils/util';
 
 //export let API_URL_DEFAULT = 'https://mars.vcorp.ai';
 // fuck various dotenv configs. let's just hardcode the default config here.
@@ -62,27 +63,30 @@ export const registerUser = async (apiUrl: string, privatekey: string) => {
     signature: LyraCrypto.Sign(JSON.stringify(usr), privatekey),
   };
   console.log('registering user with signature: ', data);
-  const api = axios.create({
-    baseURL: baseUrl,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    timeout: 15000,
-  });
-  let jwt = '';
-  try {
-    const ret = await api.post('/register', data);
-    console.log('register result: ', ret.data);
-    if (ret.data.success) {
-      jwt = ret.data.data.token as string;
-    } else {
-      jwt = 'not success';
+
+  while (true) {
+    const api = axios.create({
+      baseURL: baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      timeout: 15000,
+    });
+    let jwt = '';
+    try {
+      const ret = await api.post('/register', data);
+      console.log('register result: ', ret.data);
+      if (ret.data.success) {
+        jwt = ret.data.data.token as string;
+      } else {
+        throw 'register failed';
+      }
+    } catch (error) {
+      await delay(2000);
     }
-  } catch (error) {
-    jwt = 'error';
+    console.log('jwt is: ', jwt);
+    return jwt;
   }
-  console.log('jwt is: ', jwt);
-  return jwt;
 };
 
 const createDefaultCompany = async (): Promise<Company> => {
@@ -169,7 +173,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
   return (
     <AppContext.Provider value={{company, setCompany}}>
-      {company ? children : <Text>Loading data...</Text>}
+      {company ? children : <Text>初始化网络连接...</Text>}
     </AppContext.Provider>
   );
 };
