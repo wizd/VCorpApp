@@ -1,4 +1,6 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {createContext, useContext, useEffect, useReducer} from 'react';
+import {configureStore, createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import thunk from 'redux-thunk';
 import {Platform} from 'react-native';
 import Sound from 'react-native-sound';
 import {useToast} from '../utils/useToast';
@@ -20,16 +22,22 @@ export class Playing {
   }
 }
 
+enum PlayingStatus {
+  InPlaying,
+  Paused,
+  Stopped,
+}
+
 interface AudioContextType {
   addToPlayList: (url: string) => void;
-  playOrPause: (url: string) => void;
+  playOrPause: () => void;
   playNext: () => void;
   stop: () => void;
   playList: string[];
-  currentPlaying: Playing | null;
-  currentUrl: string | null;
+  currentUrl?: string;
   canPlay: boolean;
   isPaused: boolean;
+  playingStatus: PlayingStatus;
 }
 
 const AudioContext = createContext<AudioContextType>({
@@ -38,156 +46,187 @@ const AudioContext = createContext<AudioContextType>({
   playNext: () => {},
   stop: () => {},
   playList: [],
-  currentPlaying: null,
-  currentUrl: null,
+  currentUrl: undefined,
   canPlay: false,
   isPaused: false,
+  playingStatus: PlayingStatus.Stopped,
 });
 
 interface AudioProviderProps {
   children: React.ReactNode;
 }
 
-export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
-  const [playList, setPlayList] = useState<string[]>([]);
-  const [currentPlaying, setCurrentPlaying] = useState<Playing | null>(null);
-  const [currentUrl, setCurrentUrl] = useState<string | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const [canPlay, setCanPlay] = useState(false);
-  const showToast = useToast();
+interface AudioState {
+  playList: string[];
+  currentUrl: string | undefined;
+  isPaused: boolean;
+  canPlay: boolean;
+  playingStatus: PlayingStatus;
+  error: string | null;
+}
 
-  const addToPlayList = (url: string) => {
-    if (!isValidUrl(url)) {
-      showToast('无效的音频地址');
+type AudioAction =
+  | {type: 'addToPlayList'; url: string}
+  | {type: 'playOrPause'}
+  | {type: 'playNext'}
+  | {type: 'PLAY_START'}
+  | {type: 'PLAY_SUCCESS'; payload: Playing}
+  | {type: 'PLAY_FAILURE'; error: string};
+
+const initialState: AudioState = {
+  playList: [],
+  currentUrl: undefined,
+  isPaused: false,
+  canPlay: false,
+  playingStatus: PlayingStatus.Stopped,
+  error: null,
+};
+
+const audioReducer = (
+  state: AudioState = initialState,
+  action: AudioAction,
+): AudioState => {
+  console.log('audioReducer action: ', action);
+  switch (action.type) {
+    case 'addToPlayList': {
+      if (!isValidUrl(action.url)) {
+        return state;
+      }
+      if (state.playList.includes(action.url)) {
+        return state;
+      }
+      return {...state, playList: [...state.playList, action.url]};
+    }
+    // case 'playOrPause': {
+    //   if (state.currentPlaying) {
+    //     if (state.currentPlaying.sound?.isPlaying()) {
+    //       state.currentPlaying.sound.pause();
+    //       return {...state, isPaused: true};
+    //     } else {
+    //       state.currentPlaying.sound?.play();
+    //       return {...state, isPaused: false};
+    //     }
+    //   }
+    //   return state;
+    // }
+    case 'playNext': {
+      // if (state.currentPlaying) {
+      //   state.currentPlaying.sound?.stop();
+      //   state.currentPlaying.sound?.release();
+      // }
+      if (state.playList.length > 1) {
+        const nextPlayList = state.playList.slice(1);
+        return {...state, playList: nextPlayList, currentUrl: ''};
+      }
+      return state;
+    }
+    case 'PLAY_START': {
+      return {
+        ...state,
+        playingStatus: PlayingStatus.InPlaying,
+        currentUrl: state.playList[0],
+      };
+    }
+    case 'PLAY_SUCCESS': {
+      return {...state, error: null};
+    }
+    case 'PLAY_FAILURE': {
+      return {
+        ...state,
+        playingStatus: PlayingStatus.Stopped,
+        error: action.error,
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+// 使用 configureStore 创建 store
+const store = configureStore({
+  reducer: audioReducer,
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(thunk),
+});
+
+//const store = createStore(audioReducer, applyMiddleware(thunk));
+
+// Thunk action creator
+const playSound = (url: string) => (dispatch, getState) => {
+  dispatch({type: 'addToPlayList', url});
+  dispatch({type: 'PLAY_START'});
+
+  const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
+  const sound = new Sound(url, sb, error => {
+    if (error) {
+      console.log('failed to load the sound', error);
+      dispatch({type: 'PLAY_FAILURE', error: error.message});
       return;
     }
-    setPlayList(prevList => {
-      if (prevList.length > 0 && prevList[prevList.length - 1] === url) {
-        showToast('已经添加到了列表中');
-        return prevList;
+
+    sound.play(success => {
+      if (success) {
+        console.log('Sound played successfully');
+        dispatch({
+          type: 'PLAY_SUCCESS',
+          //payload: new Playing(url, sound),
+        });
       } else {
-        if (prevList.length > 0) {
-          showToast('成功加入播放列表');
-        }
-        return [...prevList, url];
+        console.log('Sound play failed');
+        dispatch({type: 'PLAY_FAILURE', error: 'Sound play failed'});
       }
     });
-  };
+  });
+};
 
-  // Whenever the playList updates, check if we should start playing
+export const AudioProvider: React.FC<AudioProviderProps> = ({children}) => {
+  const [state, dispatch] = useReducer(audioReducer, initialState);
+  const showToast = useToast();
+
   useEffect(() => {
     console.log(
       'playList updated: ',
-      playList,
-      'currentPlaying: ',
-      currentPlaying,
+      state.playList,
       'currentUrl: ',
-      currentUrl,
+      state.currentUrl,
       'canPlay: ',
-      canPlay,
+      state.canPlay,
     );
-    const playNext = () => {
-      if (!playList.length) {
-        return;
-      }
-
-      // Release current sound
-      if (currentPlaying) {
-        currentPlaying?.sound?.release();
-      }
-
-      // Play next sound
-      const nextUrl = playList[0];
-      const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
-      try {
-        Sound.setCategory('Playback');
-        const s = new Sound(nextUrl, sb, error => {
-          if (error) {
-            console.log('failed to load the sound', error);
-            showToast('抱歉，音频加载失败。');
-            currentPlaying?.release();
-            setCurrentPlaying(null);
-            setPlayList(currentList => currentList.slice(1));
-            return;
-          }
-          setCurrentPlaying(new Playing(nextUrl, s));
-          s.play(success => {
-            if (success) {
-              // Remove played sound from playlist
-              //showToast('Sound played successfully');
-              currentPlaying?.release();
-              setCurrentPlaying(null);
-              setPlayList(currentList => currentList.slice(1));
-            } else {
-              showToast('Sound play failed');
-            }
-          });
-        });
-      } catch (error) {
-        console.log('Error while creating sound object:', error);
-      }
-    };
-
-    if (!currentPlaying && playList.length > 0) {
-      playNext();
+    if (state.error) {
+      showToast(state.error);
     }
-    setCurrentUrl(playList[0]);
-    setCanPlay(playList.length > 0);
-  }, [playList]); // Recreate playNext when playList changes
+    if (state.playList.length > 0 && state.currentUrl === undefined) {
+    }
+  }, [showToast, state.canPlay, state.currentUrl, state.playList, state.error]);
+
+  const addToPlayList = (url: string) => {
+    store.dispatch(playSound(url));
+  };
 
   const playOrPause = () => {
-    if (currentPlaying !== null) {
-      if (currentPlaying.sound?.isPlaying()) {
-        currentPlaying.sound?.pause();
-        setIsPaused(true);
-      } else {
-        currentPlaying.sound?.play();
-        setIsPaused(false);
-      }
-    }
+    dispatch({type: 'playOrPause'});
   };
 
   const playNext = () => {
-    // stop current sound
-    if (currentPlaying) {
-      currentPlaying.sound?.stop();
-      currentPlaying.sound?.release();
-      setCurrentPlaying(null);
-    }
-
-    if (playList.length > 1) {
-      // Check if there is a next song
-      const nextPlayList = [...playList];
-      nextPlayList.shift(); // Remove the first song from the playlist
-      setPlayList(nextPlayList); // Set the new playlist
-    } else {
-      showToast('This is the last song in the playlist.');
-    }
+    dispatch({type: 'playNext'});
   };
 
   const stop = () => {
-    if (currentPlaying?.sound) {
-      currentPlaying.sound.stop();
-      currentPlaying.sound.release();
-      setCurrentPlaying(null);
-      setIsPaused(false);
-      showToast('Stopped');
-      setPlayList(currentList => currentList.slice(1));
-    }
+    dispatch({type: 'stop'});
   };
 
   return (
     <AudioContext.Provider
       value={{
-        playOrPause,
-        stop,
-        playNext,
         addToPlayList,
-        playList,
-        currentPlaying,
-        canPlay,
-        currentUrl,
-        isPaused,
+        playOrPause,
+        playNext,
+        stop,
+        playList: state.playList,
+        currentUrl: state.currentUrl,
+        canPlay: state.canPlay,
+        isPaused: state.isPaused,
+        playingStatus: state.playingStatus,
       }}>
       {children}
     </AudioContext.Provider>

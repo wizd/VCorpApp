@@ -17,9 +17,46 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
   const batchIdRef = useRef<number>(0);
   const [cid, setCid] = useState<number>(0);
 
-  const {sendMessage} = useChat();
+  const {chatClient} = useChat();
 
   useEffect(() => {
+    const init = async () => {
+      const options = {
+        sampleRate: 16000,
+        channels: 1,
+        bitsPerSample: 16,
+        wavFile: 'test.wav',
+      };
+
+      await AudioRecord.init(options);
+      AudioRecord.on('data', data => {
+        //send speech data to server via websocket
+        const bytes = toByteArray(data);
+        //console.log('bytes.length: ' + bytes.length);
+        //console.log(bytes);
+
+        setCid(currentCid => {
+          const newCid = currentCid + 1;
+
+          const msg: VwsSpeechMessage = {
+            id: batchIdRef.current.toString(),
+            src: 'app',
+            dst: 'server',
+            type: 'speech',
+            time: new Date().getTime(),
+            data: bytes,
+            cid: newCid.toString(),
+            final: false,
+          };
+
+          chatClient.sendChatMessage(msg);
+
+          return newCid;
+        });
+      });
+
+      console.log('AudioRecord is initialized.');
+    };
     const getMicrophonePermission = async () => {
       const hasPermission = await requestMicrophonePermission();
       if (!hasPermission) {
@@ -31,45 +68,7 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
     };
 
     getMicrophonePermission();
-  }, []); // Empty dependency array means this runs once on mount
-
-  const init = async () => {
-    const options = {
-      sampleRate: 16000,
-      channels: 1,
-      bitsPerSample: 16,
-      wavFile: 'test.wav',
-    };
-
-    await AudioRecord.init(options);
-    AudioRecord.on('data', data => {
-      //send speech data to server via websocket
-      const bytes = toByteArray(data);
-      //console.log('bytes.length: ' + bytes.length);
-      //console.log(bytes);
-
-      setCid(currentCid => {
-        const newCid = currentCid + 1;
-
-        const msg: VwsSpeechMessage = {
-          id: batchIdRef.current.toString(),
-          src: 'app',
-          dst: 'server',
-          type: 'speech',
-          time: new Date().getTime(),
-          data: bytes,
-          cid: newCid.toString(),
-          final: false,
-        };
-
-        sendMessage(msg);
-
-        return newCid;
-      });
-    });
-
-    console.log('AudioRecord is initialized.');
-  };
+  }, [chatClient]); // Empty dependency array means this runs once on mount
 
   const requestMicrophonePermission = async () => {
     const microphonePermission =
@@ -143,7 +142,7 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
       cid: newCid.toString(),
       final: true,
     };
-    sendMessage(msg);
+    chatClient.sendChatMessage(msg);
 
     onRecordComplete(msg.id);
   };

@@ -1,20 +1,12 @@
 import * as React from 'react';
-import {useCallback, useContext} from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Image,
-  Platform,
-} from 'react-native';
+import {useContext} from 'react';
+import {Text, StyleSheet, View, ActivityIndicator, Image} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
 import AppContext from '../persist/AppContext';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import Markdown from './Markdown';
 import SmallButton from './tools/SmallButton';
 import LikeDislikeButtons from './tools/LikeDislikeButtons';
-import Toast from 'react-native-toast-message';
 import {useAudio} from '../persist/AudioContext';
 import PlayerControls from './tools/PlayerControls';
 
@@ -26,7 +18,6 @@ const AIMessage = (props: any) => {
   const {company} = useContext(AppContext);
   const [imgsrc, setImgsrc] = React.useState('');
   const [name, setName] = React.useState('');
-  const [started, setStarted] = React.useState(false);
   const {addToPlayList, currentUrl} = useAudio();
 
   React.useEffect(() => {
@@ -40,15 +31,6 @@ const AIMessage = (props: any) => {
     //   addToPlayList(props.msg.wavurl);
     // }
   }, [company, props]);
-
-  const showToast = () => {
-    Toast.show({
-      type: 'success',
-      position: 'top',
-      text1: '',
-      text2: '已重置播放进度到开头',
-    });
-  };
 
   const handleStop = () => {
     console.log('handleStop');
@@ -65,6 +47,7 @@ const AIMessage = (props: any) => {
   };
 
   const playOrPause = () => {
+    console.log('in AIMessage, playOrPause try to add to playlist:');
     addToPlayList(props.msg.wavurl);
   };
 

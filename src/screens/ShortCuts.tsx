@@ -46,12 +46,11 @@ const ShortCuts = () => {
   const {company, setCompany} = useContext(AppContext);
   const [showArrow, setShowArrow] = useState(true);
   const {addToPlayList} = useAudio();
+  const {chatClient} = useChat();
 
   // const {beginReading, endReading} = useTts({
   //   isEnabled: company?.settings.tts ?? false,
   // });
-
-  const {onNewMessage, offNewMessage} = useChat();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,6 +107,9 @@ const ShortCuts = () => {
             (txt.endsWith('.mp3') || txt.endsWith('.wav'))
           ) {
             if (company?.settings?.tts) {
+              console.log(
+                'in main UI, company?.settings?.tts try to add to playlist:',
+              );
               addToPlayList(txt);
             }
 
@@ -197,12 +199,14 @@ const ShortCuts = () => {
         console.log("Audio message received, don't know how to handle it");
       }
     };
+    // 组件挂载和更新时，注册回调
+    chatClient.onNewMessage(handleNewMessage);
 
-    onNewMessage(handleNewMessage);
+    // 组件卸载时，移除回调
     return () => {
-      offNewMessage(handleNewMessage);
+      chatClient.offNewMessage(handleNewMessage);
     };
-  }, [onNewMessage, offNewMessage, addToPlayList]);
+  }, [addToPlayList, chatClient, company?.curid, company?.settings?.tts]); // 当chatClient改变时，重新运行这个effect
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);

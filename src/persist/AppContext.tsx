@@ -130,7 +130,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
       console.log('loadCompanyData is running');
       try {
         const storedCompanyData = await AsyncStorage.getItem(storeName);
-        console.log('storedCompanyData:', storedCompanyData);
+        //onsole.log('storedCompanyData:', storedCompanyData);
         if (storedCompanyData) {
           const saved = JSON.parse(storedCompanyData);
           if (saved.config.API_URL !== 'http://10.0.2.2:3001') {
@@ -158,7 +158,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   useEffect(() => {
     async function saveData() {
       try {
-        console.log('Company updated and saved: ', company);
+        //console.log('Company updated and saved: ', company);
         await AsyncStorage.setItem(storeName, JSON.stringify(company));
       } catch (error) {
         console.log(error);

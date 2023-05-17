@@ -5,23 +5,26 @@ import {Color, FontFamily, FontSize, Margin, Padding} from '../../GlobalStyles';
 import {useChat} from '../persist/ChatContext';
 
 const UserRegister = () => {
-  const {onConnectionStatusChange, offConnectionStatusChange} = useChat(); // 从 useChat 获取 onConnectionStatusChange 和 offConnectionStatusChange
+  const {chatClient} = useChat();
   const [isOnline, setIsOnline] = useState(false); // 创建一个新的状态变量来记录连接状态
   useEffect(() => {
     // 创建一个函数来处理连接状态改变
+    //console.log('UserRegister.tsx useEffect sensed connection socket changed');
     const handleStatusChange = (status: boolean) => {
-      console.log('connection status is: ', status);
+      //console.log('connection status is: ', status);
       setIsOnline(status);
     };
 
+    setIsOnline(chatClient.isConnected());
+
     // 注册状态改变监听器
-    onConnectionStatusChange(handleStatusChange);
+    chatClient.onConnectionStatusChange(handleStatusChange);
 
     // 在组件卸载时，取消监听器
     return () => {
-      offConnectionStatusChange(handleStatusChange);
+      chatClient.offConnectionStatusChange(handleStatusChange);
     };
-  }, [onConnectionStatusChange, offConnectionStatusChange]);
+  }, [chatClient]);
 
   return (
     <View style={styles.frameParentFlexBox}>

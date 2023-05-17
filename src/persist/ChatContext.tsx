@@ -5,20 +5,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import ChatClient, {
-  ConnectionStatusCallback,
-  MessageCallback,
-} from '../comm/chatClient';
+import {AppState, AppStateStatus} from 'react-native';
+import ChatClient from '../comm/chatClient';
 import {Text} from 'react-native';
 import AppContext from './AppContext';
-import {VwsMessage} from '../comm/wsproto';
 
 export interface IChatContext {
-  sendMessage: (message: VwsMessage) => void;
-  onNewMessage: (callback: MessageCallback) => void;
-  offNewMessage: (callback: MessageCallback) => void;
-  onConnectionStatusChange: (callback: ConnectionStatusCallback) => void;
-  offConnectionStatusChange: (callback: ConnectionStatusCallback) => void;
+  chatClient: ChatClient;
 }
 
 const ChatContext = createContext<IChatContext | null>(null);
@@ -38,7 +31,7 @@ interface ChatProviderProps {
 const createChatClientInstance = (() => {
   let chatClientInstance: ChatClient | null = null;
 
-  return (apiUrl?: string, jwt?: string) => {
+  return (apiUrl: string, jwt: string) => {
     if (!chatClientInstance) {
       chatClientInstance = new ChatClient(apiUrl, jwt);
     } else {
@@ -51,25 +44,52 @@ const createChatClientInstance = (() => {
 const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
   const {company} = useContext(AppContext);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [appState, setAppState] = useState<AppStateStatus>(
+    AppState.currentState,
+  );
 
   // 创建ChatClient实例
   const chatClient = useRef(
-    createChatClientInstance(company!.config.API_URL, company!.jwt),
+    createChatClientInstance(company!.config.API_URL, company!.jwt!),
   );
 
   useEffect(() => {
-    console.log('ChatProvider: useEffect');
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        console.log('App has come to the foreground!');
+        // App has come to the foreground, you might want to re-establish the connection
+        chatClient.current.reconnect();
+      } else if (nextAppState.match(/inactive|background/)) {
+        console.log('App has gone to the background!');
+        // App has gone to the background, you might want to disconnect the connection
+        chatClient.current.disconnect();
+      }
+      setAppState(nextAppState);
+    };
+
+    const appStateSubscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
+
+    return () => {
+      appStateSubscription.remove();
+    };
+  }, [appState]);
+
+  useEffect(() => {
+    //console.log('ChatProvider: useEffect');
     if (company === null) {
       console.log('ChatProvider: useEffect: company is null');
       return;
     } else {
-      console.log(
-        'ChatProvider: useEffect: company is not null: ',
-        company.jwt,
-      );
+      // console.log(
+      //   'ChatProvider: useEffect: company is not null: ',
+      //   company.jwt,
+      // );
     }
 
-    chatClient.current.updateJwt(company.config.API_URL, company.jwt);
+    chatClient.current.updateJwt(company.config.API_URL, company!.jwt!);
     setIsLoaded(true);
 
     // 使用局部变量保存chatClient.current
@@ -86,14 +106,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
   }
 
   const chatContextValue: IChatContext = {
-    sendMessage: chatClient.current.sendChatMessage.bind(chatClient.current),
-    onNewMessage: chatClient.current.onNewMessage.bind(chatClient.current),
-    offNewMessage: chatClient.current.offNewMessage.bind(chatClient.current),
-    onConnectionStatusChange: chatClient.current.onConnectionStatusChange.bind(
-      chatClient.current,
-    ),
-    offConnectionStatusChange:
-      chatClient.current.offConnectionStatusChange.bind(chatClient.current),
+    chatClient: chatClient.current,
   };
 
   return (
