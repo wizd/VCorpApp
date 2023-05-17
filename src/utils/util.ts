@@ -31,7 +31,7 @@ export const readFirst44Bytes = async (
     const filePath = filename;
     const data = await FileSystem.readFile(filePath, 'base64');
     const dataArray = Uint8Array.from(atob(data), c => c.charCodeAt(0));
-    return dataArray.slice(0, 1024 * 8);
+    return dataArray.slice(0, 44);
   } catch (error) {
     console.log('Error reading file: ', error);
     return new Uint8Array();

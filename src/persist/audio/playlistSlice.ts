@@ -32,6 +32,12 @@ export const playSound = createAsyncThunk(
   async (url: string, {dispatch, getState}) => {
     dispatch(addToPlayList(url));
 
+    console.log('playSound -> getstate() is:', getState());
+
+    if (getState().audio.playingStatus === PlayingStatus.InPlaying) {
+      return Promise.resolve();
+    }
+
     const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
     const sound = new Sound(url, sb, error => {
       if (error) {
@@ -86,6 +92,7 @@ const playlistSlice = createSlice({
       state.error = undefined;
       state.playingStatus = PlayingStatus.Stopped;
       state.currentUrl = undefined;
+      state.playList = state.playList.slice(1);
     },
     playFailure(state, action) {
       state.playingStatus = PlayingStatus.Stopped;
