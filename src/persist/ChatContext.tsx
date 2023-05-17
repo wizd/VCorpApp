@@ -98,7 +98,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
 
   return (
     <ChatContext.Provider value={chatContextValue}>
-      {children}
+      {isLoaded ? children : <Text>Company is null. Unable to continue.</Text>}
     </ChatContext.Provider>
   );
 };
