@@ -14,6 +14,7 @@ export const registerUser = createAsyncThunk(
       state.company.privatekey,
     );
     dispatch(updateJwt(jwt));
+    return Promise.resolve();
   },
 );
 
@@ -83,12 +84,12 @@ const companySlice = createSlice({
       };
     },
   },
-  extraReducers: builder => {
-    builder.addCase(registerUser.fulfilled, (state, action) => {
-      // Update the company state with the loaded data
-      return state;
-    });
-  },
+  // extraReducers: builder => {
+  //   builder.addCase(registerUser.fulfilled, (state, action) => {
+  //     // Update the company state with the loaded data
+  //     return state;
+  //   });
+  // },
 });
 
 export const {

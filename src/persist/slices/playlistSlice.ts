@@ -72,6 +72,37 @@ export const playNext = createAsyncThunk(
   },
 );
 
+async function playAudioSound(url: string, dispatch: any, getState: any) {
+  const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
+  currentSound = new Sound(url, sb, error => {
+    if (error) {
+      console.log('failed to load the sound', error);
+      return Promise.reject({error: error.message});
+    }
+    if (!currentSound) {
+      return;
+    }
+    dispatch(playStart());
+    currentSound.play(success => {
+      if (success) {
+        console.log('Sound played successfully');
+        dispatch(playSuccess());
+
+        // Add setTimeout here
+        setTimeout(() => {
+          const state2 = getState() as {audio: AudioState};
+          if (state2.audio.playList.length > 0) {
+            playAudioSound(state2.audio.playList[0], dispatch, getState);
+          }
+        }, 1000);
+      } else {
+        console.log('Sound play failed');
+        return Promise.reject({error: 'Sound play failed'});
+      }
+    });
+  });
+}
+
 export const playSound = createAsyncThunk(
   'playlist/playSound',
   async (url: string, {dispatch, getState}) => {
@@ -87,34 +118,7 @@ export const playSound = createAsyncThunk(
       return Promise.resolve();
     }
 
-    const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
-    currentSound = new Sound(url, sb, error => {
-      if (error) {
-        console.log('failed to load the sound', error);
-        return Promise.reject({error: error.message});
-      }
-      if (!currentSound) {
-        return;
-      }
-      dispatch(playStart());
-      currentSound.play(success => {
-        if (success) {
-          console.log('Sound played successfully');
-          dispatch(playSuccess());
-
-          // Add setTimeout here
-          setTimeout(() => {
-            const state2 = getState() as {audio: AudioState};
-            if (state2.audio.playList.length > 0) {
-              dispatch(playSound(state2.audio.playList[0]));
-            }
-          }, 1000);
-        } else {
-          console.log('Sound play failed');
-          return Promise.reject({error: 'Sound play failed'});
-        }
-      });
-    });
+    await playAudioSound(url, dispatch, getState);
   },
 );
 

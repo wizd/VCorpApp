@@ -10,6 +10,9 @@ class ChatClient {
   private jwt: string;
   private serverUrl: string;
   private socket: Socket;
+
+  private dispatch: (action: {type: string; payload?: any}) => void;
+
   private messageSubscribers: Set<MessageCallback> = new Set();
   private autoReconnectInterval: number = 1000; // 设置自动重连时间间隔，单位：毫秒
 
@@ -34,10 +37,18 @@ class ChatClient {
 
   handleNewMessage = async (message: VwsMessage) => {
     console.log('Received chat message from server:', message);
-    for (const subscriber of this.messageSubscribers) {
-      subscriber(message);
-    }
+
+    // 分发一个action
+    this.dispatch({type: 'chat/newMessage', payload: message});
+
+    // 其他代码...
   };
+  // handleNewMessage = async (message: VwsMessage) => {
+  //   console.log('Received chat message from server:', message);
+  //   for (const subscriber of this.messageSubscribers) {
+  //     subscriber(message);
+  //   }
+  // };
 
   handleDisconnect = () => {
     //console.log('Disconnected from chat server. Attempting to reconnect...');
@@ -58,9 +69,14 @@ class ChatClient {
     }
   };
 
-  constructor(serverUrl: string, token: string) {
+  constructor(
+    serverUrl: string,
+    token: string,
+    dispatch: (action: {type: string; payload?: any}) => void,
+  ) {
     this.jwt = token;
     this.serverUrl = serverUrl;
+    this.dispatch = dispatch;
     if (this.jwt === undefined || this.serverUrl === undefined) {
       //throw new Error('JWT and server URL must be provided.');
     }

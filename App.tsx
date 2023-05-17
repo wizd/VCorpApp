@@ -18,7 +18,6 @@ import EmployeeMarket from './src/screens/EmployeeMarket';
 import Toast from 'react-native-toast-message';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
-import {ChatProvider} from './src/persist/ChatContext';
 
 import {persistor, store} from './src/persist/Store';
 
@@ -36,51 +35,49 @@ const App = () => {
     <>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ChatProvider>
-            <SafeAreaProvider>
-              <SafeAreaView style={{flex: 1}}>
-                <NavigationContainer>
-                  {hideSplashScreen ? (
-                    <Stack.Navigator
-                      initialRouteName="Onboarding"
-                      screenOptions={{headerShown: false}}>
-                      <Stack.Screen
-                        name="Onboarding"
-                        component={Onboarding}
-                        options={{headerShown: false}}
-                      />
-                      <Stack.Screen
-                        name="ChatPage"
-                        component={ChatPage}
-                        options={{headerShown: false}}
-                      />
-                      <Stack.Screen
-                        name="ShortCuts"
-                        component={ShortCuts}
-                        options={{headerShown: false}}
-                      />
-                      <Stack.Screen
-                        name="Employees"
-                        component={EmployeeList}
-                        options={{headerShown: false}}
-                      />
-                      <Stack.Screen
-                        name="EmployeeMarket"
-                        component={EmployeeMarket}
-                        options={{headerShown: false}}
-                      />
-                      <Stack.Screen
-                        name="Settings"
-                        component={AppSettings}
-                        options={{headerShown: false}}
-                      />
-                    </Stack.Navigator>
-                  ) : null}
-                </NavigationContainer>
-                <Toast />
-              </SafeAreaView>
-            </SafeAreaProvider>
-          </ChatProvider>
+          <SafeAreaProvider>
+            <SafeAreaView style={{flex: 1}}>
+              <NavigationContainer>
+                {hideSplashScreen ? (
+                  <Stack.Navigator
+                    initialRouteName="Onboarding"
+                    screenOptions={{headerShown: false}}>
+                    <Stack.Screen
+                      name="Onboarding"
+                      component={Onboarding}
+                      options={{headerShown: false}}
+                    />
+                    <Stack.Screen
+                      name="ChatPage"
+                      component={ChatPage}
+                      options={{headerShown: false}}
+                    />
+                    <Stack.Screen
+                      name="ShortCuts"
+                      component={ShortCuts}
+                      options={{headerShown: false}}
+                    />
+                    <Stack.Screen
+                      name="Employees"
+                      component={EmployeeList}
+                      options={{headerShown: false}}
+                    />
+                    <Stack.Screen
+                      name="EmployeeMarket"
+                      component={EmployeeMarket}
+                      options={{headerShown: false}}
+                    />
+                    <Stack.Screen
+                      name="Settings"
+                      component={AppSettings}
+                      options={{headerShown: false}}
+                    />
+                  </Stack.Navigator>
+                ) : null}
+              </NavigationContainer>
+              <Toast />
+            </SafeAreaView>
+          </SafeAreaProvider>
         </PersistGate>
       </Provider>
     </>

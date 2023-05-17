@@ -3,9 +3,10 @@ import {TouchableOpacity, Text, Platform, StyleSheet} from 'react-native';
 import AudioRecord from 'react-native-audio-record';
 import {PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 import {toByteArray} from 'react-native-quick-base64';
-import {useChat} from '../../persist/ChatContext';
 import {VwsSpeechMessage} from '../../comm/wsproto';
 import {readFirst44Bytes} from '../../utils/util';
+import {useDispatch, useSelector} from 'react-redux';
+import {ChatServerState, sendChatMessage} from '../../persist/slices/chatSlice';
 
 type RecordButtonProps = {
   onRecordComplete: (msgid: string) => void;
@@ -17,7 +18,10 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
   const batchIdRef = useRef<number>(0);
   const [cid, setCid] = useState<number>(0);
 
-  const {chatClient} = useChat();
+  const dispatch = useDispatch();
+  const chatState = useSelector(
+    (state: any) => state.company,
+  ) as ChatServerState;
 
   useEffect(() => {
     const init = async () => {
@@ -49,7 +53,7 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
             final: false,
           };
 
-          chatClient.sendChatMessage(msg);
+          dispatch(sendChatMessage(msg));
 
           return newCid;
         });
@@ -68,7 +72,7 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
     };
 
     getMicrophonePermission();
-  }, [chatClient]); // Empty dependency array means this runs once on mount
+  }, [dispatch]); // Empty dependency array means this runs once on mount
 
   const requestMicrophonePermission = async () => {
     const microphonePermission =
@@ -142,7 +146,7 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
       cid: newCid.toString(),
       final: true,
     };
-    chatClient.sendChatMessage(msg);
+    dispatch(sendChatMessage(msg));
 
     onRecordComplete(msg.id);
   };

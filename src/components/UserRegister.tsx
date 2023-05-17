@@ -1,34 +1,17 @@
-import {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {Color, FontFamily, FontSize, Margin, Padding} from '../../GlobalStyles';
-import {useChat} from '../persist/ChatContext';
+import {useSelector} from 'react-redux';
+import {ChatServerState} from '../persist/slices/chatSlice';
 
 const UserRegister = () => {
-  const {chatClient} = useChat();
-  const [isOnline, setIsOnline] = useState(false); // 创建一个新的状态变量来记录连接状态
-  useEffect(() => {
-    // 创建一个函数来处理连接状态改变
-    //console.log('UserRegister.tsx useEffect sensed connection socket changed');
-    const handleStatusChange = (status: boolean) => {
-      //console.log('connection status is: ', status);
-      setIsOnline(status);
-    };
-
-    setIsOnline(chatClient.isConnected());
-
-    // 注册状态改变监听器
-    chatClient.onConnectionStatusChange(handleStatusChange);
-
-    // 在组件卸载时，取消监听器
-    return () => {
-      chatClient.offConnectionStatusChange(handleStatusChange);
-    };
-  }, [chatClient]);
+  const chatState = useSelector(
+    (state: any) => state.company,
+  ) as ChatServerState;
 
   return (
     <View style={styles.frameParentFlexBox}>
-      {isOnline ? (
+      {chatState.isOnline ? (
         <>
           <Image
             style={styles.frameChild}

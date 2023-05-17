@@ -10,7 +10,7 @@ import EventSource, {
   EventSourceOptions,
 } from 'react-native-sse';
 import {useNavigation} from '@react-navigation/native';
-import React, {useContext} from 'react';
+import React from 'react';
 
 import {Margin, Color, Padding} from '../../GlobalStyles';
 import {useEffect, useRef, useState} from 'react';
@@ -23,7 +23,6 @@ import UserMessage from '../components/UserMessage';
 
 import ArrowGuide from '../components/help/ArrowGuide';
 //import {useTts} from '../utils/useTts';
-import {useChat} from '../persist/ChatContext';
 import {MessageCallback} from '../comm/chatClient';
 import {
   VwsImageMessage,
@@ -40,6 +39,7 @@ import {
   tourial,
   tourialDone,
 } from '../persist/slices/companySlice';
+import {ChatServerState} from '../persist/slices/chatSlice';
 
 const ShortCuts = () => {
   const navigation = useNavigation();
@@ -52,7 +52,9 @@ const ShortCuts = () => {
   const company = useSelector((state: any) => state.company) as Company;
   const [showArrow, setShowArrow] = useState(true);
 
-  const {chatClient} = useChat();
+  const chatState = useSelector(
+    (state: any) => state.company,
+  ) as ChatServerState;
 
   // const {beginReading, endReading} = useTts({
   //   isEnabled: company?.settings.tts ?? false,

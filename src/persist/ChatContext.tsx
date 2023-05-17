@@ -11,7 +11,7 @@ import {Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Company} from './slices/company';
 
-export interface IChatContext {
+interface IChatContext {
   chatClient: ChatClient;
 }
 
@@ -117,5 +117,3 @@ const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
     </ChatContext.Provider>
   );
 };
-
-export {ChatProvider, useChat};
