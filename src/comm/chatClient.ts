@@ -90,12 +90,19 @@ class ChatClient {
     this.serverUrl = serverUrl;
     this.jwt = jwt;
     this.socket.disconnect();
+
+    // 创建新的Socket
     this.socket = io(this.serverUrl, {query: {jwt: this.jwt}});
 
     // 重新绑定事件处理器
     this.socket.on('smsg', this.handleNewMessage);
     this.socket.on('disconnect', this.handleDisconnect);
     this.socket.on('connect', this.handleConnect);
+
+    // 通知所有订阅者连接状态已改变
+    for (const subscriber of this.connectionStatusSubscribers) {
+      subscriber(false);
+    }
   }
 }
 
