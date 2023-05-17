@@ -341,8 +341,6 @@ PODS:
     - glog
   - react-native-cameraroll (5.4.0):
     - React-Core
-  - react-native-document-picker (3.4.0):
-    - React
   - react-native-file-access (2.6.0):
     - React-Core
     - ZIPFoundation (= 0.9.11)
@@ -573,7 +571,6 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
-  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-file-access (from `../node_modules/react-native-file-access`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
@@ -681,8 +678,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
-  react-native-document-picker:
-    :path: "../node_modules/react-native-document-picker"
   react-native-file-access:
     :path: "../node_modules/react-native-file-access"
   react-native-image-picker:
@@ -797,7 +792,6 @@ SPEC CHECKSUMS:
   React-jsinspector: c712f9e3bb9ba4122d6b82b4f906448b8a281580
   React-logger: 342f358b8decfbf8f272367f4eacf4b6154061be
   react-native-cameraroll: 8ffb0af7a5e5de225fd667610e2979fc1f0c2151
-  react-native-document-picker: d694111879537cec2c258a1dcd2243d9df746824
   react-native-file-access: a4398950e02999b5ab97f3055feb7ee28e6615a3
   react-native-image-picker: ec9b713e248760bfa0f879f0715391de4651a7cb
   react-native-image-resizer: 00ceb0e05586c7aadf061eea676957a6c2ec60fa
