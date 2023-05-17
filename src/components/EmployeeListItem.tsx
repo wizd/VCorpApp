@@ -1,28 +1,7 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {
-  View,
-  Text,
-  Button,
-  Image,
-  StyleSheet,
-  FlatList,
-  Alert,
-  TouchableOpacity,
-} from 'react-native';
-import AppContext, {Employee} from '../persist/AppContext';
-
-type TextButtonType = {
-  title: string;
-  onPress: () => void;
-};
-const TextButton = ({title, onPress}: TextButtonType) => {
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <Text style={styles.itemButton}>{title}</Text>
-    </TouchableOpacity>
-  );
-};
+import React from 'react';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Company, Employee} from '../persist/slices/company';
+import {useDispatch, useSelector} from 'react-redux';
 
 // Define the props of the custom component that renders each item
 type ItemProps = {
@@ -33,7 +12,8 @@ type ItemProps = {
 
 // Define the custom component that renders each item
 const EmployeeListItem = (props: ItemProps) => {
-  const {company, setCompany} = useContext(AppContext);
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
 
   // Return the JSX element that renders each item
   return (
@@ -91,12 +71,6 @@ const styles = StyleSheet.create({
   itemDesc: {
     fontSize: 14,
     color: '#777',
-  },
-  itemButton: {
-    fontSize: 10,
-    color: 'blue',
-    paddingTop: 5,
-    textAlign: 'right',
   },
 });
 

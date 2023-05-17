@@ -13,12 +13,12 @@ import {
 } from 'react-native';
 
 import {Margin, Border, Color} from '../../GlobalStyles';
-import AppContext, {Employee} from '../persist/AppContext';
 import InputWithClear from './tools/InputWithClear';
 import {Dimensions, EmitterSubscription} from 'react-native';
 import {CustomKeyboardAvoidingView} from './CustomKeyboardAvoidingView';
 import SmallButton from './tools/SmallButton';
 import RecordButton from './tools/AudioRecorder';
+import {useDispatch, useSelector} from 'react-redux';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -36,7 +36,8 @@ const QuestionBox = ({
   employee,
   onAvatarPress,
 }: QuestionBoxType) => {
-  const {company} = React.useContext(AppContext);
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
 
   const defImg = require('../../assets/vuesaxboldsend.png');
   const [key, setKey] = useState(0);

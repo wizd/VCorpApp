@@ -13,9 +13,12 @@ import {useNavigation} from '@react-navigation/native';
 import DeviceInfo from 'react-native-device-info';
 
 import EmployeeListItem from '../components/EmployeeListItem';
-import AppContext, {Employee} from '../persist/AppContext';
+
 import CustomButton from '../components/tools/CustomButton';
 import FilterRoleModal from '../components/FilterRoleModal';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company, Employee} from '../persist/slices/company';
+import {hireNewEmployee} from '../persist/slices/companySlice';
 
 // Define the props of the main component that renders the page
 type Props = {};
@@ -23,7 +26,8 @@ type Props = {};
 // Define the main component that renders the page
 const EmployeeMarket = (props: Props) => {
   const navigation = useNavigation();
-  const {company, setCompany} = useContext(AppContext);
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
 
   const [datafull, setDataFull] = useState<Employee[]>([]);
   const [data, setData] = useState<Employee[]>([]);
@@ -94,19 +98,7 @@ const EmployeeMarket = (props: Props) => {
       return;
     } else {
       const employee = data.find(e => e.id === veid);
-      const newCompany = {
-        ...company,
-        employees: [
-          ...company.employees,
-          {
-            id: employee?.id,
-            name: employee?.name,
-            desc: employee?.desc,
-            avatar: employee?.avatar,
-          },
-        ],
-      };
-      setCompany(newCompany);
+      dispatch(hireNewEmployee(employee as Employee));
     }
     navigation.goBack();
   };

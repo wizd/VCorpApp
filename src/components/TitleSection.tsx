@@ -1,25 +1,14 @@
 import * as React from 'react';
-import {useContext} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {Margin, FontSize, FontFamily, Color, Padding} from '../../GlobalStyles';
-import AppContext from '../persist/AppContext';
 import GearButton from './tools/GearButton';
 import UserRegister from './UserRegister';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company} from '../persist/slices/company';
 
 const TitleSection = () => {
-  const {company, setCompany} = useContext(AppContext);
-
-  const setTtsEnabled = () => {
-    if (company) {
-      setCompany({
-        ...company,
-        settings: {
-          ...company.settings,
-          tts: company?.settings.tts,
-        },
-      });
-    }
-  };
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
 
   return (
     <View style={[styles.frameParent, styles.frameParentFlexBox]}>

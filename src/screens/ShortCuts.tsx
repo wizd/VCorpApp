@@ -21,7 +21,6 @@ import QuestionBox from '../components/QuestionBox';
 import AIMessage from '../components/AIMessage';
 import UserMessage from '../components/UserMessage';
 
-import AppContext, {registerUser} from '../persist/AppContext';
 import ArrowGuide from '../components/help/ArrowGuide';
 //import {useTts} from '../utils/useTts';
 import {useChat} from '../persist/ChatContext';
@@ -34,6 +33,13 @@ import {
   isVwsTextMessage,
 } from '../comm/wsproto';
 import {Message, getMsgData, storeMsgData} from '../persist/msgstore';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company} from '../persist/slices/company';
+import {
+  registerUser,
+  tourial,
+  tourialDone,
+} from '../persist/slices/companySlice';
 
 const ShortCuts = () => {
   const navigation = useNavigation();
@@ -42,7 +48,8 @@ const ShortCuts = () => {
   const [q, setQ] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const {company, setCompany} = useContext(AppContext);
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
   const [showArrow, setShowArrow] = useState(true);
 
   const {chatClient} = useChat();
@@ -55,10 +62,6 @@ const ShortCuts = () => {
     const fetchData = async () => {
       const data = await getMsgData();
       setMessages(data);
-
-      if (company !== null && company.jwt === undefined) {
-        await registerUser(company.config.API_URL, company.privatekey);
-      }
     };
 
     fetchData();
@@ -205,20 +208,11 @@ const ShortCuts = () => {
     return () => {
       chatClient.offNewMessage(handleNewMessage);
     };
-  }, [company?.curid, company?.settings?.tts]); // 当chatClient改变时，重新运行这个effect
+  }, [chatClient, company?.curid, company?.settings?.tts]); // 当chatClient改变时，重新运行这个effect
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);
-    if (company) {
-      const newcompany = {
-        ...company,
-        settings: {
-          ...company.settings,
-          guide: false,
-        },
-      };
-      setCompany(newcompany);
-    }
+    dispatch(tourialDone());
     navigation.navigate('Employees' as never);
   };
 
@@ -470,13 +464,7 @@ const ShortCuts = () => {
     if (txt.indexOf('401') > 0) {
       console.log('401 error, retrying...');
 
-      if (company) {
-        const newcompany = {
-          ...company,
-          jwt: undefined,
-        };
-        setCompany(newcompany);
-      }
+      dispatch(registerUser());
 
       msgpadding =
         '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';

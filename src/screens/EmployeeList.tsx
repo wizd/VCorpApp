@@ -7,9 +7,15 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 import DeviceInfo from 'react-native-device-info';
 
 import EmployeeListItem from '../components/EmployeeListItem';
-import AppContext, {Employee} from '../persist/AppContext';
 import CustomButton from '../components/tools/CustomButton';
 import EditRoleModal from '../components/EditRoleModel';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company, Employee} from '../persist/slices/company';
+import {
+  chooseEmployee,
+  fireEmployee,
+  updateEmployee,
+} from '../persist/slices/companySlice';
 
 // Define the props of the main component that renders the page
 type Props = {};
@@ -17,7 +23,8 @@ type Props = {};
 // Define the main component that renders the page
 const EmployeeList = (props: Props) => {
   const navigation = useNavigation();
-  const {company, setCompany} = useContext(AppContext);
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
 
   const [id, setId] = useState('' as string);
   const [curasst, setCurasst] = useState<Employee | undefined>(undefined);
@@ -63,26 +70,12 @@ const EmployeeList = (props: Props) => {
   };
 
   const handleDelete = (veid: string) => {
-    const newCompany = {
-      ...company,
-      employees: [...company.employees.filter(e => e.id !== veid)],
-    };
-    setCompany(newCompany);
+    dispatch(fireEmployee(veid));
   };
 
-  const handleSave = (newName: string, newDescription: string) => {
+  const handleSave = (newName: string, newDescription?: string) => {
     console.log('User entered name:', newName);
-    const employee = company.employees.find(e => e.id === id);
-    if (employee) {
-      const newCompany = {
-        ...company,
-        employees: [
-          ...company.employees.filter(e => e.id !== id),
-          {...employee, name: newName, note: newDescription},
-        ],
-      };
-      setCompany(newCompany);
-    }
+    dispatch(updateEmployee({id, name: newName, note: newDescription}));
   };
 
   const veEdit = (veid: string) => {
@@ -93,12 +86,7 @@ const EmployeeList = (props: Props) => {
   };
 
   const veSelected = (veid: string) => {
-    // change curid of company
-    const newCompany = {
-      ...company,
-      curid: veid,
-    };
-    setCompany(newCompany);
+    dispatch(chooseEmployee(veid));
     navigation.navigate('ShortCuts' as never);
   };
 

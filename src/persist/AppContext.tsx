@@ -14,17 +14,17 @@ const defaultConfig = {
   SECRET_KEY: '5f7b9b9b-3b5c-4b9c-9c9b-5f7b9b9b3b5c',
 };
 
-export interface Config {
+interface Config {
   API_URL: string;
   SECRET_KEY: string;
 }
 
-export interface Settings {
+interface Settings {
   tts: boolean;
   guide?: boolean;
   autoSaveImage: boolean;
 }
-export interface Employee {
+interface Employee {
   id: string;
   name: string;
   desc: string;
@@ -32,7 +32,7 @@ export interface Employee {
   note?: string;
 }
 
-export interface Company {
+interface Company {
   config: Config;
   settings: Settings;
   privatekey: string;
@@ -52,7 +52,7 @@ const AppContext = createContext<AppContextType>({
   setCompany: () => {},
 });
 
-export const registerUser = async (apiUrl: string, privatekey: string) => {
+const registerUser = async (apiUrl: string, privatekey: string) => {
   console.log('registering user to: ', apiUrl);
   const baseUrl = apiUrl + '/vc/v1/user';
   const usr = {
@@ -120,9 +120,7 @@ const storeName = '@company';
 interface AppContextProviderProps {
   children: React.ReactNode;
 }
-export const AppContextProvider: React.FC<AppContextProviderProps> = ({
-  children,
-}) => {
+const AppContextProvider: React.FC<AppContextProviderProps> = ({children}) => {
   const [company, setCompany] = useState<Company | null>(null);
 
   useEffect(() => {
@@ -178,5 +176,3 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     </AppContext.Provider>
   );
 };
-
-export default AppContext;

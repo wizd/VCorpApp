@@ -62,7 +62,7 @@ class ChatClient {
     this.jwt = token;
     this.serverUrl = serverUrl;
     if (this.jwt === undefined || this.serverUrl === undefined) {
-      throw new Error('JWT and server URL must be provided.');
+      //throw new Error('JWT and server URL must be provided.');
     }
     //console.log('create websocket in constructor: ', this.serverUrl, this.jwt);
     this.socket = io(serverUrl!, {

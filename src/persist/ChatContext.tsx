@@ -8,7 +8,8 @@ import React, {
 import {AppState, AppStateStatus} from 'react-native';
 import ChatClient from '../comm/chatClient';
 import {Text} from 'react-native';
-import AppContext from './AppContext';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company} from './slices/company';
 
 export interface IChatContext {
   chatClient: ChatClient;
@@ -42,7 +43,8 @@ const createChatClientInstance = (() => {
 })();
 
 const ChatProvider: React.FC<ChatProviderProps> = ({children}) => {
-  const {company} = useContext(AppContext);
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
   const [isLoaded, setIsLoaded] = useState(false);
   const [appState, setAppState] = useState<AppStateStatus>(
     AppState.currentState,

@@ -2,22 +2,9 @@ import * as React from 'react';
 import {Text, StyleSheet, View, Image, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Margin, FontFamily, Color, Border} from '../../GlobalStyles';
-import AppContext, {registerUser} from '../persist/AppContext';
 
 const Onboarding = () => {
   const navigation = useNavigation();
-  const {company, setCompany} = React.useContext(AppContext);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      if (company !== null && company.jwt === undefined) {
-        await registerUser(company.config.API_URL, company.privatekey);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <View style={styles.onboarding}>
       <View style={styles.parentFlexBox}>

@@ -9,18 +9,18 @@ import React, {useEffect} from 'react';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {PersistGate} from 'redux-persist/integration/react';
 import Onboarding from './src/screens/Onboarding';
 import ChatPage from './src/screens/ChatPage';
 import ShortCuts from './src/screens/ShortCuts';
 import EmployeeList from './src/screens/EmployeeList';
 import EmployeeMarket from './src/screens/EmployeeMarket';
-import {AppContextProvider} from './src/persist/AppContext';
 import Toast from 'react-native-toast-message';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
 import {ChatProvider} from './src/persist/ChatContext';
 
-import {store} from './src/persist/Store';
+import {persistor, store} from './src/persist/Store';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
@@ -35,7 +35,7 @@ const App = () => {
   return (
     <>
       <Provider store={store}>
-        <AppContextProvider>
+        <PersistGate loading={null} persistor={persistor}>
           <ChatProvider>
             <SafeAreaProvider>
               <SafeAreaView style={{flex: 1}}>
@@ -81,7 +81,7 @@ const App = () => {
               </SafeAreaView>
             </SafeAreaProvider>
           </ChatProvider>
-        </AppContextProvider>
+        </PersistGate>
       </Provider>
     </>
   );

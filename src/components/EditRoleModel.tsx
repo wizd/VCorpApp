@@ -8,7 +8,7 @@ import {
   Modal,
   StyleSheet,
 } from 'react-native';
-import {Employee} from '../persist/AppContext';
+import {Employee} from '../persist/slices/company';
 
 interface EditRoleModalProps {
   isVisible: boolean;

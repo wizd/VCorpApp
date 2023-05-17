@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useContext} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Image,
@@ -15,8 +15,9 @@ import {basename} from 'react-native-path';
 import AutoImage from './AutoImage';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import * as Progress from 'react-native-progress';
-import AppContext from '../persist/AppContext';
 import {useToast} from '../utils/useToast';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company} from '../persist/slices/company';
 
 async function hasAndroidPermission() {
   const permission =
@@ -103,7 +104,8 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
   const [localImagePath, setLocalImagePath] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const isMountedRef = useRef(false);
-  const {company, setCompany} = useContext(AppContext);
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
 
   useEffect(() => {
     if (!isMountedRef.current) {
@@ -148,7 +150,7 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
       downloadImage();
       isMountedRef.current = true;
     }
-  }, [imageUrl, saved]);
+  }, [company?.settings.autoSaveImage, imageUrl, saved]);
 
   if (localImagePath) {
     return <AutoImage source={localImagePath} />;

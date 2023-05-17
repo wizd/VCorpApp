@@ -1,26 +1,25 @@
 import * as React from 'react';
-import {useContext} from 'react';
 import {Text, StyleSheet, View, ActivityIndicator, Image} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
-import AppContext from '../persist/AppContext';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import Markdown from './Markdown';
 import SmallButton from './tools/SmallButton';
 import LikeDislikeButtons from './tools/LikeDislikeButtons';
 import PlayerControls from './tools/PlayerControls';
 import {useDispatch, useSelector} from 'react-redux';
-import {playSound} from '../persist/audio/playlistSlice';
+import {playSound} from '../persist/slices/playlistSlice';
+import {Company} from '../persist/slices/company';
 
 // 关于音频播放：
 // 如果是当前的消息，那么现实出控制台（停止、暂停、上一个、下一个）
 // 如果不是当前的消息，那么只显示小耳朵图标，点击后加入队列，长按强行插入当前播放队列的第一个位置，然后开始播放
 
 const AIMessage = (props: any) => {
-  const {company} = useContext(AppContext);
   const [imgsrc, setImgsrc] = React.useState('');
   const [name, setName] = React.useState('');
   const audio = useSelector((state: any) => state.audio);
   const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
 
   React.useEffect(() => {
     //console.log('AIMessage useEffect msg wave url is: ', props.msg.wavurl);

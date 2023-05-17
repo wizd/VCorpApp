@@ -2,7 +2,11 @@ import React, {useEffect, useRef} from 'react';
 import {TouchableOpacity, Animated} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {playNext, playPause, playStop} from '../../persist/audio/playlistSlice';
+import {
+  playNext,
+  playPause,
+  playStop,
+} from '../../persist/slices/playlistSlice';
 
 interface PlayerControlsProps {
   isVisible: boolean;
