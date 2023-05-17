@@ -19,6 +19,20 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
 
   const {sendMessage} = useChat();
 
+  useEffect(() => {
+    const getMicrophonePermission = async () => {
+      const hasPermission = await requestMicrophonePermission();
+      if (!hasPermission) {
+        console.log('Microphone permission denied');
+      } else {
+        // Permission granted, initialize audio record
+        await init();
+      }
+    };
+
+    getMicrophonePermission();
+  }, []); // Empty dependency array means this runs once on mount
+
   const init = async () => {
     const options = {
       sampleRate: 16000,
@@ -72,8 +86,6 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
       console.log('Microphone permission denied');
       return;
     }
-
-    await init();
 
     batchIdRef.current = new Date().getTime();
     setCid(0);
