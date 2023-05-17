@@ -27,6 +27,51 @@ const initialState: AudioState = {
   error: undefined,
 };
 
+let currentSound: Sound | undefined;
+
+export const playStop = createAsyncThunk(
+  'playlist/playStop',
+  async (_, {dispatch, getState}) => {
+    if (currentSound) {
+      currentSound.stop();
+      currentSound.release();
+      currentSound = undefined;
+    }
+    dispatch(stopAction());
+    dispatch(playSuccess());
+  },
+);
+
+export const playPause = createAsyncThunk(
+  'playlist/playPause',
+  async (_, {dispatch, getState}) => {
+    if (currentSound) {
+      const state = getState() as {audio: AudioState};
+      if (state.audio.isPaused) {
+        currentSound.play();
+        dispatch(resumeAction());
+      } else {
+        currentSound.pause();
+        dispatch(pauseAction());
+      }
+    }
+  },
+);
+
+export const playNext = createAsyncThunk(
+  'playlist/playNext',
+  async (_, {dispatch, getState}) => {
+    dispatch(playStop());
+
+    setTimeout(() => {
+      const state2 = getState() as {audio: AudioState};
+      if (state2.audio.playList.length > 0) {
+        dispatch(playSound(state2.audio.playList[0]));
+      }
+    }, 10);
+  },
+);
+
 export const playSound = createAsyncThunk(
   'playlist/playSound',
   async (url: string, {dispatch, getState}) => {
@@ -38,15 +83,21 @@ export const playSound = createAsyncThunk(
     if (state.audio.playingStatus === PlayingStatus.InPlaying) {
       return Promise.resolve();
     }
+    if (state.audio.playList[0] !== url) {
+      return Promise.resolve();
+    }
 
     const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
-    const sound = new Sound(url, sb, error => {
+    currentSound = new Sound(url, sb, error => {
       if (error) {
         console.log('failed to load the sound', error);
         return Promise.reject({error: error.message});
       }
+      if (!currentSound) {
+        return;
+      }
       dispatch(playStart());
-      sound.play(success => {
+      currentSound.play(success => {
         if (success) {
           console.log('Sound played successfully');
           dispatch(playSuccess());
@@ -84,7 +135,7 @@ const playlistSlice = createSlice({
         state.currentUrl = action.payload;
       }
     },
-    playNext(state) {
+    nextAction(state) {
       if (state.playList.length > 1) {
         const nextPlayList = state.playList.slice(1);
         state.playList = nextPlayList;
@@ -95,17 +146,29 @@ const playlistSlice = createSlice({
       console.log('playStart was called');
       state.playingStatus = PlayingStatus.InPlaying;
       state.currentUrl = state.playList[0];
+      state.canPlay = true;
+      state.isPaused = false;
     },
     playSuccess(state) {
       console.log('playSuccess was called');
       state.error = undefined;
       state.playingStatus = PlayingStatus.Stopped;
       state.currentUrl = undefined;
+      state.canPlay = state.playList.length > 1;
       state.playList = state.playList.slice(1);
     },
     playFailure(state, action) {
       state.playingStatus = PlayingStatus.Stopped;
       state.error = action.payload;
+    },
+    pauseAction(state) {
+      state.isPaused = true;
+    },
+    resumeAction(state) {
+      state.isPaused = false;
+    },
+    stopAction(state) {
+      state.isPaused = false;
     },
   },
   extraReducers: builder => {
@@ -124,7 +187,15 @@ const playlistSlice = createSlice({
   },
 });
 
-export const {addToPlayList, playNext, playStart, playSuccess, playFailure} =
-  playlistSlice.actions;
+export const {
+  addToPlayList,
+  playStart,
+  playSuccess,
+  playFailure,
+  pauseAction,
+  resumeAction,
+  stopAction,
+  nextAction,
+} = playlistSlice.actions;
 
 export default playlistSlice.reducer;

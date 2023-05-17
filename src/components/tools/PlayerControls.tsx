@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {TouchableOpacity, Animated} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {playNext, playStart} from '../../persist/audio/playlistSlice';
+import {playNext, playPause, playStop} from '../../persist/audio/playlistSlice';
 
 interface PlayerControlsProps {
   isVisible: boolean;
@@ -16,7 +16,7 @@ const PlayerControls: React.FC<PlayerControlsProps> = ({isVisible}) => {
   const opacity = useRef(new Animated.Value(isVisible ? 1 : 0)).current;
 
   const handlePlayPause = () => {
-    dispatch(playStart());
+    dispatch(playPause());
   };
 
   const handleNext = () => {
@@ -24,7 +24,7 @@ const PlayerControls: React.FC<PlayerControlsProps> = ({isVisible}) => {
   };
 
   const handleStop = () => {
-    dispatch({type: 'STOP'}); // assuming you have a STOP action
+    dispatch(playStop());
   };
 
   useEffect(() => {
