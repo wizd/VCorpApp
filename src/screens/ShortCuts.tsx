@@ -34,7 +34,6 @@ import {
   isVwsTextMessage,
 } from '../comm/wsproto';
 import {Message, getMsgData, storeMsgData} from '../persist/msgstore';
-import {useAudio} from '../persist/AudioContext';
 
 const ShortCuts = () => {
   const navigation = useNavigation();
@@ -45,7 +44,7 @@ const ShortCuts = () => {
 
   const {company, setCompany} = useContext(AppContext);
   const [showArrow, setShowArrow] = useState(true);
-  const {addToPlayList} = useAudio();
+
   const {chatClient} = useChat();
 
   // const {beginReading, endReading} = useTts({
@@ -110,7 +109,7 @@ const ShortCuts = () => {
               console.log(
                 'in main UI, company?.settings?.tts try to add to playlist:',
               );
-              addToPlayList(txt);
+              //addToPlayList(txt);
             }
 
             setMessages(currentMessages => {
@@ -206,7 +205,7 @@ const ShortCuts = () => {
     return () => {
       chatClient.offNewMessage(handleNewMessage);
     };
-  }, [addToPlayList, chatClient, company?.curid, company?.settings?.tts]); // 当chatClient改变时，重新运行这个effect
+  }, [company?.curid, company?.settings?.tts]); // 当chatClient改变时，重新运行这个effect
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);

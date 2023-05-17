@@ -1,37 +1,30 @@
 import React, {useEffect, useRef} from 'react';
 import {TouchableOpacity, Animated} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useAudio} from '../../persist/AudioContext';
+import {useDispatch, useSelector} from 'react-redux';
+import {playNext, playStart} from '../../persist/audio/playlistSlice';
 
 interface PlayerControlsProps {
   isVisible: boolean;
 }
 
 const PlayerControls: React.FC<PlayerControlsProps> = ({isVisible}) => {
-  const {
-    playOrPause,
-    playNext,
-    stop,
-    playList,
-    currentPlaying,
-    canPlay,
-    isPaused,
-  } = useAudio();
+  const audio = useSelector((state: any) => state.audio);
+  const dispatch = useDispatch();
 
   const translateX = useRef(new Animated.Value(isVisible ? 0 : 100)).current;
   const opacity = useRef(new Animated.Value(isVisible ? 1 : 0)).current;
 
   const handlePlayPause = () => {
-    // Assuming your playOrPause function accepts a URL
-    playOrPause('your-url-here');
+    dispatch(playStart());
   };
 
   const handleNext = () => {
-    playNext();
+    dispatch(playNext());
   };
 
   const handleStop = () => {
-    stop();
+    dispatch({type: 'STOP'}); // assuming you have a STOP action
   };
 
   useEffect(() => {
@@ -56,27 +49,33 @@ const PlayerControls: React.FC<PlayerControlsProps> = ({isVisible}) => {
         transform: [{translateX: translateX}],
         opacity: opacity,
       }}>
-      <TouchableOpacity onPress={handleStop} disabled={currentPlaying === null}>
+      <TouchableOpacity
+        onPress={handleStop}
+        disabled={audio.currentUrl === null}>
         <Icon
           name="stop"
           size={32}
-          color={currentPlaying !== null ? 'black' : 'lightgrey'}
+          color={audio.currentUrl !== null ? 'black' : 'lightgrey'}
         />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={handlePlayPause}
-        disabled={!canPlay && currentPlaying === null}>
+        disabled={!audio.canPlay && audio.currentUrl === null}>
         <Icon
-          name={isPaused ? 'play-arrow' : 'pause'}
+          name={audio.isPaused ? 'play-arrow' : 'pause'}
           size={32}
-          color={canPlay || currentPlaying !== null ? 'black' : 'lightgrey'}
+          color={
+            audio.canPlay || audio.currentUrl !== null ? 'black' : 'lightgrey'
+          }
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleNext} disabled={playList.length <= 1}>
+      <TouchableOpacity
+        onPress={handleNext}
+        disabled={audio.playList.length <= 1}>
         <Icon
           name="skip-next"
           size={32}
-          color={playList.length > 1 ? 'black' : 'lightgrey'}
+          color={audio.playList.length > 1 ? 'black' : 'lightgrey'}
         />
       </TouchableOpacity>
     </Animated.View>

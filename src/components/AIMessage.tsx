@@ -7,8 +7,9 @@ import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import Markdown from './Markdown';
 import SmallButton from './tools/SmallButton';
 import LikeDislikeButtons from './tools/LikeDislikeButtons';
-import {useAudio} from '../persist/AudioContext';
 import PlayerControls from './tools/PlayerControls';
+import {useDispatch, useSelector} from 'react-redux';
+import {playSound} from '../persist/audio/playlistSlice';
 
 // 关于音频播放：
 // 如果是当前的消息，那么现实出控制台（停止、暂停、上一个、下一个）
@@ -18,7 +19,8 @@ const AIMessage = (props: any) => {
   const {company} = useContext(AppContext);
   const [imgsrc, setImgsrc] = React.useState('');
   const [name, setName] = React.useState('');
-  const {addToPlayList, currentUrl} = useAudio();
+  const audio = useSelector((state: any) => state.audio);
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     //console.log('AIMessage useEffect msg wave url is: ', props.msg.wavurl);
@@ -48,7 +50,7 @@ const AIMessage = (props: any) => {
 
   const playOrPause = () => {
     console.log('in AIMessage, playOrPause try to add to playlist:');
-    addToPlayList(props.msg.wavurl);
+    dispatch(playSound(props.msg.wavurl));
   };
 
   return (
@@ -68,9 +70,9 @@ const AIMessage = (props: any) => {
         <View style={styles.soundControl}>
           <PlayerControls
             isVisible={
-              currentUrl !== null &&
-              currentUrl !== undefined &&
-              currentUrl === props.msg.wavurl
+              audio.currentUrl !== null &&
+              audio.currentUrl !== undefined &&
+              audio.currentUrl === props.msg.wavurl
             }
           />
         </View>

@@ -6,6 +6,7 @@
  */
 const Stack = createNativeStackNavigator();
 import React, {useEffect} from 'react';
+import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Onboarding from './src/screens/Onboarding';
@@ -19,7 +20,7 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
 import {ChatProvider} from './src/persist/ChatContext';
 
-import {AudioProvider} from './src/persist/AudioContext';
+import {store} from './src/persist/Store';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
@@ -33,9 +34,9 @@ const App = () => {
   }, []);
   return (
     <>
-      <AppContextProvider>
-        <ChatProvider>
-          <AudioProvider>
+      <Provider store={store}>
+        <AppContextProvider>
+          <ChatProvider>
             <SafeAreaProvider>
               <SafeAreaView style={{flex: 1}}>
                 <NavigationContainer>
@@ -79,9 +80,9 @@ const App = () => {
                 <Toast />
               </SafeAreaView>
             </SafeAreaProvider>
-          </AudioProvider>
-        </ChatProvider>
-      </AppContextProvider>
+          </ChatProvider>
+        </AppContextProvider>
+      </Provider>
     </>
   );
 };
