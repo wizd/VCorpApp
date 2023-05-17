@@ -64,7 +64,11 @@ class ChatClient {
     if (this.jwt === undefined || this.serverUrl === undefined) {
       throw new Error('JWT and server URL must be provided.');
     }
-    this.socket = io(serverUrl!, {query: {jwt: this.jwt}});
+    this.socket = io(serverUrl!, {
+      query: {jwt: this.jwt},
+      reconnectionDelayMax: 8000, // 最大重连延迟时间，单位为毫秒
+      timeout: 14000, // 连接超时时间，单位为毫秒
+    });
 
     // 绑定事件处理器
     this.socket.on('smsg', this.handleNewMessage);
@@ -92,7 +96,11 @@ class ChatClient {
     this.socket.disconnect();
 
     // 创建新的Socket
-    this.socket = io(this.serverUrl, {query: {jwt: this.jwt}});
+    this.socket = io(this.serverUrl, {
+      query: {jwt: this.jwt},
+      reconnectionDelayMax: 8000, // 最大重连延迟时间，单位为毫秒
+      timeout: 14000, // 连接超时时间，单位为毫秒
+    });
 
     // 重新绑定事件处理器
     this.socket.on('smsg', this.handleNewMessage);
