@@ -38,7 +38,11 @@ import {
   tourial,
   tourialDone,
 } from '../persist/slices/companySlice';
-import {ChatServerState, clearMessage} from '../persist/slices/chatSlice';
+import {
+  ChatServerState,
+  chatClient,
+  clearMessage,
+} from '../persist/slices/chatSlice';
 import {playSound} from '../persist/slices/playlistSlice';
 
 const ShortCuts = () => {
@@ -81,7 +85,7 @@ const ShortCuts = () => {
   useEffect(() => {
     const handleNewMessage = smessage => {
       // 处理新消息，例如更新状态或显示通知
-      console.log('New message received to main chat UI:', smessage);
+      //console.log('New message received to main chat UI:', smessage);
 
       if (isVwsTextMessage(smessage)) {
         if (smessage.cid !== undefined) {
@@ -111,6 +115,7 @@ const ShortCuts = () => {
             if (company?.settings?.tts) {
               console.log(
                 'in main UI, company?.settings?.tts try to add to playlist:',
+                smessage,
               );
 
               if (company?.settings.tts && txt !== undefined) {
@@ -143,7 +148,21 @@ const ShortCuts = () => {
             //check if the message is a speech recognition result
             // this is the result of a speech recognition
             if (smessage.id.endsWith('-vr')) {
-              ask(smessage.content, smessage.id);
+              setMessages(previousMessages => {
+                // Get the last array
+                const last = [...previousMessages];
+
+                // Update the list
+                const mewLIst = last.map((m, _i) => {
+                  if (m._id === smessage.id && !m.isAI) {
+                    m.text = smessage.content;
+                    m.isLoading = false;
+                  }
+                  return m;
+                });
+                // Return the new array
+                return mewLIst;
+              });
 
               // // and clean any failed voice recognition
               // setMessages(previousMessages => {
@@ -191,14 +210,24 @@ const ShortCuts = () => {
       }
     };
 
-    console.log('in main chat UI, chatState is ', chatState);
-    if (chatState.newMessages && chatState.newMessages.length > 0) {
-      const incomingMsg =
-        chatState.newMessages[chatState.newMessages.length - 1];
-      handleNewMessage(incomingMsg);
-      dispatch(clearMessage(incomingMsg));
+    if (chatClient !== null) {
+      // 在组件挂载时注册事件监听器
+      chatClient.on('message', handleNewMessage);
+
+      // 在组件卸载时注销事件监听器
+      return () => {
+        chatClient!.off('message', handleNewMessage);
+      };
     }
-  }, [chatState.newMessages]); // 当chatClient改变时，重新运行这个effect
+
+    //console.log('in main chat UI, chatState is ', chatState);
+    // if (chatState.newMessages && chatState.newMessages.length > 0) {
+    //   const incomingMsg =
+    //     chatState.newMessages[chatState.newMessages.length - 1];
+    //   handleNewMessage(incomingMsg);
+    //   dispatch(clearMessage(incomingMsg));
+    // }
+  }, [chatClient]);
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);

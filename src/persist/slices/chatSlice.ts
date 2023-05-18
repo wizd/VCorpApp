@@ -4,7 +4,7 @@ import ChatClient from '../../comm/chatClient';
 import {AppState, AppStateStatus} from 'react-native';
 import {VwsMessage} from '../../comm/wsproto';
 
-let chatClient: ChatClient | null = null;
+export let chatClient: ChatClient | null = null;
 
 export type ChatServerState = {
   isOnline: boolean;

@@ -1,6 +1,8 @@
 import {io, Socket} from 'socket.io-client';
 import {VwsMessage} from './wsproto';
 
+type VwsEventCallback = (message: VwsMessage) => void;
+
 // 聊天客户端类
 class ChatClient {
   private jwt: string;
@@ -9,13 +11,38 @@ class ChatClient {
 
   private dispatch: (action: {type: string; payload?: any}) => void;
 
-  private autoReconnectInterval: number = 1000; // 设置自动重连时间间隔，单位：毫秒
+  private autoReconnectInterval: number = 5000; // 设置自动重连时间间隔，单位：毫秒
+
+  // events
+  private events: {[eventName: string]: VwsEventCallback[]} = {};
+
+  on(eventName: string, listener: VwsEventCallback) {
+    if (!this.events[eventName]) {
+      this.events[eventName] = [];
+    }
+    this.events[eventName].push(listener);
+  }
+
+  off(eventName: string, listener: VwsEventCallback) {
+    if (!this.events[eventName]) {
+      return;
+    }
+    this.events[eventName] = this.events[eventName].filter(l => l !== listener);
+  }
+
+  emit(eventName: string, message: VwsMessage) {
+    if (!this.events[eventName]) {
+      return;
+    }
+    this.events[eventName].forEach(listener => listener(message));
+  }
 
   handleNewMessage = async (message: VwsMessage) => {
-    console.log('Received chat message from server:', message);
+    //console.log('Received chat message from server:', message);
+    this.emit('message', message);
 
     // 分发一个action
-    this.dispatch({type: 'chat/newMessage', payload: message});
+    //this.dispatch({type: 'chat/newMessage', payload: message});
   };
 
   handleDisconnect = () => {
