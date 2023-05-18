@@ -9,7 +9,7 @@
     "start": "react-app-rewired start",
     "test": "jest",
     "web": "npx webpack serve --config web/webpack.config.js --mode development",
-    "prebuild": "node copy-modules.js"
+    "prebuild": "node ./scripts/copy-modules.js"
   },
   "dependencies": {
     "@bam.tech/react-native-image-resizer": "^3.0.5",
