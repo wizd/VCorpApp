@@ -27,11 +27,7 @@ const AIMessage = (props: any) => {
       company!.config.API_URL + '/assets/avatar/' + props.msg.veid + '.png',
     );
     setName(company?.employees.find(e => e.id === props.msg.veid)?.name || '');
-
-    // if (company?.settings.tts && props.msg.wavurl !== undefined) {
-    //   addToPlayList(props.msg.wavurl);
-    // }
-  }, [company, props]);
+  }, [company, dispatch, props]);
 
   const handleStop = () => {
     console.log('handleStop');

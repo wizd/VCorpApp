@@ -40,6 +40,7 @@ import {
   tourialDone,
 } from '../persist/slices/companySlice';
 import {ChatServerState, clearMessage} from '../persist/slices/chatSlice';
+import {playSound} from '../persist/slices/playlistSlice';
 
 const ShortCuts = () => {
   const navigation = useNavigation();
@@ -112,7 +113,10 @@ const ShortCuts = () => {
               console.log(
                 'in main UI, company?.settings?.tts try to add to playlist:',
               );
-              //addToPlayList(txt);
+
+              if (company?.settings.tts && txt !== undefined) {
+                dispatch(playSound(txt));
+              }
             }
 
             setMessages(currentMessages => {
