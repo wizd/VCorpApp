@@ -641,7 +641,7 @@ const ShortCuts = () => {
             ListFooterComponent={<></>}
             contentContainerStyle={{flexGrow: 1, paddingBottom: 16}}
             keyboardShouldPersistTaps="handled"
-            onContentSizeChange={autoScroll}
+            //onContentSizeChange={autoScroll}
             ref={flatListRef}
           />
         </View>
