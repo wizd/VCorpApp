@@ -22,8 +22,7 @@ import AIMessage from '../components/AIMessage';
 import UserMessage from '../components/UserMessage';
 
 import ArrowGuide from '../components/help/ArrowGuide';
-//import {useTts} from '../utils/useTts';
-import {MessageCallback} from '../comm/chatClient';
+
 import {
   VwsImageMessage,
   VwsTextMessage,
@@ -144,32 +143,18 @@ const ShortCuts = () => {
             //check if the message is a speech recognition result
             // this is the result of a speech recognition
             if (smessage.id.endsWith('-vr')) {
-              setMessages(previousMessages => {
-                // Get the last array
-                const last = [...previousMessages];
+              ask(smessage.content, smessage.id);
 
-                // Update the list
-                const mewLIst = last.map((m, _i) => {
-                  if (m._id === smessage.id && !m.isAI) {
-                    m.text = smessage.content;
-                    m.isLoading = false;
-                  }
-                  return m;
-                });
-                // Return the new array
-                return mewLIst;
-              });
+              // // and clean any failed voice recognition
+              // setMessages(previousMessages => {
+              //   // Get the last array
+              //   const last = [...previousMessages];
 
-              // and clean any failed voice recognition
-              setMessages(previousMessages => {
-                // Get the last array
-                const last = [...previousMessages];
-
-                // Update the list
-                const mewLIst = last.filter(a => !(!a.isAI && a.isLoading));
-                // Return the new array
-                return mewLIst;
-              });
+              //   // Update the list
+              //   const mewLIst = last.filter(a => !(!a.isAI && a.isLoading));
+              //   // Return the new array
+              //   return mewLIst;
+              // });
 
               return;
             }
@@ -250,22 +235,53 @@ const ShortCuts = () => {
     setMessages(previousMessages => [...previousMessages, userMsg]);
   };
 
-  const ask = (question: string) => {
+  const ask = (question: string, existingUserMsgId?: string) => {
     setQ('');
     let newContent = '';
+    let userMsg: Message;
+    if (existingUserMsgId) {
+      console.log(
+        'try to modify a speech msssage. existingUserMsgId is ',
+        existingUserMsgId,
+      );
+      userMsg = messages.find(m => m._id === existingUserMsgId && !m.isAI);
 
-    //Add the last message to the list
-    const userMsg = {
-      _id: new Date().getTime().toString(),
-      text: question,
-      createdAt: new Date(),
-      isLoading: false,
-      isAI: false,
-      veid: company?.curid ?? 'A0001',
-      bypass: false,
-    };
+      setMessages(previousMessages => {
+        // Get the last array
+        const last = [...previousMessages];
 
-    setMessages(previousMessages => [...previousMessages, userMsg]);
+        // Update the list
+        const mewLIst = last.map((m, _i) => {
+          if (m._id === existingUserMsgId && !m.isAI) {
+            m.text = question;
+            m.isLoading = false;
+          }
+          return m;
+        });
+        // Return the new array
+        return mewLIst;
+      });
+
+      if (userMsg === undefined) {
+        console.log('userMsg is undefined');
+        return;
+      }
+
+      console.log('speech to text, userMsg is ', userMsg);
+    } else {
+      //Add the last message to the list
+      userMsg = {
+        _id: new Date().getTime().toString(),
+        text: question,
+        createdAt: new Date(),
+        isLoading: false,
+        isAI: false,
+        veid: company?.curid ?? 'A0001',
+        bypass: false,
+      };
+
+      setMessages(previousMessages => [...previousMessages, userMsg]);
+    }
 
     const url = company!.config.API_URL + '/vc/v1/chat'; // replace with your API url
 
