@@ -185,7 +185,7 @@ const ShortCuts = () => {
               createdAt: new Date(),
               isLoading: !(smessage as VwsTextMessage).final,
               isAI: true,
-              veid: company?.curid ?? 'A0001',
+              veid: smessage.src ?? company?.curid ?? 'A0001',
               bypass: company?.curid.startsWith('D') ?? false,
             };
             setMessages(previousMessages => [...previousMessages, message]);
