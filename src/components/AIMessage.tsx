@@ -9,6 +9,7 @@ import PlayerControls from './tools/PlayerControls';
 import {useDispatch, useSelector} from 'react-redux';
 import {playSound} from '../persist/slices/playlistSlice';
 import {Company} from '../persist/slices/company';
+import ToolbarButton from './tools/ContextButton';
 
 // 关于音频播放：
 // 如果是当前的消息，那么现实出控制台（停止、暂停、上一个、下一个）
@@ -86,7 +87,7 @@ const AIMessage = (props: any) => {
           {props.isLoading && (
             <SmallButton onPress={handleStop} iconName="stop" />
           )}
-          {!props.isLoading && <LikeDislikeButtons content={props.msg.text} />}
+          {!props.isLoading && <ToolbarButton />}
         </View>
         {/* <View style={styles.gearMenu}>
           {!props.isLoading && (
