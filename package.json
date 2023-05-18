@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "start": "react-app-rewired start",
     "test": "jest",
-    "web": "npx webpack serve --config web/webpack.config.js --mode development"
+    "web": "npx webpack serve --config web/webpack.config.js --mode development",
+    "prebuild": "node copy-modules.js"
   },
   "dependencies": {
     "@bam.tech/react-native-image-resizer": "^3.0.5",
@@ -43,7 +44,7 @@
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-native": "0.71.8",
-    "react-native-audio-record": "file:../pkgs/react-native-audio-record",
+    "react-native-audio-record": "0.2.2",
     "react-native-device-info": "^10.6.0",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-fast-image": "^8.6.3",
