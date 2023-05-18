@@ -25,7 +25,7 @@ const UserRegister = () => {
             resizeMode="cover"
             source={require('../../assets/ellipse-1.png')}
           />
-          <Text style={[styles.offline, styles.ml5]}>已离线</Text>
+          <Text style={[styles.offline, styles.ml5]}>重新连线中...</Text>
         </>
       )}
     </View>

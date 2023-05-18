@@ -4,12 +4,13 @@ import {FontSize, FontFamily, Color, Border, Padding} from '../../GlobalStyles';
 import {imgPlaceHolder, isNullOrEmpty} from '../utils/util';
 import Markdown from './Markdown';
 import SmallButton from './tools/SmallButton';
-import LikeDislikeButtons from './tools/LikeDislikeButtons';
+import Clipboard from '@react-native-community/clipboard';
 import PlayerControls from './tools/PlayerControls';
 import {useDispatch, useSelector} from 'react-redux';
 import {playSound} from '../persist/slices/playlistSlice';
 import {Company} from '../persist/slices/company';
 import ToolbarButton from './tools/ContextButton';
+import {useToast} from '../utils/useToast';
 
 // 关于音频播放：
 // 如果是当前的消息，那么现实出控制台（停止、暂停、上一个、下一个）
@@ -21,6 +22,7 @@ const AIMessage = (props: any) => {
   const audio = useSelector((state: any) => state.audio);
   const dispatch = useDispatch();
   const company = useSelector((state: any) => state.company) as Company;
+  const showToast = useToast();
 
   React.useEffect(() => {
     //console.log('AIMessage useEffect msg wave url is: ', props.msg.wavurl);
@@ -35,6 +37,15 @@ const AIMessage = (props: any) => {
     if (props.onStop) {
       props.onStop(props.msg);
     }
+  };
+
+  const handleCopy = () => {
+    Clipboard.setString(props.msg.text);
+    showToast('内容已复制到剪贴板');
+  };
+
+  const handleShare = () => {
+    console.log('handleShare');
   };
 
   const playResetProgress = () => {
@@ -87,7 +98,12 @@ const AIMessage = (props: any) => {
           {props.isLoading && (
             <SmallButton onPress={handleStop} iconName="stop" />
           )}
-          {!props.isLoading && <ToolbarButton />}
+          {!props.isLoading && (
+            <ToolbarButton
+              onCopyPress={handleCopy}
+              onSharePress={handleShare}
+            />
+          )}
         </View>
         {/* <View style={styles.gearMenu}>
           {!props.isLoading && (

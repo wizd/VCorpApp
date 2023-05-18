@@ -2,22 +2,17 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import SmallButton from './SmallButton'; // Assuming this is the file path
 
-const Toolbar = () => {
-  const onReadPress = () => {
-    console.log('Read button pressed');
-    // Add functionality here
-  };
+interface ToolbarProps {
+  onReadPress?: () => void;
+  onSharePress?: () => void;
+  onCopyPress?: () => void;
+}
 
-  const onSharePress = () => {
-    console.log('Share button pressed');
-    // Add functionality here
-  };
-
-  const onCopyPress = () => {
-    console.log('Copy button pressed');
-    // Add functionality here
-  };
-
+const Toolbar: React.FC<ToolbarProps> = ({
+  onReadPress,
+  onSharePress,
+  onCopyPress,
+}) => {
   return (
     <View style={styles.toolbar}>
       <View style={styles.buttonWrapper}>
@@ -37,24 +32,31 @@ const styles = StyleSheet.create({
   toolbar: {
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: 200,
+    height: 150,
     width: 48,
-    borderRadius: 32,
+    borderRadius: 24,
     borderWidth: 1,
     borderColor: 'gray',
     padding: 4,
     backgroundColor: '#fff',
     position: 'absolute',
-    bottom: 30,
-    right: -12,
+    bottom: 40,
+    right: -10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 3,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 15,
+    alignItems: 'center',
   },
   buttonWrapper: {
     flex: 1,
-    borderRadius: 20,
-    backgroundColor: '#ddd',
     justifyContent: 'center',
-    padding: 4,
-    margin: 4,
+    height: 32, // Make the button a perfect circle
+    width: 32,
   },
 });
 

@@ -3,7 +3,17 @@ import {View, StyleSheet, Animated} from 'react-native';
 import SmallButton from './SmallButton'; // Assuming this is the file path
 import Toolbar from './ToolBar'; // Assuming this is the file path
 
-const ToolbarButton: React.FC = () => {
+interface ToolbarButtonProps {
+  onReadPress?: () => void;
+  onSharePress?: () => void;
+  onCopyPress?: () => void;
+}
+
+const ToolbarButton: React.FC<ToolbarButtonProps> = ({
+  onReadPress,
+  onSharePress,
+  onCopyPress,
+}) => {
   const [isToolbarVisible, setIsToolbarVisible] = useState(false);
   const iconSpin = useState(new Animated.Value(0))[0]; // Initial value for opacity: 0
 
@@ -23,7 +33,13 @@ const ToolbarButton: React.FC = () => {
 
   return (
     <View>
-      {isToolbarVisible && <Toolbar />}
+      {isToolbarVisible && (
+        <Toolbar
+          onReadPress={onReadPress}
+          onSharePress={onSharePress}
+          onCopyPress={onCopyPress}
+        />
+      )}
       <Animated.View style={{transform: [{rotate: spin}]}}>
         <SmallButton
           iconName={isToolbarVisible ? 'close' : 'add'}
