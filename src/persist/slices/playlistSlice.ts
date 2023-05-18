@@ -74,6 +74,7 @@ export const playNext = createAsyncThunk(
 
 async function playAudioSound(url: string, dispatch: any, getState: any) {
   const sb = Platform.OS === 'ios' ? '' : Sound.MAIN_BUNDLE;
+  Sound.setCategory('Playback', true);
   currentSound = new Sound(url, sb, error => {
     console.log('playAudioSound is now playing', url);
     if (error) {
