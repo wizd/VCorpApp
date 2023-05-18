@@ -1,5 +1,6 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import thunk from 'redux-thunk';
+import {logger} from 'redux-logger';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import audioReducer from './slices/playlistSlice';
 import companyReducer from './slices/companySlice';
@@ -30,13 +31,23 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware({
+  middleware: getDefaultMiddleware => {
+    let middleware = getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(thunk), //chatClientMiddleware
+    });
+
+    // Add `thunk` middleware
+    middleware = middleware.concat(thunk);
+
+    // Add `logger` middleware only in development
+    if (process.env.NODE_ENV === 'development') {
+      //middleware = middleware.concat(logger);
+    }
+
+    return middleware;
+  },
 });
 
-export const {dispatch} = store;
 export const persistor = persistStore(store);

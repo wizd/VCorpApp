@@ -2,9 +2,31 @@ import * as React from 'react';
 import {Text, StyleSheet, View, Image, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Margin, FontFamily, Color, Border} from '../../GlobalStyles';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company} from '../persist/slices/company';
+import {connect} from '../persist/slices/chatSlice';
+import {registerUser} from '../persist/slices/companySlice';
 
 const Onboarding = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
+
+  React.useEffect(() => {
+    if (!company.jwt) {
+      console.log('not registered to server yet, lets register.');
+      dispatch(registerUser());
+      return;
+    }
+
+    console.log(
+      'let onboard try to connect to chat server with company: ',
+      company.config.API_URL,
+      company.jwt,
+    );
+    dispatch(connect({apiUrl: company.config.API_URL, jwt: company.jwt}));
+  }, [company.config.API_URL, company.jwt, dispatch]);
+
   return (
     <View style={styles.onboarding}>
       <View style={styles.parentFlexBox}>

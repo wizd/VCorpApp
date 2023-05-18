@@ -1,10 +1,6 @@
 import {io, Socket} from 'socket.io-client';
 import {VwsMessage} from './wsproto';
 
-// 定义异步回调类型
-export type MessageCallback = (message: VwsMessage) => void | Promise<void>;
-export type ConnectionStatusCallback = (status: boolean) => void;
-
 // 聊天客户端类
 class ChatClient {
   private jwt: string;
@@ -13,60 +9,24 @@ class ChatClient {
 
   private dispatch: (action: {type: string; payload?: any}) => void;
 
-  private messageSubscribers: Set<MessageCallback> = new Set();
   private autoReconnectInterval: number = 1000; // 设置自动重连时间间隔，单位：毫秒
-
-  private connectionStatusSubscribers: Set<ConnectionStatusCallback> =
-    new Set();
-
-  onConnectionStatusChange(callback: ConnectionStatusCallback): void {
-    this.connectionStatusSubscribers.add(callback);
-  }
-
-  offConnectionStatusChange(callback: ConnectionStatusCallback): void {
-    this.connectionStatusSubscribers.delete(callback);
-  }
-
-  onNewMessage(callback: MessageCallback): void {
-    this.messageSubscribers.add(callback);
-  }
-
-  offNewMessage(callback: MessageCallback): void {
-    this.messageSubscribers.delete(callback);
-  }
 
   handleNewMessage = async (message: VwsMessage) => {
     console.log('Received chat message from server:', message);
 
     // 分发一个action
     this.dispatch({type: 'chat/newMessage', payload: message});
-
-    // 其他代码...
   };
-  // handleNewMessage = async (message: VwsMessage) => {
-  //   console.log('Received chat message from server:', message);
-  //   for (const subscriber of this.messageSubscribers) {
-  //     subscriber(message);
-  //   }
-  // };
 
   handleDisconnect = () => {
-    //console.log('Disconnected from chat server. Attempting to reconnect...');
-    for (const subscriber of this.connectionStatusSubscribers) {
-      //console.log('notify subscriber ws disconnect:', subscriber);
-      subscriber(false);
-    }
+    this.dispatch({type: 'chat/disconnected'});
     setTimeout(() => {
       this.socket.connect();
     }, this.autoReconnectInterval);
   };
 
   handleConnect = () => {
-    //console.log('Connected to chat server: ', this.serverUrl);
-    for (const subscriber of this.connectionStatusSubscribers) {
-      //console.log('notify subscriber ws connected:', subscriber);
-      subscriber(true);
-    }
+    this.dispatch({type: 'chat/connected'});
   };
 
   constructor(
@@ -78,24 +38,20 @@ class ChatClient {
     this.serverUrl = serverUrl;
     this.dispatch = dispatch;
     if (this.jwt === undefined || this.serverUrl === undefined) {
-      //throw new Error('JWT and server URL must be provided.');
+      throw new Error('JWT and server URL must be provided.');
     }
-    //console.log('create websocket in constructor: ', this.serverUrl, this.jwt);
-    this.socket = io(serverUrl!, {
+
+    console.log('create websocket in updateJwt: ', this.serverUrl, this.jwt);
+    this.socket = io(this.serverUrl, {
       query: {jwt: this.jwt},
       reconnectionDelayMax: 8000, // 最大重连延迟时间，单位为毫秒
       timeout: 14000, // 连接超时时间，单位为毫秒
     });
 
-    // 绑定事件处理器
+    // 重新绑定事件处理器
     this.socket.on('smsg', this.handleNewMessage);
     this.socket.on('disconnect', this.handleDisconnect);
     this.socket.on('connect', this.handleConnect);
-
-    // // 通知所有订阅者连接状态已改变
-    // for (const subscriber of this.connectionStatusSubscribers) {
-    //   subscriber(false);
-    // }
   }
 
   // 向服务器发送聊天消息
@@ -132,15 +88,9 @@ class ChatClient {
       timeout: 14000, // 连接超时时间，单位为毫秒
     });
 
-    // 重新绑定事件处理器
     this.socket.on('smsg', this.handleNewMessage);
     this.socket.on('disconnect', this.handleDisconnect);
     this.socket.on('connect', this.handleConnect);
-
-    // 通知所有订阅者连接状态已改变
-    for (const subscriber of this.connectionStatusSubscribers) {
-      subscriber(false);
-    }
   }
 }
 

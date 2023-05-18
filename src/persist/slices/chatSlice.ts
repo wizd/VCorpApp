@@ -1,15 +1,14 @@
 // chatSlice.js
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import ChatClient from '../../comm/chatClient';
-import {AppState} from 'react-native';
+import {AppState, AppStateStatus} from 'react-native';
 import {VwsMessage} from '../../comm/wsproto';
-import {dispatch} from '../Store';
 
 let chatClient: ChatClient | null = null;
 
 export type ChatServerState = {
   isOnline: boolean;
-  newMessages: [];
+  newMessages: VwsMessage[];
 };
 
 export const initialChatServerState: ChatServerState = {
@@ -41,26 +40,15 @@ export const sendChatMessage = createAsyncThunk(
   },
 );
 
-// Thunk for handling chat client connection
-export const handleChatClientConnection = createAsyncThunk(
-  'chat/handleConnection',
-  async ({
-    apiUrl,
-    jwt,
-    appState,
-  }: {
-    apiUrl: string;
-    jwt: string;
-    appState: string;
-  }) => {
+// Thunk for starting chat client connection
+export const connect = createAsyncThunk(
+  'chat/connect',
+  async (
+    {apiUrl, jwt}: {apiUrl: string; jwt: string},
+    {dispatch, getState},
+  ) => {
     chatClient = new ChatClient(apiUrl, jwt, dispatch);
-    if (appState === 'active') {
-      chatClient.reconnect();
-      return true;
-    } else {
-      chatClient.disconnect();
-      return false;
-    }
+    return true; // indicate that the connection has been created successfully
   },
 );
 
@@ -68,21 +56,35 @@ const chatSlice = createSlice({
   name: 'chat',
   initialState: initialChatServerState,
   reducers: {
+    connected: (state, action) => {
+      // handle the new message here
+      console.log("oh yeah, we're connected");
+      state.isOnline = true;
+    },
+    disconnected: (state, action) => {
+      // handle the new message here
+      state.isOnline = false;
+    },
     newMessage: (state, action) => {
       // handle the new message here
       state.newMessages.push(action.payload);
     },
-    clearMessage: (state, action: PayloadAction<string>) => {
+    clearMessage: (state, action: PayloadAction<VwsMessage>) => {
       state.newMessages = state.newMessages.filter(
-        message => message.id !== action.payload,
+        message =>
+          message.id !== action.payload.id &&
+          message.time !== action.payload.time,
       );
     },
   },
   extraReducers: builder => {
-    builder.addCase(handleChatClientConnection.fulfilled, (state, action) => {
+    builder.addCase(connect.fulfilled, (state, action) => {
       state.isOnline = action.payload;
+      state.newMessages = [];
     });
   },
 });
+
+export const {clearMessage} = chatSlice.actions;
 
 export default chatSlice.reducer;

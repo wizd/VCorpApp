@@ -5,9 +5,7 @@ import {useSelector} from 'react-redux';
 import {ChatServerState} from '../persist/slices/chatSlice';
 
 const UserRegister = () => {
-  const chatState = useSelector(
-    (state: any) => state.company,
-  ) as ChatServerState;
+  const chatState = useSelector((state: any) => state.chat) as ChatServerState;
 
   return (
     <View style={styles.frameParentFlexBox}>

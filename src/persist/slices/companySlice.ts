@@ -31,6 +31,12 @@ const companySlice = createSlice({
         jwt: action.payload,
       };
     },
+    setSettings: (state, action) => {
+      return {
+        ...state,
+        settings: action.payload,
+      };
+    },
     fireEmployee: (state, action) => {
       return {
         ...state,
@@ -95,6 +101,7 @@ const companySlice = createSlice({
 export const {
   updateCompany,
   updateJwt,
+  setSettings,
   fireEmployee,
   updateEmployee,
   chooseEmployee,

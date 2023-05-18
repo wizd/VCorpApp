@@ -1,21 +1,25 @@
 // Import React and React Native components
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, Switch} from 'react-native';
 import {Header} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
 
-import AppContext from '../persist/AppContext';
 import CustomButton from '../components/tools/CustomButton';
 import DeviceInfo from 'react-native-device-info';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company} from '../persist/slices/company';
+import {setSettings} from '../persist/slices/companySlice';
 
 // Define the main component that renders the page
 const AppSettings = () => {
   const navigation = useNavigation();
-  const {company, setCompany} = useContext(AppContext);
+
   const [ttsEnabled, setTtsEnabled] = useState(false);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
 
   const [heightDelta, setHeightDelta] = useState(-50 as number);
+  const dispatch = useDispatch();
+  const company = useSelector((state: any) => state.company) as Company;
 
   useEffect(() => {
     const devid = DeviceInfo.getDeviceId();
@@ -50,14 +54,13 @@ const AppSettings = () => {
       autoSaveEnabled,
     );
     if (company !== null) {
-      setCompany({
-        ...company,
-        settings: {
-          ...company?.settings,
+      dispatch(
+        setSettings({
+          ...company.settings,
           tts: ttsEnabled,
           autoSaveImage: autoSaveEnabled,
-        },
-      });
+        }),
+      );
     }
 
     navigation.goBack();

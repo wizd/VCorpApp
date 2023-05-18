@@ -39,7 +39,7 @@ import {
   tourial,
   tourialDone,
 } from '../persist/slices/companySlice';
-import {ChatServerState} from '../persist/slices/chatSlice';
+import {ChatServerState, clearMessage} from '../persist/slices/chatSlice';
 
 const ShortCuts = () => {
   const navigation = useNavigation();
@@ -52,9 +52,7 @@ const ShortCuts = () => {
   const company = useSelector((state: any) => state.company) as Company;
   const [showArrow, setShowArrow] = useState(true);
 
-  const chatState = useSelector(
-    (state: any) => state.company,
-  ) as ChatServerState;
+  const chatState = useSelector((state: any) => state.chat) as ChatServerState;
 
   // const {beginReading, endReading} = useTts({
   //   isEnabled: company?.settings.tts ?? false,
@@ -81,9 +79,9 @@ const ShortCuts = () => {
   }, [messages]);
 
   useEffect(() => {
-    const handleNewMessage: MessageCallback = smessage => {
+    const handleNewMessage = smessage => {
       // 处理新消息，例如更新状态或显示通知
-      console.log('New message received:', smessage);
+      console.log('New message received to main chat UI:', smessage);
 
       if (isVwsTextMessage(smessage)) {
         if (smessage.cid !== undefined) {
@@ -203,14 +201,15 @@ const ShortCuts = () => {
         console.log("Audio message received, don't know how to handle it");
       }
     };
-    // 组件挂载和更新时，注册回调
-    chatClient.onNewMessage(handleNewMessage);
 
-    // 组件卸载时，移除回调
-    return () => {
-      chatClient.offNewMessage(handleNewMessage);
-    };
-  }, [chatClient, company?.curid, company?.settings?.tts]); // 当chatClient改变时，重新运行这个effect
+    console.log('in main chat UI, chatState is ', chatState);
+    if (chatState.newMessages && chatState.newMessages.length > 0) {
+      const incomingMsg =
+        chatState.newMessages[chatState.newMessages.length - 1];
+      handleNewMessage(incomingMsg);
+      dispatch(clearMessage(incomingMsg));
+    }
+  }, [chatState.newMessages]); // 当chatClient改变时，重新运行这个effect
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);
