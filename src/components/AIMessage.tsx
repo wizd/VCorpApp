@@ -53,8 +53,24 @@ const AIMessage = (props: any) => {
 
   const playOrPause = () => {
     console.log('in AIMessage, playOrPause try to add to playlist:');
-    dispatch(playSound(props.msg.wavurl));
+    if (props.msg.wavurl) {
+      dispatch(playSound(props.msg.wavurl));
+    } else {
+      //try tts later.
+      showToast('没有找到此消息的语音');
+    }
   };
+
+  //{props.msg.wavurl !== undefined && (
+  // <View style={styles.soundMenu}>
+  //   <SmallButton
+  //     onPress={playOrPause}
+  //     onLongPress={playResetProgress}
+  //     iconName="hearing"
+  //     color="grey"
+  //   />
+  // </View>
+  //)}
 
   return (
     <View style={[styles.frameWrapper, styles.mt24]}>
@@ -80,16 +96,6 @@ const AIMessage = (props: any) => {
           />
         </View>
 
-        {props.msg.wavurl !== undefined && (
-          <View style={styles.soundMenu}>
-            <SmallButton
-              onPress={playOrPause}
-              onLongPress={playResetProgress}
-              iconName="hearing"
-              color="grey"
-            />
-          </View>
-        )}
         <View style={styles.gearMenu}>
           {props.isLoading && (
             <SmallButton onPress={handleStop} iconName="stop" />
@@ -168,7 +174,7 @@ const styles = StyleSheet.create({
   soundControl: {
     position: 'absolute',
     top: -42,
-    right: 48,
+    right: 0,
     zIndex: 100,
   },
   container: {
