@@ -584,6 +584,11 @@ const ShortCuts = () => {
     );
   }, [messages]);
 
+  const handleDelete = useCallback(() => {
+    console.log('handleDelete');
+    setMessages(messages.filter(message => !message.isSelected));
+  }, [messages]);
+
   const handleSelectMessage = useCallback(
     (item: Message) => {
       console.log('handleSelectMessage, item: ', item);
@@ -703,6 +708,7 @@ const ShortCuts = () => {
           selectedCount={selectedCount}
           onShare={undefined}
           onCancel={handleCancelShare}
+          onDelete={handleDelete}
         />
       )}
       {!isShareMode && (

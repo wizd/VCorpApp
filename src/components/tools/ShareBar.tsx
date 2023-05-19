@@ -1,16 +1,25 @@
 import React from 'react';
-import {View, Text, Button, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
-const ShareBar = ({selectedCount, onShare, onCancel}) => {
+const ShareBar = ({selectedCount, onShare, onCancel, onDelete}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>已选 {selectedCount ?? 0} 条消息</Text>
       <View style={styles.buttonContainer}>
         <View style={styles.button}>
-          <Button title="分享" onPress={onShare} />
+          <TouchableOpacity onPress={onShare}>
+            <Text style={styles.buttonText}>分享</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.button}>
-          <Button title="取消" onPress={onCancel} />
+          <TouchableOpacity onPress={onCancel}>
+            <Text style={styles.buttonText}>取消</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.button}>
+          <TouchableOpacity onPress={onDelete}>
+            <Text style={styles.buttonTextRed}>删除</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -33,6 +42,14 @@ const styles = StyleSheet.create({
   },
   button: {
     marginLeft: 10,
+  },
+  buttonText: {
+    color: '#007AFF', // blue color similar to iOS standard button color
+    textAlign: 'center',
+  },
+  buttonTextRed: {
+    color: 'red',
+    textAlign: 'center',
   },
 });
 
