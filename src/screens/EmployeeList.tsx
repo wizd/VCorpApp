@@ -30,7 +30,7 @@ const EmployeeList = (props: Props) => {
   const [curasst, setCurasst] = useState<Employee | undefined>(undefined);
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const [heightDelta, setHeightDelta] = useState(-50 as number);
+  const [heightDelta, setHeightDelta] = useState(-30 as number);
 
   useEffect(() => {
     const devid = DeviceInfo.getDeviceId();

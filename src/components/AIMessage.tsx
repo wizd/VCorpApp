@@ -96,6 +96,7 @@ const AIMessage = (props: any) => {
           )}
           {!props.isLoading && (
             <ToolbarButton
+              onReadPress={playOrPause}
               onCopyPress={handleCopy}
               onSharePress={() => props.handleShare(props.msg)}
             />
@@ -144,6 +145,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     padding: Padding.p_xs,
     justifyContent: 'center',
+    width: '100%',
   },
   itemImage: {
     width: 40,

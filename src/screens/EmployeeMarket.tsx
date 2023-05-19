@@ -34,7 +34,7 @@ const EmployeeMarket = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const [heightDelta, setHeightDelta] = useState(-50 as number);
+  const [heightDelta, setHeightDelta] = useState(-30 as number);
 
   useEffect(() => {
     const devid = DeviceInfo.getDeviceId();
