@@ -47,6 +47,7 @@ export interface VwsBlobMessage extends VwsBaseMessage {
 
 export interface VwsSystemMessage extends VwsBaseMessage {
   type: 'system';
+  cmd: string; // 命令
   note: string; // 通知内容
 }
 

@@ -17,6 +17,11 @@ const ShareBar = ({selectedCount, onShare, onCancel, onDelete}) => {
           </TouchableOpacity>
         </View>
         <View style={styles.button}>
+          <TouchableOpacity>
+            <Text style={styles.buttonSpace}></Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.button}>
           <TouchableOpacity onPress={onDelete}>
             <Text style={styles.buttonTextRed}>删除</Text>
           </TouchableOpacity>
@@ -41,11 +46,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   button: {
-    marginLeft: 10,
+    marginLeft: 20,
   },
   buttonText: {
     color: '#007AFF', // blue color similar to iOS standard button color
     textAlign: 'center',
+  },
+  buttonSpace: {
+    color: '#007AFF', // blue color similar to iOS standard button color
+    textAlign: 'center',
+    minWidth: 30,
   },
   buttonTextRed: {
     color: 'red',

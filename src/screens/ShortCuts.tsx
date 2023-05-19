@@ -4,6 +4,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   FlatList,
+  Share,
 } from 'react-native';
 import EventSource, {
   EventSourceListener,
@@ -18,16 +19,16 @@ import {useEffect, useRef, useState} from 'react';
 import TitleSection from '../components/TitleSection';
 import QuickActions from '../components/QuickActions';
 import QuestionBox from '../components/QuestionBox';
-import AIMessage from '../components/AIMessage';
-import UserMessage from '../components/UserMessage';
 
 import ArrowGuide from '../components/help/ArrowGuide';
 
 import {
   VwsImageMessage,
+  VwsSystemMessage,
   VwsTextMessage,
   isVwsAudioMessage,
   isVwsImageMessage,
+  isVwsSystemMessage,
   isVwsTextMessage,
 } from '../comm/wsproto';
 import {Message, getMsgData, storeMsgData} from '../persist/msgstore';
@@ -42,6 +43,7 @@ import {
   ChatServerState,
   chatClient,
   clearMessage,
+  createShareOnServer,
 } from '../persist/slices/chatSlice';
 import {playSound} from '../persist/slices/playlistSlice';
 import {CheckBox} from '@rneui/themed';
@@ -215,6 +217,23 @@ const ShortCuts = () => {
       } else if (isVwsAudioMessage(smessage)) {
         //
         console.log("Audio message received, don't know how to handle it");
+      } else if (isVwsSystemMessage(smessage)) {
+        //
+        const cmdmsg = smessage as VwsSystemMessage;
+        console.log('System message received for', cmdmsg.cmd, cmdmsg.note);
+        if (cmdmsg.cmd === 'shared') {
+          const reply = JSON.parse(cmdmsg.note);
+
+          Share.share(reply)
+            .then(result => {
+              if (result.action === Share.sharedAction) {
+                console.log('Shared!');
+              } else if (result.action === Share.dismissedAction) {
+                console.log('Dismissed!');
+              }
+            })
+            .catch(error => console.log(error));
+        }
       }
     };
 
@@ -548,7 +567,7 @@ const ShortCuts = () => {
     //endReading();
   };
 
-  const handleShare = useCallback(
+  const handleBeginShare = useCallback(
     (msg: Message) => {
       console.log('handleShare, msg: ', msg);
       // auto select current message and previous one
@@ -573,16 +592,32 @@ const ShortCuts = () => {
     [messages],
   );
 
-  const handleCancelShare = useCallback(() => {
-    console.log('handleCancelShare');
+  const beginCreateShare = useCallback(() => {
+    console.log('beginCreateShare');
     setIsShareMode(false);
-    setMessages(
-      messages.map(message => ({
+    dispatch(
+      createShareOnServer(
+        JSON.stringify(messages.filter(message => message.isSelected)),
+      ),
+    );
+    setMessages(msgs =>
+      msgs.map(message => ({
         ...message,
         isSelected: false,
       })),
     );
-  }, [messages]);
+  }, [dispatch, messages]);
+
+  const handleCancelShare = useCallback(() => {
+    console.log('handleCancelShare');
+    setIsShareMode(false);
+    setMessages(msgs =>
+      msgs.map(message => ({
+        ...message,
+        isSelected: false,
+      })),
+    );
+  }, []);
 
   const handleDelete = useCallback(() => {
     console.log('handleDelete');
@@ -685,7 +720,7 @@ const ShortCuts = () => {
                 index={index}
                 isShareMode={isShareMode}
                 handleStop={handleStop}
-                handleShare={handleShare}
+                handleShare={handleBeginShare}
                 handleSelectMessage={handleSelectMessage}
               />
             )}
@@ -706,7 +741,7 @@ const ShortCuts = () => {
       {isShareMode && (
         <ShareBar
           selectedCount={selectedCount}
-          onShare={undefined}
+          onShare={beginCreateShare}
           onCancel={handleCancelShare}
           onDelete={handleDelete}
         />

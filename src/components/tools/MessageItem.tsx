@@ -30,7 +30,13 @@ const MessageItem = ({
           handleShare={handleShare}
         />
       ) : (
-        <UserMessage key={index} text={item.text} isLoading={item.isLoading} />
+        <View style={{flex: 1, justifyContent: 'flex-end'}}>
+          <UserMessage
+            key={index}
+            text={item.text}
+            isLoading={item.isLoading}
+          />
+        </View>
       )}
     </View>
   );

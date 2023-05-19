@@ -2,7 +2,7 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import ChatClient from '../../comm/chatClient';
 import {AppState, AppStateStatus} from 'react-native';
-import {VwsMessage} from '../../comm/wsproto';
+import {VwsMessage, VwsSystemMessage} from '../../comm/wsproto';
 
 export let chatClient: ChatClient | null = null;
 
@@ -16,19 +16,24 @@ export const initialChatServerState: ChatServerState = {
   newMessages: [],
 };
 
-// This is a custom middleware
-// export const chatClientMiddleware = storeAPI => next => action => {
-//   if (action.type === 'chat/handleConnection/fulfilled') {
-//     chatClient?.onNewMessage(message => {
-//       storeAPI.dispatch({type: 'chat/newMessage', payload: message});
-//     });
-//   }
+export const createShareOnServer = createAsyncThunk(
+  'chat/createShare',
+  async (msgpack: string, {dispatch, getState}) => {
+    const reqmsg: VwsSystemMessage = {
+      id: new Date().getTime().toString(),
+      src: 'client',
+      dst: 'server',
+      type: 'system',
+      time: new Date().getTime(),
+      cmd: 'share',
+      note: msgpack,
+    };
 
-//   // This will run the action through the rest of the middleware chain and then finally to the reducers
-//   return next(action);
-// };
-
-// dispatch(handleChatClientConnection({apiUrl: 'your-api-url', jwt: 'your-jwt', appState: 'active'}));
+    console.log('createShareOnServer', reqmsg);
+    chatClient?.sendChatMessage(reqmsg);
+    return Promise.resolve();
+  },
+);
 
 export const sendChatMessage = createAsyncThunk(
   'chat/sendChatMessage',
