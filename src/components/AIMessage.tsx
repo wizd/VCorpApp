@@ -97,7 +97,7 @@ const AIMessage = (props: any) => {
           {!props.isLoading && (
             <ToolbarButton
               onCopyPress={handleCopy}
-              onSharePress={props.handleShare}
+              onSharePress={() => props.handleShare(props.msg)}
             />
           )}
         </View>

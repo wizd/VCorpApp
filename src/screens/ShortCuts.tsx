@@ -548,10 +548,30 @@ const ShortCuts = () => {
     //endReading();
   };
 
-  const handleShare = useCallback((msg: Message) => {
-    console.log('handleShare, msg: ', msg);
-    setIsShareMode(true);
-  }, []);
+  const handleShare = useCallback(
+    (msg: Message) => {
+      console.log('handleShare, msg: ', msg);
+      // auto select current message and previous one
+      const index = messages.findIndex(message => message._id === msg._id);
+
+      if (index === -1) {
+        console.error('Message not found in list');
+        return;
+      }
+
+      setMessages(prevMessages =>
+        prevMessages.map((message, i) => {
+          if (i === index || i === index - 1) {
+            return {...message, isSelected: true};
+          }
+          return message;
+        }),
+      );
+
+      setIsShareMode(true);
+    },
+    [messages],
+  );
 
   const handleCancelShare = useCallback(() => {
     console.log('handleCancelShare');
