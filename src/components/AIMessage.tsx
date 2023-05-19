@@ -44,10 +44,6 @@ const AIMessage = (props: any) => {
     showToast('内容已复制到剪贴板');
   };
 
-  const handleShare = () => {
-    console.log('handleShare');
-  };
-
   const playResetProgress = () => {
     // if (sound) {
     //   sound.setCurrentTime(0);
@@ -101,7 +97,7 @@ const AIMessage = (props: any) => {
           {!props.isLoading && (
             <ToolbarButton
               onCopyPress={handleCopy}
-              onSharePress={handleShare}
+              onSharePress={props.handleShare}
             />
           )}
         </View>

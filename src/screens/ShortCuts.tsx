@@ -10,7 +10,7 @@ import EventSource, {
   EventSourceOptions,
 } from 'react-native-sse';
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useCallback} from 'react';
 
 import {Margin, Color, Padding} from '../../GlobalStyles';
 import {useEffect, useRef, useState} from 'react';
@@ -44,6 +44,9 @@ import {
   clearMessage,
 } from '../persist/slices/chatSlice';
 import {playSound} from '../persist/slices/playlistSlice';
+import {CheckBox} from '@rneui/themed';
+import MessageItem from '../components/tools/MessageItem';
+import ShareBar from '../components/tools/ShareBar';
 
 const ShortCuts = () => {
   const navigation = useNavigation();
@@ -51,10 +54,15 @@ const ShortCuts = () => {
 
   const [q, setQ] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const selectedCount = messages.reduce(
+    (count, message) => (message.isSelected ? count + 1 : count),
+    0,
+  );
 
   const dispatch = useDispatch();
   const company = useSelector((state: any) => state.company) as Company;
   const [showArrow, setShowArrow] = useState(true);
+  const [isShareMode, setIsShareMode] = useState(false);
 
   const chatState = useSelector((state: any) => state.chat) as ChatServerState;
 
@@ -540,6 +548,36 @@ const ShortCuts = () => {
     //endReading();
   };
 
+  const handleShare = useCallback((msg: Message) => {
+    console.log('handleShare, msg: ', msg);
+    setIsShareMode(true);
+  }, []);
+
+  const handleCancelShare = useCallback(() => {
+    console.log('handleCancelShare');
+    setIsShareMode(false);
+    setMessages(
+      messages.map(message => ({
+        ...message,
+        isSelected: false,
+      })),
+    );
+  }, [messages]);
+
+  const handleSelectMessage = useCallback(
+    (item: Message) => {
+      console.log('handleSelectMessage, item: ', item);
+      setMessages(
+        messages.map(message =>
+          message._id === item._id
+            ? {...message, isSelected: !item.isSelected}
+            : message,
+        ),
+      );
+    },
+    [messages],
+  );
+
   const handleStop = (msg: Message) => {
     setMessages(previousMessages => {
       // Get the last array
@@ -613,25 +651,19 @@ const ShortCuts = () => {
           {showArrow && <ArrowGuide />}
           <FlatList
             style={[styles.frameParent, styles.mt8]}
+            horizontal={false}
             data={messages}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) =>
-              item.isAI ? (
-                <AIMessage
-                  key={index}
-                  text={item.text}
-                  isLoading={item.isLoading}
-                  msg={item}
-                  onStop={handleStop}
-                />
-              ) : (
-                <UserMessage
-                  key={index}
-                  text={item.text}
-                  isLoading={item.isLoading}
-                />
-              )
-            }
+            renderItem={({item, index}) => (
+              <MessageItem
+                item={item}
+                index={index}
+                isShareMode={isShareMode}
+                handleStop={handleStop}
+                handleShare={handleShare}
+                handleSelectMessage={handleSelectMessage}
+              />
+            )}
             ListHeaderComponent={
               <>
                 <View style={[styles.shortcutsChild, styles.mt8]} />
@@ -646,13 +678,22 @@ const ShortCuts = () => {
           />
         </View>
       </KeyboardAvoidingView>
-      <QuestionBox
-        q={q}
-        onSendQuestion={ask}
-        onSendVoice={onVoiceSent}
-        employee={company?.employees?.find(e => e.id === company?.curid)}
-        onAvatarPress={onQuestionBoxAvatarClick}
-      />
+      {isShareMode && (
+        <ShareBar
+          selectedCount={selectedCount}
+          onShare={undefined}
+          onCancel={handleCancelShare}
+        />
+      )}
+      {!isShareMode && (
+        <QuestionBox
+          q={q}
+          onSendQuestion={ask}
+          onSendVoice={onVoiceSent}
+          employee={company?.employees?.find(e => e.id === company?.curid)}
+          onAvatarPress={onQuestionBoxAvatarClick}
+        />
+      )}
     </View>
   );
 };

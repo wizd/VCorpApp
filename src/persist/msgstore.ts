@@ -9,6 +9,7 @@ export interface Message {
   createdAt: Date;
   bypass?: boolean;
   wavurl?: string;
+  isSelected?: boolean;
 }
 
 // 存储数据
