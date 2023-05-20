@@ -8,6 +8,7 @@ interface SmallButtonProps {
   size?: number;
   color?: string;
   iconName: string;
+  border?: boolean;
 }
 
 const SmallButton: React.FC<SmallButtonProps> = ({
@@ -16,7 +17,29 @@ const SmallButton: React.FC<SmallButtonProps> = ({
   size = 20,
   color = 'black',
   iconName,
+  border = false,
 }) => {
+  const styles = border
+    ? StyleSheet.create({
+        button: {
+          borderRadius: 36, // Half the button size
+          borderWidth: 1,
+          borderColor: '#ddd', // Soft grey color
+          padding: 4,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#fff',
+        },
+      })
+    : StyleSheet.create({
+        button: {
+          borderRadius: 36, // Half the button size
+          padding: 4,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+      });
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -26,17 +49,5 @@ const SmallButton: React.FC<SmallButtonProps> = ({
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 36, // Half the button size
-    borderWidth: 1,
-    borderColor: '#ddd', // Soft grey color
-    padding: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-});
 
 export default SmallButton;

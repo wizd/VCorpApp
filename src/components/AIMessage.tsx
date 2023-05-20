@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderBottomLeftRadius: Border.br_sm,
     borderTopRightRadius: Border.br_sm,
-    borderBottomRightRadius: Border.br_sm,
+    borderBottomRightRadius: 20,
     backgroundColor: Color.whitesmoke_200,
     flexDirection: 'column',
     padding: Padding.p_md,
@@ -161,8 +161,8 @@ const styles = StyleSheet.create({
   },
   gearMenu: {
     position: 'absolute',
-    bottom: 12,
-    right: 12,
+    bottom: 0,
+    right: 10,
     zIndex: 100,
   },
   soundMenu: {

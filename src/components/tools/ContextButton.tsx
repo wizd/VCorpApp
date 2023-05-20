@@ -72,6 +72,7 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
       )}
       <Animated.View style={{transform: [{rotate: spin}]}}>
         <SmallButton
+          color="gray"
           iconName={isToolbarVisible ? 'close' : 'add'}
           onPress={onPress}
         />

@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontFamily: FontFamily.nunitoMedium,
     textAlign: 'left',
+    color: '#333333',
   },
 });
 
