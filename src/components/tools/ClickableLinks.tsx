@@ -21,26 +21,32 @@ const ClickableLinks: React.FC<ClickableLinksProps> = ({content}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.helloChatgpthowAre}>
-        {textParts.map((part, index) => {
-          if (index % 2 === 1) {
-            if (part.endsWith('.png')) {
-              return <ImageSaver key={index} source={{uri: part}} />;
-            } else {
-              return (
-                <Text
-                  key={index}
-                  style={styles.link}
-                  onPress={() => handleLinkPress(part)}>
-                  {part}
-                </Text>
-              );
-            }
+      {textParts.map((part, index) => {
+        if (index % 2 === 1) {
+          if (part.endsWith('.png')) {
+            return <ImageSaver key={index} source={{uri: part}} />;
           } else {
-            return part;
+            return (
+              <Text
+                key={index}
+                selectable={true}
+                style={styles.link}
+                onPress={() => handleLinkPress(part)}>
+                {part}
+              </Text>
+            );
           }
-        })}
-      </Text>
+        } else {
+          return (
+            <Text
+              key={index}
+              selectable={true}
+              style={styles.helloChatgpthowAre}>
+              {part}
+            </Text>
+          );
+        }
+      })}
     </View>
   );
 };

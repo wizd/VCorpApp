@@ -711,6 +711,7 @@ const ShortCuts = () => {
           {showArrow && <ArrowGuide />}
           <FlatList
             style={[styles.frameParent, styles.mt8]}
+            removeClippedSubviews={false}
             horizontal={false}
             data={messages}
             keyExtractor={(item, index) => index.toString()}

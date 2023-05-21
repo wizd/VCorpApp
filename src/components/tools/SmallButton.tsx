@@ -17,7 +17,7 @@ const SmallButton: React.FC<SmallButtonProps> = ({
   size = 20,
   color = 'black',
   iconName,
-  border = false,
+  border = true,
 }) => {
   const styles = border
     ? StyleSheet.create({
