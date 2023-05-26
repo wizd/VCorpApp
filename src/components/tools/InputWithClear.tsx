@@ -1,4 +1,4 @@
-import React, {RefObject} from 'react';
+import React, { RefObject } from 'react';
 import {
   View,
   TextInput,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   input: {
-    //flex: 1,
+    flex: 1,
     //padding: 10,
     maxHeight: 200,
   },

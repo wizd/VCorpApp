@@ -123,7 +123,7 @@ const QuestionBox = ({
       // bottom: 0,
 
       backgroundColor: 'red',
-      flex: 1,
+      //flex: 1,
       paddingLeft: 8,
       paddingRight: 8,
     },
@@ -141,7 +141,7 @@ const QuestionBox = ({
       width: inputWidth, // 设置宽度为父容器宽度
     },
     writeYourMessage: {
-      flex: 1,
+      //flex: 1,
       backgroundColor: Color.white,
       //padding: 4,
       borderRadius: 4,
@@ -151,7 +151,7 @@ const QuestionBox = ({
       fontSize: 18,
     },
     vuesaxlinearmicrophone2Icon: {
-      flex: 1,
+      //flex: 1,
       margin: 4,
       padding: 0,
     },
@@ -170,7 +170,7 @@ const QuestionBox = ({
       marginTop: Margin.m_sm,
     },
     inputcontainer: {
-      flex: 1,
+      //flex: 1,
       borderRadius: Border.br_md,
       backgroundColor: '#e0e0e0',
       shadowColor: 'rgba(0, 0, 0, 0.13)',

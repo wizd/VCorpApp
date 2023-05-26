@@ -746,7 +746,7 @@ const ShortCuts = () => {
           />
         </View>
 
-        <View style={{ flex: 1 }}>
+        <View>
           {isShareMode && (
             <ShareBar
               selectedCount={selectedCount}
@@ -765,7 +765,6 @@ const ShortCuts = () => {
             />
           )}
         </View>
-
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
