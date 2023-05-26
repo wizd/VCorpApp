@@ -705,14 +705,13 @@ const ShortCuts = () => {
 
   //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
   const keyboardVerticalOffset = Platform.OS === 'ios' ? 0 : 0;
-
+  //keyboardVerticalOffset={keyboardVerticalOffset}
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#8aa' }}>
       <KeyboardAvoidingView
         style={styles.kav}
         enabled={true}
-        keyboardVerticalOffset={keyboardVerticalOffset}
-        behavior={Platform.OS === 'ios' ? 'height' : undefined}>
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <TitleSection />
         <View style={styles.shortcuts}>
           {showArrow && <ArrowGuide />}
