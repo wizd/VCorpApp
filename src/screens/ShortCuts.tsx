@@ -665,8 +665,10 @@ const ShortCuts = () => {
 
   const styles = StyleSheet.create({
     kav: {
-      paddingBottom: Platform.OS === 'ios' ? 80 : 84,
+      paddingBottom: Platform.OS === 'ios' ? 80 : 60,
       flex: 1,
+      backgroundColor: 'green',
+      marginTop: 4,
     },
     frameScrollViewContent: {
       flexDirection: 'column',
@@ -701,11 +703,14 @@ const ShortCuts = () => {
   });
 
   //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+
   return (
     <KeyboardAvoidingView
       style={styles.kav}
       enabled={true}
-      behavior={Platform.OS === 'ios' ? 'height' : 'height'}>
+      keyboardVerticalOffset={keyboardVerticalOffset}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <TitleSection />
       <View style={styles.shortcuts}>
         {showArrow && <ArrowGuide />}

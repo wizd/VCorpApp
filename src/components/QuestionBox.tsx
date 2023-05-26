@@ -11,6 +11,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 import { Margin, Border, Color } from '../../GlobalStyles';
@@ -119,7 +120,7 @@ const QuestionBox = ({
       position: 'absolute',
       left: 0,
       right: 0,
-      bottom: 24,
+      bottom: 0,
       backgroundColor: 'white',
       flex: 1,
       paddingLeft: 8,
