@@ -666,7 +666,7 @@ const ShortCuts = () => {
 
   const styles = StyleSheet.create({
     kav: {
-      paddingBottom: Platform.OS === 'ios' ? 80 : 60,
+      //paddingBottom: Platform.OS === 'ios' ? 80 : 60,
       flex: 1,
       backgroundColor: 'green',
       marginTop: 4,
@@ -687,7 +687,7 @@ const ShortCuts = () => {
       height: 1,
     },
     frameParent: {
-      alignSelf: 'stretch',
+      //alignSelf: 'stretch',
       flex: 1,
       paddingHorizontal: Padding.p_sm,
     },
@@ -695,7 +695,7 @@ const ShortCuts = () => {
       //borderRadius: Border.br_lg,
       backgroundColor: 'blue',
       width: '100%',
-      overflow: 'hidden',
+      //overflow: 'hidden',
       //paddingHorizontal: Padding.p_sm,
       //paddingVertical: Padding.p_xl,
       //paddingBottom: Platform.OS === 'ios' ? 78 : 58,
@@ -704,7 +704,7 @@ const ShortCuts = () => {
   });
 
   //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-  const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 0 : 0;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#8aa' }}>
@@ -712,7 +712,7 @@ const ShortCuts = () => {
         style={styles.kav}
         enabled={true}
         keyboardVerticalOffset={keyboardVerticalOffset}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        behavior={Platform.OS === 'ios' ? 'height' : undefined}>
         <TitleSection />
         <View style={styles.shortcuts}>
           {showArrow && <ArrowGuide />}
@@ -746,7 +746,7 @@ const ShortCuts = () => {
           />
         </View>
 
-        <View>
+        <View style={{ flex: 1 }}>
           {isShareMode && (
             <ShareBar
               selectedCount={selectedCount}
