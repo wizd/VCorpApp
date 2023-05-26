@@ -117,11 +117,12 @@ const QuestionBox = ({
 
   const styles = StyleSheet.create({
     kavq: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'white',
+      //position: 'absolute',
+      // left: 0,
+      // right: 0,
+      // bottom: 0,
+
+      backgroundColor: 'red',
       flex: 1,
       paddingLeft: 8,
       paddingRight: 8,

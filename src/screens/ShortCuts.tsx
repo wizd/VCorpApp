@@ -693,13 +693,13 @@ const ShortCuts = () => {
     },
     shortcuts: {
       //borderRadius: Border.br_lg,
-      backgroundColor: Color.white,
+      backgroundColor: 'blue',
       width: '100%',
       overflow: 'hidden',
       //paddingHorizontal: Padding.p_sm,
       //paddingVertical: Padding.p_xl,
       //paddingBottom: Platform.OS === 'ios' ? 78 : 58,
-      flex: 1,
+      flexGrow: 1,
     },
   });
 
@@ -746,23 +746,26 @@ const ShortCuts = () => {
           />
         </View>
 
-        {isShareMode && (
-          <ShareBar
-            selectedCount={selectedCount}
-            onShare={beginCreateShare}
-            onCancel={handleCancelShare}
-            onDelete={handleDelete}
-          />
-        )}
-        {!isShareMode && (
-          <QuestionBox
-            q={q}
-            onSendQuestion={ask}
-            onSendVoice={onVoiceSent}
-            employee={company?.employees?.find(e => e.id === company?.curid)}
-            onAvatarPress={onQuestionBoxAvatarClick}
-          />
-        )}
+        <View>
+          {isShareMode && (
+            <ShareBar
+              selectedCount={selectedCount}
+              onShare={beginCreateShare}
+              onCancel={handleCancelShare}
+              onDelete={handleDelete}
+            />
+          )}
+          {!isShareMode && (
+            <QuestionBox
+              q={q}
+              onSendQuestion={ask}
+              onSendVoice={onVoiceSent}
+              employee={company?.employees?.find(e => e.id === company?.curid)}
+              onAvatarPress={onQuestionBoxAvatarClick}
+            />
+          )}
+        </View>
+
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
