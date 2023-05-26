@@ -668,7 +668,7 @@ const ShortCuts = () => {
     kav: {
       //paddingBottom: Platform.OS === 'ios' ? 80 : 60,
       flex: 1,
-      backgroundColor: 'green',
+      backgroundColor: 'white',
       marginTop: 4,
     },
     frameScrollViewContent: {
@@ -693,7 +693,7 @@ const ShortCuts = () => {
     },
     shortcuts: {
       //borderRadius: Border.br_lg,
-      backgroundColor: 'blue',
+      //backgroundColor: 'blue',
       width: '100%',
       //overflow: 'hidden',
       //paddingHorizontal: Padding.p_sm,
@@ -707,7 +707,7 @@ const ShortCuts = () => {
   const keyboardVerticalOffset = Platform.OS === 'ios' ? 0 : 0;
   //keyboardVerticalOffset={keyboardVerticalOffset}
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#8aa' }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
         style={styles.kav}
         enabled={true}

@@ -122,7 +122,7 @@ const QuestionBox = ({
       // right: 0,
       // bottom: 0,
 
-      backgroundColor: 'red',
+      //backgroundColor: 'red',
       //flex: 1,
       paddingLeft: 8,
       paddingRight: 8,
