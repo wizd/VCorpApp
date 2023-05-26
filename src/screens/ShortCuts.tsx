@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   FlatList,
   Share,
+  SafeAreaView,
 } from 'react-native';
 import EventSource, {
   EventSourceListener,
@@ -706,62 +707,64 @@ const ShortCuts = () => {
   const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 
   return (
-    <KeyboardAvoidingView
-      style={styles.kav}
-      enabled={true}
-      keyboardVerticalOffset={keyboardVerticalOffset}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <TitleSection />
-      <View style={styles.shortcuts}>
-        {showArrow && <ArrowGuide />}
-        <FlatList
-          style={[styles.frameParent, styles.mt8]}
-          removeClippedSubviews={false}
-          horizontal={false}
-          data={messages}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item, index }) => (
-            <MessageItem
-              item={item}
-              index={index}
-              isShareMode={isShareMode}
-              handleStop={handleStop}
-              handleShare={handleBeginShare}
-              handleSelectMessage={handleSelectMessage}
-            />
-          )}
-          ListHeaderComponent={
-            <>
-              <View style={[styles.shortcutsChild, styles.mt8]} />
-              <QuickActions pressed={setQ} />
-            </>
-          }
-          ListFooterComponent={<></>}
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}
-          keyboardShouldPersistTaps="handled"
-          //onContentSizeChange={autoScroll}
-          ref={flatListRef}
-        />
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#8aa' }}>
+      <KeyboardAvoidingView
+        style={styles.kav}
+        enabled={true}
+        keyboardVerticalOffset={keyboardVerticalOffset}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <TitleSection />
+        <View style={styles.shortcuts}>
+          {showArrow && <ArrowGuide />}
+          <FlatList
+            style={[styles.frameParent, styles.mt8]}
+            removeClippedSubviews={false}
+            horizontal={false}
+            data={messages}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) => (
+              <MessageItem
+                item={item}
+                index={index}
+                isShareMode={isShareMode}
+                handleStop={handleStop}
+                handleShare={handleBeginShare}
+                handleSelectMessage={handleSelectMessage}
+              />
+            )}
+            ListHeaderComponent={
+              <>
+                <View style={[styles.shortcutsChild, styles.mt8]} />
+                <QuickActions pressed={setQ} />
+              </>
+            }
+            ListFooterComponent={<></>}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}
+            keyboardShouldPersistTaps="handled"
+            //onContentSizeChange={autoScroll}
+            ref={flatListRef}
+          />
+        </View>
 
-      {isShareMode && (
-        <ShareBar
-          selectedCount={selectedCount}
-          onShare={beginCreateShare}
-          onCancel={handleCancelShare}
-          onDelete={handleDelete}
-        />
-      )}
-      {!isShareMode && (
-        <QuestionBox
-          q={q}
-          onSendQuestion={ask}
-          onSendVoice={onVoiceSent}
-          employee={company?.employees?.find(e => e.id === company?.curid)}
-          onAvatarPress={onQuestionBoxAvatarClick}
-        />
-      )}
-    </KeyboardAvoidingView>
+        {isShareMode && (
+          <ShareBar
+            selectedCount={selectedCount}
+            onShare={beginCreateShare}
+            onCancel={handleCancelShare}
+            onDelete={handleDelete}
+          />
+        )}
+        {!isShareMode && (
+          <QuestionBox
+            q={q}
+            onSendQuestion={ask}
+            onSendVoice={onVoiceSent}
+            employee={company?.employees?.find(e => e.id === company?.curid)}
+            onAvatarPress={onQuestionBoxAvatarClick}
+          />
+        )}
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
