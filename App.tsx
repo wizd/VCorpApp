@@ -16,7 +16,6 @@ import ShortCuts from './src/screens/ShortCuts';
 import EmployeeList from './src/screens/EmployeeList';
 import EmployeeMarket from './src/screens/EmployeeMarket';
 import Toast from 'react-native-toast-message';
-//import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
 
 import { persistor, store } from './src/persist/Store';
@@ -35,8 +34,6 @@ const App = () => {
     <>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          {/* <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1 }}> */}
           <NavigationContainer>
             {hideSplashScreen ? (
               <Stack.Navigator
@@ -76,8 +73,6 @@ const App = () => {
             ) : null}
           </NavigationContainer>
           <Toast />
-          {/* </SafeAreaView>
-          </SafeAreaProvider> */}
         </PersistGate>
       </Provider>
     </>
