@@ -18,7 +18,7 @@ const AppSettings = () => {
   const [ttsEnabled, setTtsEnabled] = useState(false);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
 
-  const [heightDelta, setHeightDelta] = useState(-30 as number);
+  const [heightDelta, setHeightDelta] = useState(0 as number);
   const dispatch = useDispatch();
   const company = useSelector((state: any) => state.company) as Company;
 

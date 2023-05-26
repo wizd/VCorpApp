@@ -5,21 +5,21 @@
  * @format
  */
 const Stack = createNativeStackNavigator();
-import React, {useEffect} from 'react';
-import {Provider} from 'react-redux';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {PersistGate} from 'redux-persist/integration/react';
+import React, { useEffect } from 'react';
+import { Provider } from 'react-redux';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { PersistGate } from 'redux-persist/integration/react';
 import Onboarding from './src/screens/Onboarding';
 import ChatPage from './src/screens/ChatPage';
 import ShortCuts from './src/screens/ShortCuts';
 import EmployeeList from './src/screens/EmployeeList';
 import EmployeeMarket from './src/screens/EmployeeMarket';
 import Toast from 'react-native-toast-message';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+//import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import AppSettings from './src/screens/AppSettings';
 
-import {persistor, store} from './src/persist/Store';
+import { persistor, store } from './src/persist/Store';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
@@ -35,49 +35,49 @@ const App = () => {
     <>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <SafeAreaProvider>
-            <SafeAreaView style={{flex: 1}}>
-              <NavigationContainer>
-                {hideSplashScreen ? (
-                  <Stack.Navigator
-                    initialRouteName="Onboarding"
-                    screenOptions={{headerShown: false}}>
-                    <Stack.Screen
-                      name="Onboarding"
-                      component={Onboarding}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="ChatPage"
-                      component={ChatPage}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="ShortCuts"
-                      component={ShortCuts}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="Employees"
-                      component={EmployeeList}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="EmployeeMarket"
-                      component={EmployeeMarket}
-                      options={{headerShown: false}}
-                    />
-                    <Stack.Screen
-                      name="Settings"
-                      component={AppSettings}
-                      options={{headerShown: false}}
-                    />
-                  </Stack.Navigator>
-                ) : null}
-              </NavigationContainer>
-              <Toast />
-            </SafeAreaView>
-          </SafeAreaProvider>
+          {/* <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1 }}> */}
+          <NavigationContainer>
+            {hideSplashScreen ? (
+              <Stack.Navigator
+                initialRouteName="Onboarding"
+                screenOptions={{ headerShown: false }}>
+                <Stack.Screen
+                  name="Onboarding"
+                  component={Onboarding}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="ChatPage"
+                  component={ChatPage}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="ShortCuts"
+                  component={ShortCuts}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Employees"
+                  component={EmployeeList}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="EmployeeMarket"
+                  component={EmployeeMarket}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Settings"
+                  component={AppSettings}
+                  options={{ headerShown: false }}
+                />
+              </Stack.Navigator>
+            ) : null}
+          </NavigationContainer>
+          <Toast />
+          {/* </SafeAreaView>
+          </SafeAreaProvider> */}
         </PersistGate>
       </Provider>
     </>

@@ -1,5 +1,5 @@
 // Import React and React Native components
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Alert,
@@ -8,17 +8,17 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import {Header} from '@rneui/themed';
-import {useNavigation} from '@react-navigation/native';
+import { Header } from '@rneui/themed';
+import { useNavigation } from '@react-navigation/native';
 import DeviceInfo from 'react-native-device-info';
 
 import EmployeeListItem from '../components/EmployeeListItem';
 
 import CustomButton from '../components/tools/CustomButton';
 import FilterRoleModal from '../components/FilterRoleModal';
-import {useDispatch, useSelector} from 'react-redux';
-import {Company, Employee} from '../persist/slices/company';
-import {hireNewEmployee} from '../persist/slices/companySlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { Company, Employee } from '../persist/slices/company';
+import { hireNewEmployee } from '../persist/slices/companySlice';
 
 // Define the props of the main component that renders the page
 type Props = {};
@@ -34,7 +34,7 @@ const EmployeeMarket = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const [heightDelta, setHeightDelta] = useState(-30 as number);
+  const [heightDelta, setHeightDelta] = useState(0 as number);
 
   useEffect(() => {
     const devid = DeviceInfo.getDeviceId();
@@ -108,13 +108,13 @@ const EmployeeMarket = (props: Props) => {
     // Use a View component as a container for the page
     <View style={styles.pageContainer}>
       <Header
-        containerStyle={{marginTop: heightDelta}}
+        containerStyle={{ marginTop: heightDelta }}
         leftComponent={
           <CustomButton onPress={() => navigation.goBack()} title="返回" />
         }
         centerComponent={{
           text: '虚拟员工市场',
-          style: {color: '#fff', fontSize: 20},
+          style: { color: '#fff', fontSize: 20 },
         }}
         rightComponent={
           <CustomButton onPress={() => setModalVisible(true)} title="过滤" />
@@ -129,7 +129,7 @@ const EmployeeMarket = (props: Props) => {
         ) : (
           <FlatList
             data={data} // Pass in the data source as a prop
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <EmployeeListItem
                 assistant={item}
                 onSelect={id => veSelected(id)}

@@ -20,6 +20,7 @@ import { CustomKeyboardAvoidingView } from './CustomKeyboardAvoidingView';
 import SmallButton from './tools/SmallButton';
 import RecordButton from './tools/AudioRecorder';
 import { useDispatch, useSelector } from 'react-redux';
+//import { SafeAreaView } from 'react-native-safe-area-context';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -195,7 +196,7 @@ const QuestionBox = ({
 
   return (
     <TouchableWithoutFeedback onPress={handlePress}>
-      <KeyboardAvoidingView style={styles.kavq}>
+      <View style={styles.kavq}>
         <View style={[styles.inputcontainer]}>
           <Pressable onPress={onAvatarPress}>
             <Image
@@ -243,7 +244,7 @@ const QuestionBox = ({
             )}
           </TouchableHighlight>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </TouchableWithoutFeedback>
   );
 };

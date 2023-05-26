@@ -1,16 +1,16 @@
 // Import React and React Native components
-import React, {useContext, useEffect, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Platform} from 'react-native';
-import {Header} from '@rneui/themed';
-import {useNavigation} from '@react-navigation/native';
-import {SwipeListView} from 'react-native-swipe-list-view';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, Platform } from 'react-native';
+import { Header } from '@rneui/themed';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 import DeviceInfo from 'react-native-device-info';
 
 import EmployeeListItem from '../components/EmployeeListItem';
 import CustomButton from '../components/tools/CustomButton';
 import EditRoleModal from '../components/EditRoleModel';
-import {useDispatch, useSelector} from 'react-redux';
-import {Company, Employee} from '../persist/slices/company';
+import { useDispatch, useSelector } from 'react-redux';
+import { Company, Employee } from '../persist/slices/company';
 import {
   chooseEmployee,
   fireEmployee,
@@ -30,7 +30,7 @@ const EmployeeList = (props: Props) => {
   const [curasst, setCurasst] = useState<Employee | undefined>(undefined);
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const [heightDelta, setHeightDelta] = useState(-30 as number);
+  const [heightDelta, setHeightDelta] = useState(0 as number);
 
   useEffect(() => {
     const devid = DeviceInfo.getDeviceId();
@@ -75,7 +75,7 @@ const EmployeeList = (props: Props) => {
 
   const handleSave = (newName: string, newDescription?: string) => {
     console.log('User entered name:', newName);
-    dispatch(updateEmployee({id, name: newName, note: newDescription}));
+    dispatch(updateEmployee({ id, name: newName, note: newDescription }));
   };
 
   const veEdit = (veid: string) => {
@@ -90,7 +90,7 @@ const EmployeeList = (props: Props) => {
     navigation.navigate('ShortCuts' as never);
   };
 
-  const renderItem = (data: {item: Employee}) => (
+  const renderItem = (data: { item: Employee }) => (
     <EmployeeListItem
       assistant={data.item}
       onEdit={veid => veEdit(veid)}
@@ -98,7 +98,7 @@ const EmployeeList = (props: Props) => {
     />
   );
 
-  const renderHiddenItem = (data: {item: Employee}) => (
+  const renderHiddenItem = (data: { item: Employee }) => (
     <View style={styles.rowBack}>
       <TouchableOpacity
         style={[styles.backRightBtn, styles.backRightBtnLeft]}
@@ -118,13 +118,13 @@ const EmployeeList = (props: Props) => {
     // Use a View component as a container for the page
     <View style={styles.pageContainer}>
       <Header
-        containerStyle={{marginTop: heightDelta}}
+        containerStyle={{ marginTop: heightDelta }}
         leftComponent={
           <CustomButton onPress={() => navigation.goBack()} title="返回" />
         }
         centerComponent={{
           text: '公司员工列表',
-          style: {color: '#fff', fontSize: 20},
+          style: { color: '#fff', fontSize: 20 },
         }}
         rightComponent={
           <CustomButton
