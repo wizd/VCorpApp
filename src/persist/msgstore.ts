@@ -31,3 +31,12 @@ export const getMsgData = async () => {
     // error reading value
   }
 };
+
+// 清除所有数据
+export const clearAllMsgData = async () => {
+  try {
+    await AsyncStorage.removeItem('@storage_Key');
+  } catch (e) {
+    // error clearing data
+  }
+};

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   TextInput,
@@ -10,15 +10,16 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
 } from 'react-native';
 
-import {Margin, Border, Color} from '../../GlobalStyles';
+import { Margin, Border, Color } from '../../GlobalStyles';
 import InputWithClear from './tools/InputWithClear';
-import {Dimensions, EmitterSubscription} from 'react-native';
-import {CustomKeyboardAvoidingView} from './CustomKeyboardAvoidingView';
+import { Dimensions, EmitterSubscription } from 'react-native';
+import { CustomKeyboardAvoidingView } from './CustomKeyboardAvoidingView';
 import SmallButton from './tools/SmallButton';
 import RecordButton from './tools/AudioRecorder';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -194,7 +195,7 @@ const QuestionBox = ({
 
   return (
     <TouchableWithoutFeedback onPress={handlePress}>
-      <CustomKeyboardAvoidingView style={styles.kavq}>
+      <KeyboardAvoidingView style={styles.kavq}>
         <View style={[styles.inputcontainer]}>
           <Pressable onPress={onAvatarPress}>
             <Image
@@ -202,8 +203,8 @@ const QuestionBox = ({
                 uri: employee?.avatar?.startsWith('http')
                   ? employee.avatar
                   : company?.config?.API_URL +
-                    '/assets/avatar/' +
-                    employee?.avatar,
+                  '/assets/avatar/' +
+                  employee?.avatar,
               }}
               style={styles.itemImage}
             />
@@ -242,7 +243,7 @@ const QuestionBox = ({
             )}
           </TouchableHighlight>
         </View>
-      </CustomKeyboardAvoidingView>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
