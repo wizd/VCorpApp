@@ -10,11 +10,11 @@ import EventSource, {
   EventSourceListener,
   EventSourceOptions,
 } from 'react-native-sse';
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback } from 'react';
 
-import {Margin, Color, Padding} from '../../GlobalStyles';
-import {useEffect, useRef, useState} from 'react';
+import { Margin, Color, Padding } from '../../GlobalStyles';
+import { useEffect, useRef, useState } from 'react';
 
 import TitleSection from '../components/TitleSection';
 import QuickActions from '../components/QuickActions';
@@ -31,9 +31,9 @@ import {
   isVwsSystemMessage,
   isVwsTextMessage,
 } from '../comm/wsproto';
-import {Message, getMsgData, storeMsgData} from '../persist/msgstore';
-import {useDispatch, useSelector} from 'react-redux';
-import {Company} from '../persist/slices/company';
+import { Message, getMsgData, storeMsgData } from '../persist/msgstore';
+import { useDispatch, useSelector } from 'react-redux';
+import { Company } from '../persist/slices/company';
 import {
   registerUser,
   tourial,
@@ -45,8 +45,8 @@ import {
   clearMessage,
   createShareOnServer,
 } from '../persist/slices/chatSlice';
-import {playSound} from '../persist/slices/playlistSlice';
-import {CheckBox} from '@rneui/themed';
+import { playSound } from '../persist/slices/playlistSlice';
+import { CheckBox } from '@rneui/themed';
 import MessageItem from '../components/tools/MessageItem';
 import ShareBar from '../components/tools/ShareBar';
 
@@ -146,7 +146,7 @@ const ShortCuts = () => {
                 // 创建一个新的消息数组
                 console.log("I'll update msg with wavurl");
                 const updatedMessages = currentMessages.map(m =>
-                  m._id === txtmsg2._id ? {...m, wavurl: txt} : m,
+                  m._id === txtmsg2._id ? { ...m, wavurl: txt } : m,
                 );
                 // 返回更新后的消息数组
                 return updatedMessages;
@@ -581,7 +581,7 @@ const ShortCuts = () => {
       setMessages(prevMessages =>
         prevMessages.map((message, i) => {
           if (i === index || i === index - 1) {
-            return {...message, isSelected: true};
+            return { ...message, isSelected: true };
           }
           return message;
         }),
@@ -630,7 +630,7 @@ const ShortCuts = () => {
       setMessages(
         messages.map(message =>
           message._id === item._id
-            ? {...message, isSelected: !item.isSelected}
+            ? { ...message, isSelected: !item.isSelected }
             : message,
         ),
       );
@@ -659,13 +659,13 @@ const ShortCuts = () => {
   const autoScroll = () => {
     //console.log('autoScroll, flatListRef: ', flatListRef.current);
     if (messages.length > 0) {
-      flatListRef.current?.scrollToEnd({animated: true});
+      flatListRef.current?.scrollToEnd({ animated: true });
     }
   };
 
   const styles = StyleSheet.create({
     kav: {
-      paddingBottom: Platform.OS === 'ios' ? 80 : 80,
+      paddingBottom: Platform.OS === 'ios' ? 80 : 84,
       flex: 1,
     },
     frameScrollViewContent: {
@@ -702,43 +702,43 @@ const ShortCuts = () => {
 
   //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <KeyboardAvoidingView
-        style={styles.kav}
-        behavior={Platform.OS === 'ios' ? 'height' : 'height'}>
-        <TitleSection />
-        <View style={styles.shortcuts}>
-          {showArrow && <ArrowGuide />}
-          <FlatList
-            style={[styles.frameParent, styles.mt8]}
-            removeClippedSubviews={false}
-            horizontal={false}
-            data={messages}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => (
-              <MessageItem
-                item={item}
-                index={index}
-                isShareMode={isShareMode}
-                handleStop={handleStop}
-                handleShare={handleBeginShare}
-                handleSelectMessage={handleSelectMessage}
-              />
-            )}
-            ListHeaderComponent={
-              <>
-                <View style={[styles.shortcutsChild, styles.mt8]} />
-                <QuickActions pressed={setQ} />
-              </>
-            }
-            ListFooterComponent={<></>}
-            contentContainerStyle={{flexGrow: 1, paddingBottom: 16}}
-            keyboardShouldPersistTaps="handled"
-            //onContentSizeChange={autoScroll}
-            ref={flatListRef}
-          />
-        </View>
-      </KeyboardAvoidingView>
+    <KeyboardAvoidingView
+      style={styles.kav}
+      enabled={true}
+      behavior={Platform.OS === 'ios' ? 'height' : 'height'}>
+      <TitleSection />
+      <View style={styles.shortcuts}>
+        {showArrow && <ArrowGuide />}
+        <FlatList
+          style={[styles.frameParent, styles.mt8]}
+          removeClippedSubviews={false}
+          horizontal={false}
+          data={messages}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item, index }) => (
+            <MessageItem
+              item={item}
+              index={index}
+              isShareMode={isShareMode}
+              handleStop={handleStop}
+              handleShare={handleBeginShare}
+              handleSelectMessage={handleSelectMessage}
+            />
+          )}
+          ListHeaderComponent={
+            <>
+              <View style={[styles.shortcutsChild, styles.mt8]} />
+              <QuickActions pressed={setQ} />
+            </>
+          }
+          ListFooterComponent={<></>}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}
+          keyboardShouldPersistTaps="handled"
+          //onContentSizeChange={autoScroll}
+          ref={flatListRef}
+        />
+      </View>
+
       {isShareMode && (
         <ShareBar
           selectedCount={selectedCount}
@@ -756,7 +756,7 @@ const ShortCuts = () => {
           onAvatarPress={onQuestionBoxAvatarClick}
         />
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
