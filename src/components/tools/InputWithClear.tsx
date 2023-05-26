@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, {RefObject} from 'react';
 import {
   View,
   TextInput,

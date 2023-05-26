@@ -1,15 +1,15 @@
 // Import React and React Native components
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Switch } from 'react-native';
-import { Header } from '@rneui/themed';
-import { useNavigation } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Text, Switch} from 'react-native';
+import {Header} from '@rneui/themed';
+import {useNavigation} from '@react-navigation/native';
 
 import CustomButton from '../components/tools/CustomButton';
 import DeviceInfo from 'react-native-device-info';
-import { useDispatch, useSelector } from 'react-redux';
-import { Company } from '../persist/slices/company';
-import { setSettings } from '../persist/slices/companySlice';
-import { clearAllMsgData } from '../persist/msgstore';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company} from '../persist/slices/company';
+import {setSettings} from '../persist/slices/companySlice';
+import {clearAllMsgData} from '../persist/msgstore';
 
 // Define the main component that renders the page
 const AppSettings = () => {
@@ -84,13 +84,13 @@ const AppSettings = () => {
   return (
     <View style={styles.pageContainer}>
       <Header
-        containerStyle={{ marginTop: heightDelta }}
+        containerStyle={{marginTop: heightDelta}}
         leftComponent={
           <CustomButton onPress={() => saveSettings()} title="返回" />
         }
         centerComponent={{
           text: '设置',
-          style: { color: '#fff', fontSize: 22, fontWeight: 'bold' },
+          style: {color: '#fff', fontSize: 22, fontWeight: 'bold'},
         }}
         backgroundColor="#3D6DCC"
       />

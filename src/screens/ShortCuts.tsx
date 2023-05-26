@@ -11,11 +11,11 @@ import EventSource, {
   EventSourceListener,
   EventSourceOptions,
 } from 'react-native-sse';
-import { useNavigation } from '@react-navigation/native';
-import React, { useCallback } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useCallback} from 'react';
 
-import { Margin, Color, Padding } from '../../GlobalStyles';
-import { useEffect, useRef, useState } from 'react';
+import {Margin, Padding} from '../../GlobalStyles';
+import {useEffect, useRef, useState} from 'react';
 
 import TitleSection from '../components/TitleSection';
 import QuickActions from '../components/QuickActions';
@@ -25,6 +25,7 @@ import ArrowGuide from '../components/help/ArrowGuide';
 
 import {
   VwsImageMessage,
+  VwsMessage,
   VwsSystemMessage,
   VwsTextMessage,
   isVwsAudioMessage,
@@ -32,22 +33,12 @@ import {
   isVwsSystemMessage,
   isVwsTextMessage,
 } from '../comm/wsproto';
-import { Message, getMsgData, storeMsgData } from '../persist/msgstore';
-import { useDispatch, useSelector } from 'react-redux';
-import { Company } from '../persist/slices/company';
-import {
-  registerUser,
-  tourial,
-  tourialDone,
-} from '../persist/slices/companySlice';
-import {
-  ChatServerState,
-  chatClient,
-  clearMessage,
-  createShareOnServer,
-} from '../persist/slices/chatSlice';
-import { playSound } from '../persist/slices/playlistSlice';
-import { CheckBox } from '@rneui/themed';
+import {Message, getMsgData, storeMsgData} from '../persist/msgstore';
+import {useDispatch, useSelector} from 'react-redux';
+import {Company} from '../persist/slices/company';
+import {registerUser, tourialDone} from '../persist/slices/companySlice';
+import {chatClient, createShareOnServer} from '../persist/slices/chatSlice';
+import {playSound} from '../persist/slices/playlistSlice';
 import MessageItem from '../components/tools/MessageItem';
 import ShareBar from '../components/tools/ShareBar';
 
@@ -66,8 +57,6 @@ const ShortCuts = () => {
   const company = useSelector((state: any) => state.company) as Company;
   const [showArrow, setShowArrow] = useState(true);
   const [isShareMode, setIsShareMode] = useState(false);
-
-  const chatState = useSelector((state: any) => state.chat) as ChatServerState;
 
   // const {beginReading, endReading} = useTts({
   //   isEnabled: company?.settings.tts ?? false,
@@ -94,7 +83,7 @@ const ShortCuts = () => {
   }, [messages]);
 
   useEffect(() => {
-    const handleNewMessage = smessage => {
+    const handleNewMessage = (smessage: VwsMessage) => {
       // 处理新消息，例如更新状态或显示通知
       //console.log('New message received to main chat UI:', smessage);
 
@@ -147,7 +136,7 @@ const ShortCuts = () => {
                 // 创建一个新的消息数组
                 console.log("I'll update msg with wavurl");
                 const updatedMessages = currentMessages.map(m =>
-                  m._id === txtmsg2._id ? { ...m, wavurl: txt } : m,
+                  m._id === txtmsg2._id ? {...m, wavurl: txt} : m,
                 );
                 // 返回更新后的消息数组
                 return updatedMessages;
@@ -255,7 +244,7 @@ const ShortCuts = () => {
     //   handleNewMessage(incomingMsg);
     //   dispatch(clearMessage(incomingMsg));
     // }
-  }, [chatClient]);
+  }, [company?.curid, company?.settings.tts, dispatch]);
 
   const onQuestionBoxAvatarClick = () => {
     setShowArrow(false);
@@ -276,6 +265,12 @@ const ShortCuts = () => {
   useEffect(() => {
     setShowArrow(company?.settings.guide ?? true);
   }, [company]);
+
+  const handleContentSizeChange = () => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({animated: true});
+    }
+  };
 
   const onVoiceSent = (msgid: string) => {
     console.log('voice sent. msgid is ', msgid);
@@ -582,7 +577,7 @@ const ShortCuts = () => {
       setMessages(prevMessages =>
         prevMessages.map((message, i) => {
           if (i === index || i === index - 1) {
-            return { ...message, isSelected: true };
+            return {...message, isSelected: true};
           }
           return message;
         }),
@@ -631,7 +626,7 @@ const ShortCuts = () => {
       setMessages(
         messages.map(message =>
           message._id === item._id
-            ? { ...message, isSelected: !item.isSelected }
+            ? {...message, isSelected: !item.isSelected}
             : message,
         ),
       );
@@ -660,7 +655,7 @@ const ShortCuts = () => {
   const autoScroll = () => {
     //console.log('autoScroll, flatListRef: ', flatListRef.current);
     if (messages.length > 0) {
-      flatListRef.current?.scrollToEnd({ animated: true });
+      flatListRef.current?.scrollToEnd({animated: true});
     }
   };
 
@@ -703,11 +698,8 @@ const ShortCuts = () => {
     },
   });
 
-  //behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-  const keyboardVerticalOffset = Platform.OS === 'ios' ? 0 : 0;
-  //keyboardVerticalOffset={keyboardVerticalOffset}
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <KeyboardAvoidingView
         style={styles.kav}
         enabled={true}
@@ -719,9 +711,10 @@ const ShortCuts = () => {
             style={[styles.frameParent, styles.mt8]}
             removeClippedSubviews={false}
             horizontal={false}
+            onContentSizeChange={handleContentSizeChange}
             data={messages}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => (
+            renderItem={({item, index}) => (
               <MessageItem
                 item={item}
                 index={index}
@@ -738,7 +731,7 @@ const ShortCuts = () => {
               </>
             }
             ListFooterComponent={<></>}
-            contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}
+            contentContainerStyle={{flexGrow: 1, paddingBottom: 16}}
             keyboardShouldPersistTaps="handled"
             //onContentSizeChange={autoScroll}
             ref={flatListRef}

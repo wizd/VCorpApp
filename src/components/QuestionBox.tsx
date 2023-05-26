@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {
   TextInput,
@@ -10,17 +10,15 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 
-import { Margin, Border, Color } from '../../GlobalStyles';
+import {Margin, Border, Color} from '../../GlobalStyles';
 import InputWithClear from './tools/InputWithClear';
-import { Dimensions, EmitterSubscription } from 'react-native';
-import { CustomKeyboardAvoidingView } from './CustomKeyboardAvoidingView';
+import {Dimensions, EmitterSubscription} from 'react-native';
 import SmallButton from './tools/SmallButton';
 import RecordButton from './tools/AudioRecorder';
-import { useDispatch, useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
+import {Company, Employee} from '../persist/slices/company';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -38,7 +36,6 @@ const QuestionBox = ({
   employee,
   onAvatarPress,
 }: QuestionBoxType) => {
-  const dispatch = useDispatch();
   const company = useSelector((state: any) => state.company) as Company;
 
   const defImg = require('../../assets/vuesaxboldsend.png');
@@ -46,7 +43,7 @@ const QuestionBox = ({
   const [question, setQuestion] = useState<string>('');
   const inputRef = useRef<TextInput>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [currentImage, setCurrentImage] = useState(defImg);
+  const [_, setCurrentImage] = useState(defImg);
   const [isAudioMode, setIsAudioMode] = useState(false);
 
   const [inputWidth, setInputWidth] = useState(deviceWidth - 110);
@@ -205,8 +202,8 @@ const QuestionBox = ({
                 uri: employee?.avatar?.startsWith('http')
                   ? employee.avatar
                   : company?.config?.API_URL +
-                  '/assets/avatar/' +
-                  employee?.avatar,
+                    '/assets/avatar/' +
+                    employee?.avatar,
               }}
               style={styles.itemImage}
             />
