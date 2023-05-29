@@ -6,12 +6,14 @@ import {
   Image,
   StyleSheet,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {RectButton} from 'react-native-gesture-handler';
 import {Company} from '../persist/slices/company';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import RecordButton from '../components/tools/RecordButton';
+import {setAIBusy} from '../persist/slices/companySlice';
 
 interface Props {
   route: any;
@@ -20,6 +22,7 @@ interface Props {
 }
 
 const VoiceChatScreen: FC<Props> = ({route}) => {
+  const dispatch = useDispatch();
   const company = useSelector((state: any) => state.company) as Company;
   const navigation = useNavigation();
   const {avatarUrl, name} = route.params;
@@ -28,16 +31,9 @@ const VoiceChatScreen: FC<Props> = ({route}) => {
     navigation.goBack();
   };
 
-  const handlePressIn = () => {
-    console.log('开始录音');
-  };
-
-  const handlePressOut = () => {
-    console.log('结束录音');
-  };
-
   const handleRecordDone = (msgid: string) => {
     //onSendVoice(msgid);
+    dispatch(setAIBusy(true));
   };
 
   return (
@@ -55,6 +51,11 @@ const VoiceChatScreen: FC<Props> = ({route}) => {
           style={styles.avatar}
         />
         <Text style={styles.name}>{name ?? company.curid}</Text>
+        <View style={styles.loading}>
+          {company.isAILoading && (
+            <ActivityIndicator size="large" color="#0000ff" />
+          )}
+        </View>
         <RecordButton
           buttonStyle={styles.talkButton}
           textStyle={styles.talkButtonText}
@@ -95,6 +96,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginVertical: 30,
+  },
+  loading: {
+    marginTop: 32,
   },
   talkButton: {
     backgroundColor: '#4CAF50',

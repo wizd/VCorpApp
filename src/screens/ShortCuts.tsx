@@ -36,7 +36,11 @@ import {
 import {Message, getMsgData, storeMsgData} from '../persist/msgstore';
 import {useDispatch, useSelector} from 'react-redux';
 import {Company} from '../persist/slices/company';
-import {registerUser, tourialDone} from '../persist/slices/companySlice';
+import {
+  registerUser,
+  setAIBusy,
+  tourialDone,
+} from '../persist/slices/companySlice';
 import {chatClient, createShareOnServer} from '../persist/slices/chatSlice';
 import {playSound} from '../persist/slices/playlistSlice';
 import MessageItem from '../components/tools/MessageItem';
@@ -135,6 +139,9 @@ const ShortCuts = () => {
               if (txtmsg2 !== undefined) {
                 // 创建一个新的消息数组
                 console.log("I'll update msg with wavurl");
+
+                // ai can now speak.
+                dispatch(setAIBusy(false));
                 const updatedMessages = currentMessages.map(m =>
                   m._id === txtmsg2._id ? {...m, wavurl: txt} : m,
                 );

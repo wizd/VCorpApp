@@ -1,8 +1,8 @@
 //export let API_URL_DEFAULT = 'https://mars.vcorp.ai';
 
 import axios from 'axios';
-import {LyraCrypto} from '../../crypto/lyra-crypto';
-import {delay} from '../../utils/util';
+import { LyraCrypto } from '../../crypto/lyra-crypto';
+import { delay } from '../../utils/util';
 
 // fuck various dotenv configs. let's just hardcode the default config here.
 const defaultConfig = {
@@ -38,6 +38,7 @@ export interface Company {
   curid: string;
   jwt?: string;
   employees: Employee[];
+  isAILoading?: boolean;
 }
 
 export const registerUserToServer = async (
@@ -83,7 +84,7 @@ export const registerUserToServer = async (
 
 export const initialCompanyState: Company = {
   config: defaultConfig,
-  settings: {tts: true, guide: true, autoSaveImage: false},
+  settings: { tts: true, guide: true, autoSaveImage: false },
   privatekey: LyraCrypto.GenerateWallet().privateKey,
   name: 'Default Company',
   curid: 'A0001',
@@ -95,4 +96,5 @@ export const initialCompanyState: Company = {
       avatar: `${defaultConfig.API_URL}/assets/avatar/A0001.png`,
     },
   ],
+  isAILoading: false,
 };

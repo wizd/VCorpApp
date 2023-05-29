@@ -10,6 +10,7 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 
 import {Margin, Border, Color} from '../../GlobalStyles';
@@ -205,10 +206,10 @@ const QuestionBox = ({
   });
 
   return (
-    <TouchableWithoutFeedback onPress={handlePress}>
+    <TouchableOpacity onPress={handlePress} activeOpacity={1}>
       <View style={styles.kavq}>
         <View style={[styles.inputcontainer]}>
-          <Pressable onPress={onAvatarPress} onLongPress={startSpeechMode}>
+          <Pressable onPress={onAvatarPress}>
             <Image
               source={{
                 uri: employee?.avatar?.startsWith('http')
@@ -249,13 +250,14 @@ const QuestionBox = ({
               <SmallButton
                 iconName={isAudioMode ? 'keyboard' : 'record-voice-over'}
                 onPress={handleRecord}
+                onLongPress={startSpeechMode}
                 color="#555555"
               />
             )}
           </TouchableHighlight>
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 

@@ -1,14 +1,14 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {Company, initialCompanyState, registerUserToServer} from './company';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Company, initialCompanyState, registerUserToServer } from './company';
 
 // The rest of your imports and constants...
 
 // Async thunk action for registering a user
 export const registerUser = createAsyncThunk(
   'company/registerUser',
-  async (_, {dispatch, getState}) => {
+  async (_, { dispatch, getState }) => {
     // Your existing registerUser logic...
-    const state = getState() as {company: Company};
+    const state = getState() as { company: Company };
     const jwt = await registerUserToServer(
       state.company.config.API_URL,
       state.company.privatekey,
@@ -23,7 +23,7 @@ const companySlice = createSlice({
   initialState: initialCompanyState,
   reducers: {
     updateCompany: (state, action) => {
-      return {...state, ...action.payload};
+      return { ...state, ...action.payload };
     },
     updateJwt: (state, action) => {
       return {
@@ -89,6 +89,12 @@ const companySlice = createSlice({
         },
       };
     },
+    setAIBusy: (state, action) => {
+      return {
+        ...state,
+        isAILoading: action.payload,
+      };
+    },
   },
   // extraReducers: builder => {
   //   builder.addCase(registerUser.fulfilled, (state, action) => {
@@ -107,6 +113,7 @@ export const {
   chooseEmployee,
   hireNewEmployee,
   tourialDone,
+  setAIBusy,
 } = companySlice.actions;
 
 export default companySlice.reducer;
