@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Linking, StyleSheet} from 'react-native';
+import {Text, Linking, StyleSheet} from 'react-native';
 import {FontFamily, FontSize} from '../../../GlobalStyles';
 import ImageSaver from '../ImageSaver';
 
@@ -20,7 +20,7 @@ const ClickableLinks: React.FC<ClickableLinksProps> = ({content}) => {
   const textParts = findLinks(content);
 
   return (
-    <View style={styles.container}>
+    <Text style={styles.container}>
       {textParts.map((part, index) => {
         if (index % 2 === 1) {
           if (part.endsWith('.png')) {
@@ -30,7 +30,7 @@ const ClickableLinks: React.FC<ClickableLinksProps> = ({content}) => {
               <Text
                 key={index}
                 selectable={true}
-                style={styles.link}
+                style={[styles.link, styles.text]}
                 onPress={() => handleLinkPress(part)}>
                 {part}
               </Text>
@@ -41,21 +41,18 @@ const ClickableLinks: React.FC<ClickableLinksProps> = ({content}) => {
             <Text
               key={index}
               selectable={true}
-              style={styles.helloChatgpthowAre}>
+              style={[styles.helloChatgpthowAre, styles.text]}>
               {part}
             </Text>
           );
         }
       })}
-    </View>
+    </Text>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
     // paddingHorizontal: 20,
   },
   text: {

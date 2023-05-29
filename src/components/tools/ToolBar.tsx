@@ -16,13 +16,13 @@ const Toolbar: React.FC<ToolbarProps> = ({
   return (
     <View style={styles.toolbar}>
       <View style={styles.buttonWrapper}>
-        <SmallButton iconName="volume-up" onPress={onReadPress} />
-      </View>
-      <View style={styles.buttonWrapper}>
         <SmallButton iconName="share" onPress={onSharePress} />
       </View>
       <View style={styles.buttonWrapper}>
         <SmallButton iconName="content-copy" onPress={onCopyPress} />
+      </View>
+      <View style={styles.buttonWrapper}>
+        <SmallButton iconName="volume-up" onPress={onReadPress} />
       </View>
     </View>
   );

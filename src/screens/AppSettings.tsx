@@ -47,6 +47,15 @@ const AppSettings = () => {
     console.log('company object has changed:', company);
   }, [company]);
 
+  const startSpeechMode = async () => {
+    console.log('Start speech mode...');
+    navigation.navigate('VoiceChat', {
+      avatarUrl:
+        company!.config.API_URL + '/assets/avatar/' + company.curid + '.png',
+      name: company?.employees.find(e => e.id === company.curid)?.name || '',
+    });
+  };
+
   const clearChatHistory = async () => {
     console.log('Clear chat history...');
     await clearAllMsgData();
@@ -104,10 +113,17 @@ const AppSettings = () => {
           <Switch value={autoSaveEnabled} onValueChange={toggleAutoSave} />
         </View>
         <CustomButton
-          title="清除所有聊天记录"
-          onPress={clearChatHistory}
-          buttonStyle={styles.clearButton}
+          title="语音模式"
+          onPress={startSpeechMode}
+          buttonStyle={styles.normalButton}
         />
+        <View style={styles.bottomContainer}>
+          <CustomButton
+            title="清除所有聊天记录"
+            onPress={clearChatHistory}
+            buttonStyle={styles.clearButton}
+          />
+        </View>
       </View>
     </View>
   );
@@ -158,10 +174,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
-  clearButton: {
+  normalButton: {
     marginTop: 20,
     backgroundColor: '#3D6DCC',
     borderRadius: 10,
     paddingVertical: 12,
+  },
+  clearButton: {
+    marginBottom: 20,
+    backgroundColor: '#880000',
+    borderRadius: 10,
+    paddingVertical: 12,
+  },
+  bottomContainer: {
+    justifyContent: 'flex-end',
+    flex: 1,
   },
 });

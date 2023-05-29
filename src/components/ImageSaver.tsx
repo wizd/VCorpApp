@@ -142,7 +142,7 @@ const NetworkImage: React.FC<NetworkImageProps> = ({imageUrl, saved}) => {
               savePicture(localPath);
             }
           } else {
-            console.error('Failed to download image:', result.statusCode);
+            console.log('Failed to download image:', result.statusCode);
           }
         }
       };

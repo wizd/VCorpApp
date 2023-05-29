@@ -267,7 +267,7 @@ const ShortCuts = () => {
   }, [company]);
 
   const handleContentSizeChange = () => {
-    if (flatListRef.current) {
+    if (messages.length > 0 && flatListRef.current) {
       flatListRef.current.scrollToEnd({animated: true});
     }
   };

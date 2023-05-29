@@ -16,9 +16,10 @@ import {Margin, Border, Color} from '../../GlobalStyles';
 import InputWithClear from './tools/InputWithClear';
 import {Dimensions, EmitterSubscription} from 'react-native';
 import SmallButton from './tools/SmallButton';
-import RecordButton from './tools/AudioRecorder';
+import RecordButton from './tools/RecordButton';
 import {useSelector} from 'react-redux';
 import {Company, Employee} from '../persist/slices/company';
+import {useNavigation} from '@react-navigation/native';
 const deviceWidth = Dimensions.get('window').width;
 
 type QuestionBoxType = {
@@ -36,6 +37,7 @@ const QuestionBox = ({
   employee,
   onAvatarPress,
 }: QuestionBoxType) => {
+  const navigation = useNavigation();
   const company = useSelector((state: any) => state.company) as Company;
 
   const defImg = require('../../assets/vuesaxboldsend.png');
@@ -103,6 +105,16 @@ const QuestionBox = ({
   const handlePress = () => {
     Keyboard.dismiss();
   };
+
+  const startSpeechMode = async () => {
+    console.log('Start speech mode...');
+    navigation.navigate('VoiceChat', {
+      avatarUrl:
+        company!.config.API_URL + '/assets/avatar/' + company.curid + '.png',
+      name: company?.employees.find(e => e.id === company.curid)?.name || '',
+    });
+  };
+
   const handleRecord = () => {
     setIsAudioMode(!isAudioMode);
   };
@@ -196,7 +208,7 @@ const QuestionBox = ({
     <TouchableWithoutFeedback onPress={handlePress}>
       <View style={styles.kavq}>
         <View style={[styles.inputcontainer]}>
-          <Pressable onPress={onAvatarPress}>
+          <Pressable onPress={onAvatarPress} onLongPress={startSpeechMode}>
             <Image
               source={{
                 uri: employee?.avatar?.startsWith('http')

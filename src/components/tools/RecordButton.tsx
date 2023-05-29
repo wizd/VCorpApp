@@ -1,5 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {TouchableOpacity, Text, Platform, StyleSheet} from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  Platform,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import AudioRecord from 'react-native-audio-record';
 import {PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 import {toByteArray} from 'react-native-quick-base64';
@@ -11,9 +19,15 @@ import {Company} from '../../persist/slices/company';
 
 type RecordButtonProps = {
   onRecordComplete: (msgid: string) => void;
+  buttonStyle?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 };
 
-const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
+const RecordButton: React.FC<RecordButtonProps> = ({
+  onRecordComplete,
+  buttonStyle,
+  textStyle,
+}) => {
   const [recording, setRecording] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const batchIdRef = useRef<number>(0);
@@ -157,8 +171,8 @@ const RecordButton: React.FC<RecordButtonProps> = ({onRecordComplete}) => {
     <TouchableOpacity
       onPressIn={startRecording}
       onPressOut={stopRecording}
-      style={styles.button}>
-      <Text style={styles.text}>
+      style={[styles.button, buttonStyle]}>
+      <Text style={[styles.text, textStyle]}>
         {recording ? '正在录音......' : '按住 说话'}
       </Text>
     </TouchableOpacity>
