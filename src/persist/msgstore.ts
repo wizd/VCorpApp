@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export interface Message {
+interface Message {
   _id: string;
   text: string;
   isLoading: boolean;
@@ -13,7 +13,7 @@ export interface Message {
 }
 
 // 存储数据
-export const storeMsgData = async (value: Message[]) => {
+const storeMsgData = async (value: Message[]) => {
   try {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem('@storage_Key', jsonValue);
@@ -23,7 +23,7 @@ export const storeMsgData = async (value: Message[]) => {
 };
 
 // 获取数据
-export const getMsgData = async () => {
+const getMsgData = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem('@storage_Key');
     return jsonValue != null ? JSON.parse(jsonValue) : [];
@@ -33,7 +33,7 @@ export const getMsgData = async () => {
 };
 
 // 清除所有数据
-export const clearAllMsgData = async () => {
+const clearAllMsgData = async () => {
   try {
     await AsyncStorage.removeItem('@storage_Key');
   } catch (e) {

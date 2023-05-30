@@ -33,7 +33,6 @@ import {
   isVwsSystemMessage,
   isVwsTextMessage,
 } from '../comm/wsproto';
-import {Message, getMsgData, storeMsgData} from '../persist/msgstore';
 import {useDispatch, useSelector} from 'react-redux';
 import {Company} from '../persist/slices/company';
 import {
@@ -45,13 +44,27 @@ import {chatClient, createShareOnServer} from '../persist/slices/chatSlice';
 import {playSound} from '../persist/slices/playlistSlice';
 import MessageItem from '../components/tools/MessageItem';
 import ShareBar from '../components/tools/ShareBar';
+import {
+  AppendMessage,
+  Message,
+  addMessage,
+  deselectAllMessages,
+  removeSelectedMessages,
+  setMessages,
+  toggleMessageSelected,
+  updateMessage,
+  updateMessageWavUrl,
+  updateSelectedMessages,
+} from '../persist/slices/messageSlice';
 
 const ShortCuts = () => {
   const navigation = useNavigation();
   const flatListRef = useRef<FlatList>(null);
 
   const [q, setQ] = useState<string>('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const messages = useSelector(
+    (state: any) => state.message.messages,
+  ) as Message[];
   const selectedCount = messages.reduce(
     (count, message) => (message.isSelected ? count + 1 : count),
     0,
@@ -67,25 +80,19 @@ const ShortCuts = () => {
   // });
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getMsgData();
-      setMessages(data);
-    };
-
     setShowArrow(company?.settings.guide ?? true);
-    fetchData();
   }, [company]);
 
-  useEffect(() => {
-    const storeData = async () => {
-      // if (messages.length > 0) {
-      //   flatListRef.current?.scrollToEnd({animated: true});
-      // }
-      await storeMsgData(messages);
-    };
+  // useEffect(() => {
+  //   const storeData = async () => {
+  //     // if (messages.length > 0) {
+  //     //   flatListRef.current?.scrollToEnd({animated: true});
+  //     // }
+  //     await storeMsgData(messages);
+  //   };
 
-    storeData();
-  }, [messages]);
+  //   storeData();
+  // }, [messages]);
 
   useEffect(() => {
     const handleNewMessage = (smessage: VwsMessage) => {
@@ -94,21 +101,13 @@ const ShortCuts = () => {
 
       if (isVwsTextMessage(smessage)) {
         if (smessage.cid !== undefined) {
-          setMessages(previousMessages => {
-            // Get the last array
-            const last = [...previousMessages];
-
-            // Update the list
-            const mewLIst = last.map((m, _i) => {
-              if (m._id === smessage.id) {
-                m.text += (smessage as VwsTextMessage).content;
-                m.isLoading = smessage.final === false;
-              }
-              return m;
-            });
-            // Return the new array
-            return mewLIst;
-          });
+          dispatch(
+            AppendMessage({
+              messageId: smessage.id,
+              part: (smessage as VwsTextMessage).content,
+              final: smessage.final === true,
+            }),
+          );
         } else {
           // check if speech for the some message
           const txt = (smessage as VwsTextMessage).content;
@@ -128,61 +127,23 @@ const ShortCuts = () => {
               }
             }
 
-            setMessages(currentMessages => {
-              // 使用 currentMessages 而不是 messages
-              const txtmsg2 = currentMessages.find(m => m._id === smessage.id);
-              // console.log(
-              //   'current messages is ',
-              //   currentMessages,
-              //   'txtmsg2 is ',
-              //   txtmsg2,
-              // );
-              if (txtmsg2 !== undefined) {
-                // 创建一个新的消息数组
-                console.log("I'll update msg with wavurl");
-
-                // ai can now speak.
-                dispatch(setAIBusy(false));
-                const updatedMessages = currentMessages.map(m =>
-                  m._id === txtmsg2._id ? {...m, wavurl: txt} : m,
-                );
-                // 返回更新后的消息数组
-                return updatedMessages;
-              }
-              // 如果没有找到对应的消息，返回未修改的消息数组
-              return currentMessages;
-            });
+            dispatch(
+              updateMessageWavUrl({
+                messageId: smessage.id,
+                wavUrl: txt,
+              }),
+            );
           } else {
             //check if the message is a speech recognition result
             // this is the result of a speech recognition
             if (smessage.id.endsWith('-vr')) {
-              setMessages(previousMessages => {
-                // Get the last array
-                const last = [...previousMessages];
-
-                // Update the list
-                const mewLIst = last.map((m, _i) => {
-                  if (m._id === smessage.id && !m.isAI) {
-                    m.text = smessage.content;
-                    m.isLoading = false;
-                  }
-                  return m;
-                });
-                // Return the new array
-                return mewLIst;
-              });
-
-              // // and clean any failed voice recognition
-              // setMessages(previousMessages => {
-              //   // Get the last array
-              //   const last = [...previousMessages];
-
-              //   // Update the list
-              //   const mewLIst = last.filter(a => !(!a.isAI && a.isLoading));
-              //   // Return the new array
-              //   return mewLIst;
-              // });
-
+              dispatch(
+                updateMessage({
+                  messageId: smessage.id,
+                  newText: (smessage as VwsTextMessage).content,
+                  isLoading: false,
+                }),
+              );
               return;
             }
 
@@ -190,13 +151,13 @@ const ShortCuts = () => {
             const message = {
               _id: smessage.id,
               text: (smessage as VwsTextMessage).content,
-              createdAt: new Date(),
+              createdAt: new Date().toISOString(),
               isLoading: !(smessage as VwsTextMessage).final,
               isAI: true,
               veid: smessage.src ?? company?.curid ?? 'A0001',
               bypass: company?.curid.startsWith('D') ?? false,
             };
-            setMessages(previousMessages => [...previousMessages, message]);
+            dispatch(addMessage(message));
           }
         }
       } else if (isVwsImageMessage(smessage)) {
@@ -205,13 +166,13 @@ const ShortCuts = () => {
         const message = {
           _id: smessage.id,
           text: '```image\n' + imgurl + '\n```',
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
           isLoading: false,
           isAI: true,
           veid: smessage.src,
           bypass: company?.curid.startsWith('D') ?? false,
         };
-        setMessages(previousMessages => [...previousMessages, message]);
+        dispatch(addMessage(message));
       } else if (isVwsAudioMessage(smessage)) {
         //
         console.log("Audio message received, don't know how to handle it");
@@ -281,14 +242,14 @@ const ShortCuts = () => {
     const userMsg = {
       _id: msgid + '-vr',
       text: '',
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       isLoading: true,
       isAI: false,
       veid: company?.curid ?? 'A0001',
       bypass: false,
     };
 
-    setMessages(previousMessages => [...previousMessages, userMsg]);
+    dispatch(addMessage(userMsg));
   };
 
   const ask = (question: string, existingUserMsgId?: string) => {
@@ -302,21 +263,13 @@ const ShortCuts = () => {
       );
       userMsg = messages.find(m => m._id === existingUserMsgId && !m.isAI);
 
-      setMessages(previousMessages => {
-        // Get the last array
-        const last = [...previousMessages];
-
-        // Update the list
-        const mewLIst = last.map((m, _i) => {
-          if (m._id === existingUserMsgId && !m.isAI) {
-            m.text = question;
-            m.isLoading = false;
-          }
-          return m;
-        });
-        // Return the new array
-        return mewLIst;
-      });
+      dispatch(
+        updateMessage({
+          messageId: existingUserMsgId,
+          newText: question,
+          isLoading: false,
+        }),
+      );
 
       if (userMsg === undefined) {
         console.log('userMsg is undefined');
@@ -329,14 +282,14 @@ const ShortCuts = () => {
       userMsg = {
         _id: new Date().getTime().toString(),
         text: question,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         isLoading: false,
         isAI: false,
         veid: company?.curid ?? 'A0001',
         bypass: false,
       };
 
-      setMessages(previousMessages => [...previousMessages, userMsg]);
+      dispatch(addMessage(userMsg));
     }
 
     const url = company!.config.API_URL + '/vc/v1/chat'; // replace with your API url
@@ -383,13 +336,13 @@ const ShortCuts = () => {
     const message = {
       _id: (+userMsg._id + 1).toString(),
       text: '',
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       isLoading: true,
       isAI: true,
       veid: company?.curid,
       bypass: company?.curid.startsWith('D'),
     };
-    setMessages(previousMessages => [...previousMessages, message]);
+    dispatch(addMessage(message));
 
     autoScroll();
 
@@ -450,39 +403,22 @@ const ShortCuts = () => {
 
           // Continuously update the last message in the state
           // with new piece of data
-          setMessages(previousMessages => {
-            // Get the last array
-            const last = [...previousMessages];
-
-            // Update the list
-            const mewLIst = last.map((m, _i) => {
-              if (m._id === message._id) {
-                m.text = newContent;
-              }
-              return m;
-            });
-            // Return the new array
-            return mewLIst;
-          });
+          dispatch(
+            updateMessage({
+              messageId: message._id,
+              newText: newContent,
+            }),
+          );
         } else {
           es.close();
           console.log('done. the answer is: ', newContent);
           //endReading();
-          setMessages(previousMessages => {
-            // Get the last array
-            const last = [...previousMessages];
-
-            // Update the list
-            const mewLIst = last.map((m, _i) => {
-              if (m._id === message._id) {
-                m.isLoading = false;
-              }
-
-              return m;
-            });
-            // Return the new array
-            return mewLIst;
-          });
+          dispatch(
+            updateMessage({
+              messageId: message._id,
+              isLoading: false,
+            }),
+          );
         }
       } else if (event.type === 'error') {
         //console.error('Connection error from server:', event.message);
@@ -547,24 +483,13 @@ const ShortCuts = () => {
         '非常抱歉出现了网络错误。已尝试重新登陆服务器。。。请再试一次。';
     }
 
-    setMessages(previousMessages => {
-      // Get the last array
-      const last = [...previousMessages];
-
-      // Update the list
-      const mewLIst = last.map((m, _i) => {
-        if (m._id === msgid) {
-          m.isLoading = false;
-          m.text = msgpadding;
-          m.bypass = true;
-        }
-
-        return m;
-      });
-      // Return the new array
-      return mewLIst;
-    });
-    //endReading();
+    dispatch(
+      updateMessage({
+        messageId: msgid,
+        newText: msgpadding,
+        isLoading: false,
+      }),
+    );
   };
 
   const handleBeginShare = useCallback(
@@ -577,19 +502,11 @@ const ShortCuts = () => {
         console.error('Message not found in list');
         return;
       }
-
-      setMessages(prevMessages =>
-        prevMessages.map((message, i) => {
-          if (i === index || i === index - 1) {
-            return {...message, isSelected: true};
-          }
-          return message;
-        }),
-      );
+      dispatch(updateSelectedMessages(index));
 
       setIsShareMode(true);
     },
-    [messages],
+    [dispatch, messages],
   );
 
   const beginCreateShare = useCallback(() => {
@@ -600,60 +517,35 @@ const ShortCuts = () => {
         JSON.stringify(messages.filter(message => message.isSelected)),
       ),
     );
-    setMessages(msgs =>
-      msgs.map(message => ({
-        ...message,
-        isSelected: false,
-      })),
-    );
+    dispatch(deselectAllMessages());
   }, [dispatch, messages]);
 
   const handleCancelShare = useCallback(() => {
     console.log('handleCancelShare');
     setIsShareMode(false);
-    setMessages(msgs =>
-      msgs.map(message => ({
-        ...message,
-        isSelected: false,
-      })),
-    );
-  }, []);
+    dispatch(deselectAllMessages());
+  }, [dispatch]);
 
   const handleDelete = useCallback(() => {
     console.log('handleDelete');
-    setMessages(messages.filter(message => !message.isSelected));
-  }, [messages]);
+    dispatch(removeSelectedMessages());
+  }, [dispatch]);
 
   const handleSelectMessage = useCallback(
     (item: Message) => {
       console.log('handleSelectMessage, item: ', item);
-      setMessages(
-        messages.map(message =>
-          message._id === item._id
-            ? {...message, isSelected: !item.isSelected}
-            : message,
-        ),
-      );
+      dispatch(toggleMessageSelected(item._id));
     },
-    [messages],
+    [dispatch],
   );
 
   const handleStop = (msg: Message) => {
-    setMessages(previousMessages => {
-      // Get the last array
-      const last = [...previousMessages];
-
-      // Update the list
-      const mewLIst = last.map((m, _i) => {
-        if (m._id === msg._id) {
-          m.isLoading = false;
-        }
-
-        return m;
-      });
-      // Return the new array
-      return mewLIst;
-    });
+    dispatch(
+      updateMessage({
+        messageId: msg._id,
+        isLoading: false,
+      }),
+    );
   };
 
   const autoScroll = () => {
@@ -717,7 +609,7 @@ const ShortCuts = () => {
             horizontal={false}
             onContentSizeChange={handleContentSizeChange}
             data={messages}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item, index) => item._id}
             renderItem={({item, index}) => (
               <MessageItem
                 item={item}

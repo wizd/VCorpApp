@@ -4,14 +4,14 @@ import AIMessage from '../AIMessage';
 import UserMessage from '../UserMessage';
 import {CheckBox} from '@rneui/themed';
 
-const MessageItem = ({
+const MessageItem = React.memo(function MessageItem({
   item,
   index,
   isShareMode,
   handleStop,
   handleShare,
   handleSelectMessage,
-}) => {
+}) {
   return (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
       {isShareMode && (
@@ -40,6 +40,6 @@ const MessageItem = ({
       )}
     </View>
   );
-};
+});
 
 export default MessageItem;

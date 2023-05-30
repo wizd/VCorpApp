@@ -1,10 +1,11 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import thunk from 'redux-thunk';
-import {logger} from 'redux-logger';
+import logger, {createLogger} from 'redux-logger';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import audioReducer from './slices/playlistSlice';
 import companyReducer from './slices/companySlice';
 import chatReducer, {chatClientMiddleware} from './slices/chatSlice';
+import messageReducer from './slices/messageSlice';
 import {
   persistReducer,
   persistStore,
@@ -40,6 +41,7 @@ const rootReducer = combineReducers({
   audio: audioReducer,
   company: companyReducer,
   chat: chatReducer,
+  message: messageReducer,
 });
 
 const persistConfig = {
@@ -53,6 +55,21 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// const logger = createLogger({
+//   collapsed: true,
+//   diff: true,
+//   logErrors: true,
+//   colors: {
+//     title: () => '#139BFE',
+//     prevState: () => '#1C5FAF',
+//     action: () => '#149945',
+//     nextState: () => '#A471F0',
+//     error: () => '#ff0005',
+//   },
+//   // Add this line to expand objects in the log
+//   stateTransformer: state => JSON.parse(JSON.stringify(state)),
+// });
 
 export const store = configureStore({
   reducer: persistedReducer,
