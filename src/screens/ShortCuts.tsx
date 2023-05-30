@@ -72,6 +72,7 @@ const ShortCuts = () => {
       setMessages(data);
     };
 
+    setShowArrow(company?.settings.guide ?? true);
     fetchData();
   }, [company]);
 
@@ -268,10 +269,6 @@ const ShortCuts = () => {
   //   setCompany(newcompany);
   //   currentEmployee = company.employees[0];
   // }
-
-  useEffect(() => {
-    setShowArrow(company?.settings.guide ?? true);
-  }, [company]);
 
   const handleContentSizeChange = () => {
     if (messages.length > 0 && flatListRef.current) {

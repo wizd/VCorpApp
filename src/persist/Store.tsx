@@ -14,7 +14,27 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
+  createTransform,
 } from 'redux-persist';
+
+const ignoreNestedNonPersisted = nonPersisted =>
+  createTransform(
+    // transform state on its way to being serialized and persisted.
+    (inboundState, key) => {
+      if (nonPersisted.hasOwnProperty(key)) {
+        const state = {...inboundState};
+        nonPersisted[key].forEach(nestedKey => {
+          if (state.hasOwnProperty(nestedKey)) {
+            state[nestedKey] = undefined;
+          }
+        });
+        return state;
+      }
+      return inboundState;
+    },
+    // transform state being rehydrated
+    outboundState => outboundState,
+  );
 
 const rootReducer = combineReducers({
   audio: audioReducer,
@@ -25,6 +45,11 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
+  transforms: [
+    ignoreNestedNonPersisted({
+      company: ['isAILoading'],
+    }),
+  ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
