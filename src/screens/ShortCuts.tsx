@@ -599,7 +599,7 @@ const ShortCuts = () => {
             horizontal={false}
             onContentSizeChange={handleContentSizeChange}
             data={messages}
-            keyExtractor={(item, index) => item._id}
+            keyExtractor={(item, index) => index.toString()}
             renderItem={({item, index}) => (
               <MessageItem
                 item={item}
