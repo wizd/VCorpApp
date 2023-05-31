@@ -41,8 +41,8 @@ class ChatClient {
     //console.log('Received chat message from server:', message);
     this.emit('message', message);
 
-    // 分发一个action
-    //this.dispatch({type: 'chat/newMessage', payload: message});
+    // 使用类型断言来解决类型错误
+    (this.socket.auth as {[key: string]: any}).offset = message.seq;
   };
 
   handleDisconnect = () => {
@@ -70,12 +70,14 @@ class ChatClient {
 
     console.log('create websocket in updateJwt: ', this.serverUrl, this.jwt);
     this.socket = io(this.serverUrl, {
+      auth: {
+        offset: undefined,
+      },
       query: {jwt: this.jwt},
       reconnectionDelayMax: 8000, // 最大重连延迟时间，单位为毫秒
       timeout: 14000, // 连接超时时间，单位为毫秒
     });
 
-    // 重新绑定事件处理器
     this.socket.on('smsg', this.handleNewMessage);
     this.socket.on('disconnect', this.handleDisconnect);
     this.socket.on('connect', this.handleConnect);
@@ -110,6 +112,9 @@ class ChatClient {
     // 创建新的Socket
     console.log('create websocket in updateJwt: ', this.serverUrl, this.jwt);
     this.socket = io(this.serverUrl, {
+      auth: {
+        offset: undefined,
+      },
       query: {jwt: this.jwt},
       reconnectionDelayMax: 8000, // 最大重连延迟时间，单位为毫秒
       timeout: 14000, // 连接超时时间，单位为毫秒

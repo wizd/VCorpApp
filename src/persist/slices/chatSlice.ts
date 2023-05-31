@@ -1,8 +1,8 @@
 // chatSlice.js
-import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import ChatClient from '../../comm/chatClient';
-import {AppState, AppStateStatus} from 'react-native';
-import {VwsMessage, VwsSystemMessage} from '../../comm/wsproto';
+import { AppState, AppStateStatus } from 'react-native';
+import { VwsMessage, VwsSystemMessage } from '../../comm/wsproto';
 
 export let chatClient: ChatClient | null = null;
 
@@ -18,7 +18,7 @@ export const initialChatServerState: ChatServerState = {
 
 export const createShareOnServer = createAsyncThunk(
   'chat/createShare',
-  async (msgpack: string, {dispatch, getState}) => {
+  async (msgpack: string, { dispatch, getState }) => {
     const reqmsg: VwsSystemMessage = {
       id: new Date().getTime().toString(),
       src: 'client',
@@ -37,7 +37,7 @@ export const createShareOnServer = createAsyncThunk(
 
 export const sendChatMessage = createAsyncThunk(
   'chat/sendChatMessage',
-  async (msg: VwsMessage, {dispatch, getState}) => {
+  async (msg: VwsMessage, { dispatch, getState }) => {
     // Your existing registerUser logic...
     //const state = getState() as {chatState: ChatServerState};
     chatClient?.sendChatMessage(msg);
@@ -49,8 +49,8 @@ export const sendChatMessage = createAsyncThunk(
 export const connect = createAsyncThunk(
   'chat/connect',
   async (
-    {apiUrl, jwt}: {apiUrl: string; jwt: string},
-    {dispatch, getState},
+    { apiUrl, jwt }: { apiUrl: string; jwt: string },
+    { dispatch, getState },
   ) => {
     chatClient = new ChatClient(apiUrl, jwt, dispatch);
     return true; // indicate that the connection has been created successfully
@@ -90,6 +90,6 @@ const chatSlice = createSlice({
   },
 });
 
-export const {clearMessage} = chatSlice.actions;
+export const { clearMessage } = chatSlice.actions;
 
 export default chatSlice.reducer;

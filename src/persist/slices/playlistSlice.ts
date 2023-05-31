@@ -29,6 +29,19 @@ const initialState: AudioState = {
 
 let currentSound: Sound | undefined;
 
+export const playerReset = createAsyncThunk(
+  'playlist/playStop',
+  async (_, {dispatch, getState}) => {
+    if (currentSound) {
+      currentSound.stop();
+      currentSound.release();
+      currentSound = undefined;
+    }
+
+    dispatch(resetAction());
+  },
+);
+
 export const playStop = createAsyncThunk(
   'playlist/playStop',
   async (_, {dispatch, getState}) => {
@@ -115,9 +128,15 @@ export const playSound = createAsyncThunk(
     console.log('playSound -> getstate() is:', state);
 
     if (state.audio.playingStatus === PlayingStatus.InPlaying) {
+      console.log('in playing...', state.audio.playingStatus);
       return Promise.resolve();
     }
     if (state.audio.playList[0] !== url) {
+      console.log(
+        'playList[0] is not equal to url',
+        state.audio.playList[0],
+        url,
+      );
       return Promise.resolve();
     }
 
@@ -132,9 +151,11 @@ const playlistSlice = createSlice({
     addToPlayList(state, action) {
       console.log('addToPlayList was called:', action.payload);
       if (!isValidUrl(action.payload)) {
+        console.log('not valid url: ', action.payload);
         return;
       }
       if (state.playList.includes(action.payload)) {
+        console.log('already in the playlist: ', action.payload);
         return;
       }
       state.playList.push(action.payload);
@@ -177,6 +198,16 @@ const playlistSlice = createSlice({
     stopAction(state) {
       state.isPaused = false;
     },
+    resetAction(state) {
+      console.log('resetAction was called');
+
+      state.playList = [];
+      state.currentUrl = undefined;
+      state.isPaused = false;
+      state.canPlay = false;
+      state.playingStatus = PlayingStatus.Stopped;
+      state.error = undefined;
+    },
   },
   extraReducers: builder => {
     builder
@@ -203,6 +234,7 @@ export const {
   resumeAction,
   stopAction,
   nextAction,
+  resetAction,
 } = playlistSlice.actions;
 
 export default playlistSlice.reducer;

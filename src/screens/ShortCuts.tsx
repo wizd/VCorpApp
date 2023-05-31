@@ -97,7 +97,7 @@ const ShortCuts = () => {
   useEffect(() => {
     const handleNewMessage = (smessage: VwsMessage) => {
       // 处理新消息，例如更新状态或显示通知
-      //console.log('New message received to main chat UI:', smessage);
+      console.log('New message received to main chat UI:', smessage);
 
       if (isVwsTextMessage(smessage)) {
         if (smessage.cid !== undefined) {
@@ -116,6 +116,7 @@ const ShortCuts = () => {
             txt.startsWith('https://r.vcorp.ai/') &&
             (txt.endsWith('.mp3') || txt.endsWith('.wav'))
           ) {
+            dispatch(setAIBusy(false));
             if (company?.settings?.tts) {
               console.log(
                 'in main UI, company?.settings?.tts try to add to playlist:',

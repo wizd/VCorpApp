@@ -9,7 +9,8 @@ import DeviceInfo from 'react-native-device-info';
 import {useDispatch, useSelector} from 'react-redux';
 import {Company} from '../persist/slices/company';
 import {setSettings} from '../persist/slices/companySlice';
-import {clearAllMsgData} from '../persist/msgstore';
+import {clearMessages} from '../persist/slices/messageSlice';
+import {playStop, playerReset} from '../persist/slices/playlistSlice';
 
 // Define the main component that renders the page
 const AppSettings = () => {
@@ -56,9 +57,11 @@ const AppSettings = () => {
     });
   };
 
-  const clearChatHistory = async () => {
+  const clearChatHistory = () => {
     console.log('Clear chat history...');
-    await clearAllMsgData();
+    dispatch(clearMessages());
+    dispatch(playerReset());
+    navigation.goBack();
   };
 
   const saveSettings = () => {

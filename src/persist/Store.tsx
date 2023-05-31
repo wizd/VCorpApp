@@ -50,6 +50,7 @@ const persistConfig = {
   transforms: [
     ignoreNestedNonPersisted({
       company: ['isAILoading'],
+      audio: [],
     }),
   ],
 };
