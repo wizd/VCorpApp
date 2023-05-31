@@ -1,32 +1,68 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Linking} from 'react-native';
+import {Header} from '@rneui/themed';
+import {useNavigation} from '@react-navigation/native';
+import CustomButton from '../components/tools/CustomButton';
+import DeviceInfo from 'react-native-device-info';
 
 const About = () => {
+  const navigation = useNavigation();
+
+  const [heightDelta, setHeightDelta] = useState(0 as number);
+
+  useEffect(() => {
+    const devid = DeviceInfo.getDeviceId();
+    if (devid.includes('iPhone')) {
+      const digits = +devid.replace('iPhone', '').replace(',', '');
+      if (digits < 100) {
+        setHeightDelta(-10);
+      }
+    }
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>微可</Text>
-      <Text style={styles.subtitle}>Version 1.0.50</Text>
-      <Text style={styles.description}>
-        微可 App
-        是配合微可AI中间件使用的智能应用，具有诸多强大功能，可帮助您更高效地完成工作。
-      </Text>
-      <TouchableOpacity
-        onPress={() => Linking.openURL('https://vcorp.ai/privacy')}>
-        <Text style={styles.link}>隐私政策</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => Linking.openURL('https://vcorp.ai/terms')}>
-        <Text style={styles.link}>使用条款</Text>
-      </TouchableOpacity>
-      <Text style={styles.companyInfo}>
-        开发商：微可智能科技有限公司{'\n'}
-        联系方式：info@vcorp.ai
-      </Text>
+    <View style={styles.pageContainer}>
+      <Header
+        containerStyle={{marginTop: heightDelta}}
+        leftComponent={
+          <CustomButton onPress={() => navigation.goBack()} title="返回" />
+        }
+        centerComponent={{
+          text: '关于',
+          style: {color: '#fff', fontSize: 22, fontWeight: 'bold'},
+        }}
+        backgroundColor="#3D6DCC"
+      />
+
+      <View style={styles.container}>
+        <Text style={styles.title}>微可</Text>
+        <Text style={styles.subtitle}>Version 1.0.50</Text>
+        <Text style={styles.description}>
+          微可 App
+          是配合微可AI中间件使用的智能应用，具有诸多强大功能，可帮助您更高效地完成工作。
+        </Text>
+        <TouchableOpacity
+          onPress={() => Linking.openURL('https://vcorp.ai/privacy')}>
+          <Text style={styles.link}>隐私政策</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => Linking.openURL('https://vcorp.ai/terms')}>
+          <Text style={styles.link}>使用条款</Text>
+        </TouchableOpacity>
+        <Text style={styles.companyInfo}>
+          开发商：微可智能科技有限公司{'\n'}
+          联系方式：info@vcorp.ai
+        </Text>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  pageContainer: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
