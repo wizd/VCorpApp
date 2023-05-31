@@ -125,7 +125,7 @@ export const playSound = createAsyncThunk(
     dispatch(addToPlayList(url));
 
     const state = getState() as {audio: AudioState};
-    console.log('playSound -> getstate() is:', state);
+    //console.log('playSound -> getstate() is:', state);
 
     if (state.audio.playingStatus === PlayingStatus.InPlaying) {
       console.log('in playing...', state.audio.playingStatus);
