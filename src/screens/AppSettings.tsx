@@ -64,6 +64,10 @@ const AppSettings = () => {
     navigation.goBack();
   };
 
+  const about = () => {
+    navigation.navigate('About');
+  };
+
   const saveSettings = () => {
     console.log(
       'saveSettings() called, ttsEnabled: ',
@@ -104,6 +108,7 @@ const AppSettings = () => {
           text: '设置',
           style: {color: '#fff', fontSize: 22, fontWeight: 'bold'},
         }}
+        rightComponent={<CustomButton onPress={() => about()} title="关于" />}
         backgroundColor="#3D6DCC"
       />
       <View style={styles.container}>

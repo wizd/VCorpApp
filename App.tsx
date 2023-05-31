@@ -20,6 +20,7 @@ import AppSettings from './src/screens/AppSettings';
 
 import {persistor, store} from './src/persist/Store';
 import VoiceChatScreen from './src/screens/VoiceChatScreen';
+import About from './src/screens/About';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
@@ -73,6 +74,11 @@ const App = () => {
                 <Stack.Screen
                   name="VoiceChat"
                   component={VoiceChatScreen}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="About"
+                  component={About}
                   options={{headerShown: false}}
                 />
               </Stack.Navigator>
