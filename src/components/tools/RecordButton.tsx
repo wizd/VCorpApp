@@ -16,6 +16,7 @@ import {readFirst44Bytes} from '../../utils/util';
 import {useDispatch, useSelector} from 'react-redux';
 import {ChatServerState, sendChatMessage} from '../../persist/slices/chatSlice';
 import {Company} from '../../persist/slices/company';
+import {addMessage} from '../../persist/slices/messageSlice';
 
 type RecordButtonProps = {
   onRecordComplete: (msgid: string) => void;
@@ -163,6 +164,18 @@ const RecordButton: React.FC<RecordButtonProps> = ({
       final: true,
     };
     dispatch(sendChatMessage(msg));
+
+    const userMsg = {
+      _id: msg.id + '-vr',
+      text: '',
+      createdAt: new Date().toISOString(),
+      isLoading: true,
+      isAI: false,
+      veid: company?.curid ?? 'A0001',
+      bypass: false,
+    };
+
+    dispatch(addMessage(userMsg));
 
     onRecordComplete(msg.id);
   };

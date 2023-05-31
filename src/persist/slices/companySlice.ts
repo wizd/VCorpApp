@@ -90,6 +90,7 @@ const companySlice = createSlice({
       };
     },
     setAIBusy: (state, action) => {
+      console.log('setAIBusy to', action.payload);
       return {
         ...state,
         isAILoading: action.payload,

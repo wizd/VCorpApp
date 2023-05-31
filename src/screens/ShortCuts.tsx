@@ -240,17 +240,6 @@ const ShortCuts = () => {
 
   const onVoiceSent = (msgid: string) => {
     console.log('voice sent. msgid is ', msgid);
-    const userMsg = {
-      _id: msgid + '-vr',
-      text: '',
-      createdAt: new Date().toISOString(),
-      isLoading: true,
-      isAI: false,
-      veid: company?.curid ?? 'A0001',
-      bypass: false,
-    };
-
-    dispatch(addMessage(userMsg));
   };
 
   const ask = (question: string, existingUserMsgId?: string) => {

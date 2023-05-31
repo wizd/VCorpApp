@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -8,12 +8,14 @@ import {
   useWindowDimensions,
   SafeAreaView,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Company} from '../persist/slices/company';
 import {useDispatch, useSelector} from 'react-redux';
 import RecordButton from '../components/tools/RecordButton';
 import {setAIBusy} from '../persist/slices/companySlice';
+import {AudioState, PlayingStatus} from '../persist/slices/playlistSlice';
 
 interface Props {
   route: any;
@@ -24,10 +26,59 @@ interface Props {
 const VoiceChatScreen: FC<Props> = ({route}) => {
   const dispatch = useDispatch();
   const company = useSelector((state: any) => state.company) as Company;
+  const audio = useSelector((state: any) => state.audio) as AudioState;
   const navigation = useNavigation();
   const {avatarUrl, name} = route.params;
   const windowDimensions = useWindowDimensions();
   const isLandscape = windowDimensions.width > windowDimensions.height;
+  const animationValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const animateGlow = () => {
+      Animated.sequence([
+        Animated.timing(animationValue, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: false,
+        }),
+        Animated.timing(animationValue, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: false,
+        }),
+      ]).start(({finished}) => {
+        if (
+          !isCancelled &&
+          finished &&
+          audio.playingStatus === PlayingStatus.InPlaying
+        ) {
+          animateGlow();
+        }
+      });
+    };
+
+    if (audio.playingStatus === PlayingStatus.InPlaying) {
+      animateGlow();
+    }
+
+    return () => {
+      isCancelled = true;
+      animationValue.stopAnimation();
+      animationValue.setValue(0); // 重置动画值
+    };
+  }, [audio.playingStatus]);
+
+  const glowOpacity = animationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.5],
+  });
+
+  const avatarScale = animationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.1],
+  });
 
   const handleClose = () => {
     navigation.goBack();
@@ -101,6 +152,20 @@ const VoiceChatScreen: FC<Props> = ({route}) => {
       fontSize: 16,
       color: '#FFFFFF',
     },
+    avatarContainer: {
+      position: 'relative',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    glow: {
+      position: 'absolute',
+      top: -10,
+      left: -10,
+      right: -10,
+      bottom: -10,
+      borderRadius: 8,
+      borderWidth: 10,
+    },
   });
 
   return (
@@ -116,17 +181,33 @@ const VoiceChatScreen: FC<Props> = ({route}) => {
           isLandscape ? styles.contentLandscape : styles.contentPortrait,
         ]}>
         <View style={styles.leftSide}>
-          <Image
-            source={{
-              uri: avatarUrl,
-            }}
-            style={styles.avatar}
-          />
+          <Animated.View
+            style={[
+              styles.avatarContainer,
+              {transform: [{scale: avatarScale}]},
+            ]}>
+            <Image
+              source={{
+                uri: avatarUrl,
+              }}
+              style={styles.avatar}
+            />
+            <Animated.View
+              style={[
+                styles.glow,
+                {opacity: glowOpacity, borderColor: 'rgba(0, 0, 255, 0.5)'},
+              ]}
+            />
+          </Animated.View>
           <Text style={styles.name}>{name ?? company.curid}</Text>
         </View>
         <View style={styles.loading}>
           {company.isAILoading && (
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator
+              size="large"
+              color="#000000"
+              style={{transform: [{scale: 2}]}} // 放大指示器
+            />
           )}
         </View>
         <View style={styles.rightSide}>

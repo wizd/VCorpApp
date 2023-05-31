@@ -3,7 +3,7 @@ import Sound from 'react-native-sound';
 import {Platform} from 'react-native';
 import {isValidUrl} from '../../utils/util';
 
-enum PlayingStatus {
+export enum PlayingStatus {
   InPlaying,
   Paused,
   Stopped,

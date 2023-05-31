@@ -51,6 +51,7 @@ const persistConfig = {
     ignoreNestedNonPersisted({
       company: ['isAILoading'],
       audio: [],
+      chat: [],
     }),
   ],
 };
