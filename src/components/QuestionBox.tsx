@@ -29,6 +29,7 @@ type QuestionBoxType = {
   onSendVoice: (msgid: string) => void;
   employee: Employee | undefined;
   onAvatarPress?: () => void;
+  onAvatarLongPress?: () => void;
 };
 
 const QuestionBox = ({
@@ -37,6 +38,7 @@ const QuestionBox = ({
   onSendVoice,
   employee,
   onAvatarPress,
+  onAvatarLongPress,
 }: QuestionBoxType) => {
   const navigation = useNavigation();
   const company = useSelector((state: any) => state.company) as Company;
@@ -105,6 +107,15 @@ const QuestionBox = ({
 
   const handlePress = () => {
     Keyboard.dismiss();
+  };
+
+  const startAdvancedInputMode = async () => {
+    console.log('Start AdvancedInput mode...');
+    navigation.navigate('AdvancedInput', {
+      avatarUrl:
+        company!.config.API_URL + '/assets/avatar/' + company.curid + '.png',
+      name: company?.employees.find(e => e.id === company.curid)?.name || '',
+    });
   };
 
   const startSpeechMode = async () => {
@@ -209,7 +220,9 @@ const QuestionBox = ({
     <TouchableOpacity onPress={handlePress} activeOpacity={1}>
       <View style={styles.kavq}>
         <View style={[styles.inputcontainer]}>
-          <Pressable onPress={onAvatarPress}>
+          <Pressable
+            onPress={onAvatarPress}
+            onLongPress={startAdvancedInputMode}>
             <Image
               source={{
                 uri: employee?.avatar?.startsWith('http')

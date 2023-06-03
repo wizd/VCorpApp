@@ -21,6 +21,7 @@ import AppSettings from './src/screens/AppSettings';
 import {persistor, store} from './src/persist/Store';
 import VoiceChatScreen from './src/screens/VoiceChatScreen';
 import About from './src/screens/About';
+import AdvancedInput from './src/screens/AdvancedInput';
 
 const App = () => {
   const [hideSplashScreen, _setHideSplashScreen] = React.useState(true);
@@ -79,6 +80,11 @@ const App = () => {
                 <Stack.Screen
                   name="About"
                   component={About}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="AdvancedInput"
+                  component={AdvancedInput}
                   options={{headerShown: false}}
                 />
               </Stack.Navigator>

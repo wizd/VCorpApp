@@ -50,7 +50,6 @@ import {
   addMessage,
   deselectAllMessages,
   removeSelectedMessages,
-  setMessages,
   toggleMessageSelected,
   updateMessage,
   updateMessageWavUrl,
