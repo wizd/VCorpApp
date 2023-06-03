@@ -94,8 +94,6 @@ const FileUploader = () => {
 
 const upstyles: ViewStyle = {
   flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
   width: '100%',
   backgroundColor: 'lightgray',
 };
