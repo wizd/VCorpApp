@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {View, TouchableOpacity, Text, ViewStyle} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  ViewStyle,
+  StyleSheet,
+} from 'react-native';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
@@ -7,6 +13,13 @@ import * as Progress from 'react-native-progress';
 import axios, {AxiosProgressEvent} from 'axios';
 import {useDispatch, useSelector} from 'react-redux';
 import {Company} from '../../persist/slices/company';
+import {
+  ImagePickerResponse,
+  launchImageLibrary,
+} from 'react-native-image-picker';
+
+/* toggle includeExtra */
+const includeExtra = true;
 
 const FileUploader = () => {
   const dispatch = useDispatch();
@@ -29,7 +42,7 @@ const FileUploader = () => {
         result.size,
       );
       setFilename(result.name!);
-      uploadFile(result);
+      uploadDocument(result);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         console.log('User cancelled the picker');
@@ -39,7 +52,52 @@ const FileUploader = () => {
     }
   };
 
-  const uploadFile = async (file: DocumentPickerResponse) => {
+  const pickImage = async () => {
+    const options = {
+      saveToPhotos: true,
+      mediaType: 'mixed',
+      includeExtra,
+      presentationStyle: 'fullScreen',
+    };
+
+    launchImageLibrary(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.assets && response.assets.length > 0) {
+        const source = {uri: response.assets[0].uri};
+        console.log(
+          'Selected File:',
+          response.assets[0].uri,
+          response.assets[0].type,
+          response.assets[0].fileName,
+          response.assets[0].fileSize,
+        );
+        setFilename(response.assets[0].fileName!);
+        uploadImage(response);
+      }
+    });
+  };
+
+  const uploadImage = async (file: ImagePickerResponse) => {
+    if (!file.assets || file.assets?.length === 0) {
+      return;
+    }
+    const data = new FormData();
+    data.append('file', {
+      uri: file.assets[0].uri,
+      type: file.assets[0].type,
+      name: file.assets[0].fileName,
+    });
+    data.append('veid', company.curid);
+
+    uploadFile(data);
+  };
+
+  const uploadDocument = async (file: DocumentPickerResponse) => {
     const data = new FormData();
     data.append('file', {
       uri: file.uri,
@@ -47,7 +105,10 @@ const FileUploader = () => {
       name: file.name,
     });
     data.append('veid', company.curid);
+    uploadFile(data);
+  };
 
+  const uploadFile = async (data: FormData) => {
     const config = {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         const percentCompleted = Math.round(
@@ -75,41 +136,64 @@ const FileUploader = () => {
   };
 
   return (
-    <View style={upstyles}>
-      <TouchableOpacity onPress={pickDocument} style={styles.button}>
-        <Text style={styles.buttonText}>
-          {uploading ? '正在上传...' : '上传文件'}
-        </Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={pickDocument} style={styles.button}>
+          <Text style={styles.buttonText}>
+            {uploading ? '正在上传...' : '上传文件'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={pickImage} style={styles.button}>
+          <Text style={styles.buttonText}>
+            {uploading ? '正在上传...' : '上传图片'}
+          </Text>
+        </TouchableOpacity>
+      </View>
       {uploading && (
         <Progress.Bar
           progress={progress / 100}
           width={300}
-          style={{width: '80%', marginTop: 20}}
+          style={styles.progressBar}
           color="#007AFF"
         />
       )}
-      <Text>{filename}</Text>
+      <Text style={styles.filename}>{filename}</Text>
     </View>
   );
 };
 
-const upstyles: ViewStyle = {
-  flex: 1,
-  width: '100%',
-  backgroundColor: 'lightgray',
-};
-
-const styles = {
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'lightgray',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
   button: {
     backgroundColor: '#007AFF',
     padding: 10,
     borderRadius: 5,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 5,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
   },
-};
+  progressBar: {
+    width: '80%',
+    marginTop: 20,
+  },
+  filename: {
+    marginTop: 10,
+  },
+});
 
 export default FileUploader;
