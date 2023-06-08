@@ -72,7 +72,7 @@
     "react-native-track-player": "^3.2.0",
     "react-native-tts": "https://github.com/pabloromeu/react-native-tts.git",
     "react-native-vector-icons": "^9.2.0",
-    "react-native-video": "^5.2.1",
+    "react-native-video": "^6.0.0-alpha.6",
     "react-native-web": "^0.19.2",
     "react-native-webview": "^12.1.0",
     "react-redux": "^8.0.5",
