@@ -6,6 +6,7 @@ import DocumentPicker, {
 import * as Progress from 'react-native-progress';
 import axios, {AxiosProgressEvent} from 'axios';
 import {useDispatch, useSelector} from 'react-redux';
+import {Company} from '../../persist/slices/company';
 
 const FileUploader = () => {
   const dispatch = useDispatch();
@@ -45,6 +46,7 @@ const FileUploader = () => {
       type: file.type,
       name: file.name,
     });
+    data.append('veid', company.curid);
 
     const config = {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
@@ -76,7 +78,7 @@ const FileUploader = () => {
     <View style={upstyles}>
       <TouchableOpacity onPress={pickDocument} style={styles.button}>
         <Text style={styles.buttonText}>
-          {uploading ? 'Uploading...' : 'Upload File'}
+          {uploading ? '正在上传...' : '上传文件'}
         </Text>
       </TouchableOpacity>
       {uploading && (

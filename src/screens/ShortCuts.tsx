@@ -28,10 +28,12 @@ import {
   VwsMessage,
   VwsSystemMessage,
   VwsTextMessage,
+  VwsVideoMessage,
   isVwsAudioMessage,
   isVwsImageMessage,
   isVwsSystemMessage,
   isVwsTextMessage,
+  isVwsVideoMessage,
 } from '../comm/wsproto';
 import {useDispatch, useSelector} from 'react-redux';
 import {Company} from '../persist/slices/company';
@@ -166,6 +168,19 @@ const ShortCuts = () => {
         const message = {
           _id: smessage.id,
           text: '```image\n' + imgurl + '\n```',
+          createdAt: new Date().toISOString(),
+          isLoading: false,
+          isAI: true,
+          veid: smessage.src,
+          bypass: company?.curid.startsWith('D') ?? false,
+        };
+        dispatch(addMessage(message));
+      } else if (isVwsVideoMessage(smessage)) {
+        // display the video
+        const imgurl = (smessage as VwsVideoMessage).url;
+        const message = {
+          _id: smessage.id,
+          text: '```video\n' + imgurl + '\n```',
           createdAt: new Date().toISOString(),
           isLoading: false,
           isAI: true,

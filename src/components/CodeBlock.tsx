@@ -2,6 +2,7 @@ import React, {FC} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import ImageSaver from './ImageSaver';
+import VideoPlayer from './tools/VideoPlayer'; // 导入 VideoPlayer 组件
 
 export interface CodeBlockProps {
   language: string;
@@ -12,13 +13,13 @@ const CodeBlock: FC<CodeBlockProps> = ({language, code}) => {
   const handleCopy = () => {
     Clipboard.setString(code);
   };
-  //console.log('code: ', code);
+
   return (
     <View style={styles.codeBlockContainer}>
       {language === 'image' && code && code.trim() !== '' ? (
-        <>
-          <ImageSaver source={{uri: code.trim()}} />
-        </>
+        <ImageSaver source={{uri: code.trim()}} />
+      ) : language === 'video' && code && code.trim() !== '' ? (
+        <VideoPlayer videoUrl={code.trim()} />
       ) : (
         <>
           <View style={styles.header}>
