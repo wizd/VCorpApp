@@ -349,7 +349,7 @@ PODS:
   - react-native-file-access (2.6.0):
     - React-Core
     - ZIPFoundation (= 0.9.11)
-  - react-native-image-picker (5.3.1):
+  - react-native-image-picker (5.4.0):
     - React-Core
   - react-native-image-resizer (3.0.5):
     - React-Core
@@ -815,7 +815,7 @@ SPEC CHECKSUMS:
   react-native-cameraroll: 8ffb0af7a5e5de225fd667610e2979fc1f0c2151
   react-native-document-picker: 2b8f18667caee73a96708a82b284a4f40b30a156
   react-native-file-access: a4398950e02999b5ab97f3055feb7ee28e6615a3
-  react-native-image-picker: ec9b713e248760bfa0f879f0715391de4651a7cb
+  react-native-image-picker: 709d04e7df67bd3a90f376c3eedb2e8b8334dd04
   react-native-image-resizer: 00ceb0e05586c7aadf061eea676957a6c2ec60fa
   react-native-quick-base64: 62290829c619fbabca4c41cfec75ae759d08fc1c
   react-native-safe-area-context: b8979f5eda6ed5903d4dbc885be3846ea3daa753
