@@ -61,6 +61,7 @@ import {
 const ShortCuts = () => {
   const navigation = useNavigation();
   const flatListRef = useRef<FlatList>(null);
+  const [switching, setSwitching] = useState(false);
 
   const [q, setQ] = useState<string>('');
   const messages = useSelector(
@@ -86,7 +87,12 @@ const ShortCuts = () => {
 
   useEffect(() => {
     // issue a "switch" command
-    ask(`切换 ${company!.employees.find(e => e.id === company!.curid)?.name}`);
+    if (switching) {
+      ask(
+        `切换 ${company!.employees.find(e => e.id === company!.curid)?.name}`,
+      );
+      setSwitching(false);
+    }
   }, [company.curid]);
 
   useEffect(() => {
@@ -228,6 +234,7 @@ const ShortCuts = () => {
     setShowArrow(false);
     dispatch(tourialDone());
     navigation.navigate('Employees' as never);
+    setSwitching(true);
   };
 
   // setCurrentEmployee(company.employees.find(e => e.id == company.curid));
