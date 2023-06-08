@@ -45,7 +45,7 @@ const VideoPlayer = ({videoUrl}: {videoUrl: string}) => {
           iconName={paused ? 'play-arrow' : 'pause'}
           onPress={togglePlayPause}
         />
-        <SmallButton iconName="fullscreen" onPress={toggleFullScreen} />
+        {/* <SmallButton iconName="fullscreen" onPress={toggleFullScreen} /> */}
       </View>
     </View>
   );
