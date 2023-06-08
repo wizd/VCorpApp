@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import ImageSaver from './ImageSaver';
 import VideoPlayer from './tools/VideoPlayer'; // 导入 VideoPlayer 组件

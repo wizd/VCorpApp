@@ -84,16 +84,10 @@ const ShortCuts = () => {
     setShowArrow(company?.settings.guide ?? true);
   }, [company]);
 
-  // useEffect(() => {
-  //   const storeData = async () => {
-  //     // if (messages.length > 0) {
-  //     //   flatListRef.current?.scrollToEnd({animated: true});
-  //     // }
-  //     await storeMsgData(messages);
-  //   };
-
-  //   storeData();
-  // }, [messages]);
+  useEffect(() => {
+    // issue a "switch" command
+    ask(`切换 ${company!.employees.find(e => e.id === company!.curid)?.name}`);
+  }, [company.curid]);
 
   useEffect(() => {
     const handleNewMessage = (smessage: VwsMessage) => {
