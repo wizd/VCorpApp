@@ -1,13 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-  Text,
-  EmitterSubscription,
-} from 'react-native';
+import {View, StyleSheet, Dimensions, EmitterSubscription} from 'react-native';
 import Video from 'react-native-video';
+import SmallButton from './SmallButton';
 
 const VideoPlayer = ({videoUrl}: {videoUrl: string}) => {
   const [paused, setPaused] = useState(false);
@@ -44,18 +38,13 @@ const VideoPlayer = ({videoUrl}: {videoUrl: string}) => {
         resizeMode="contain"
         paused={paused}
       />
-      <TouchableOpacity
-        onPress={togglePlayPause}
-        style={styles.playPauseButton}>
-        <Text style={styles.buttonText}>{paused ? 'Play' : 'Pause'}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={toggleFullScreen}
-        style={styles.fullScreenButton}>
-        <Text style={styles.buttonText}>
-          {isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
-        </Text>
-      </TouchableOpacity>
+      <View>
+        <SmallButton
+          iconName={paused ? 'play-arrow' : 'pause'}
+          onPress={togglePlayPause}
+        />
+        <SmallButton iconName="fullscreen" onPress={toggleFullScreen} />
+      </View>
     </View>
   );
 };
