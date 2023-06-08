@@ -249,7 +249,7 @@ const ShortCuts = () => {
 
   const handleContentSizeChange = () => {
     if (messages.length > 0 && flatListRef.current) {
-      flatListRef.current.scrollToEnd({animated: true});
+      //flatListRef.current.scrollToEnd({animated: true});
     }
   };
 
@@ -435,7 +435,7 @@ const ShortCuts = () => {
         es.close();
       }
 
-      autoScroll();
+      //autoScroll();
     };
 
     // Add listener
