@@ -1,9 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, EmitterSubscription} from 'react-native';
+import * as RNFS from 'react-native-fs';
 import Video from 'react-native-video';
 import SmallButton from './SmallButton';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import {useToast} from '../../utils/useToast';
 
 const VideoPlayer = ({videoUrl}: {videoUrl: string}) => {
+  const showToast = useToast();
   const [paused, setPaused] = useState(false);
   const [isFullScreen, setFullScreen] = useState(false);
 
@@ -30,6 +34,45 @@ const VideoPlayer = ({videoUrl}: {videoUrl: string}) => {
     setPaused(!paused);
   };
 
+  const handleDownload = async () => {
+    const localVideoPath = RNFS.DocumentDirectoryPath + '/video.mp4';
+
+    // 下载视频
+    RNFS.downloadFile({
+      fromUrl: videoUrl,
+      toFile: localVideoPath,
+      background: true,
+      begin: res => {
+        console.log('Beginning video download...');
+      },
+      progress: res => {
+        console.log(`Downloaded ${res.bytesWritten} of ${res.totalBytes}`);
+      },
+    })
+      .promise.then(async () => {
+        console.log('Video downloaded successfully!');
+
+        // 保存视频到相册
+        try {
+          const saveResult = await CameraRoll.save(localVideoPath, {
+            type: 'video',
+          });
+
+          showToast('已保存至相册');
+          console.log('Video saved to camera roll:', saveResult);
+
+          // 删除临时文件
+          await RNFS.unlink(localVideoPath);
+          console.log('Temporary video file removed.');
+        } catch (err) {
+          console.log('Error saving video to camera roll:', err);
+        }
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
+  };
+
   return (
     <View style={[styles.container, isFullScreen ? styles.fullScreen : {}]}>
       <Video
@@ -45,6 +88,7 @@ const VideoPlayer = ({videoUrl}: {videoUrl: string}) => {
           iconName={paused ? 'play-arrow' : 'pause'}
           onPress={togglePlayPause}
         />
+        <SmallButton iconName="file-download" onPress={handleDownload} />
         {/* <SmallButton iconName="fullscreen" onPress={toggleFullScreen} /> */}
       </View>
     </View>
