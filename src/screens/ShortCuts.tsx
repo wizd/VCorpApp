@@ -62,6 +62,7 @@ const ShortCuts = () => {
   const navigation = useNavigation();
   const flatListRef = useRef<FlatList>(null);
   const [switching, setSwitching] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const [q, setQ] = useState<string>('');
   const messages = useSelector(
@@ -94,6 +95,13 @@ const ShortCuts = () => {
       setSwitching(false);
     }
   }, [company.curid]);
+
+  useEffect(() => {
+    // issue a "switch" command
+    if (uploading) {
+      ask(`上传 ${company.uploaded}`, undefined, true);
+    }
+  }, [company.uploaded]);
 
   useEffect(() => {
     const handleNewMessage = (smessage: VwsMessage) => {
@@ -237,6 +245,10 @@ const ShortCuts = () => {
     setSwitching(true);
   };
 
+  const onQuestionBoxAvatarLongClick = () => {
+    setUploading(true);
+  };
+
   // setCurrentEmployee(company.employees.find(e => e.id == company.curid));
   // if (!currentEmployee) {
   //   const newcompany = {
@@ -257,7 +269,11 @@ const ShortCuts = () => {
     console.log('voice sent. msgid is ', msgid);
   };
 
-  const ask = (question: string, existingUserMsgId?: string) => {
+  const ask = (
+    question: string,
+    existingUserMsgId?: string,
+    infoonly = false,
+  ) => {
     setQ('');
     let newContent = '';
     let userMsg: Message;
@@ -295,6 +311,10 @@ const ShortCuts = () => {
       };
 
       dispatch(addMessage(userMsg));
+    }
+
+    if (infoonly) {
+      return;
     }
 
     const url = company!.config.API_URL + '/vc/v1/chat'; // replace with your API url
@@ -655,6 +675,7 @@ const ShortCuts = () => {
               onSendVoice={onVoiceSent}
               employee={company?.employees?.find(e => e.id === company?.curid)}
               onAvatarPress={onQuestionBoxAvatarClick}
+              onAvatarLongPress={onQuestionBoxAvatarLongClick}
             />
           )}
         </View>

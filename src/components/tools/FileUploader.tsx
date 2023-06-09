@@ -17,6 +17,7 @@ import {
   ImagePickerResponse,
   launchImageLibrary,
 } from 'react-native-image-picker';
+import {uploadFileSuccess} from '../../persist/slices/companySlice';
 
 /* toggle includeExtra */
 const includeExtra = true;
@@ -94,7 +95,7 @@ const FileUploader = () => {
     });
     data.append('veid', company.curid);
 
-    uploadFile(data);
+    uploadFile(data, file.assets[0].fileName!);
   };
 
   const uploadDocument = async (file: DocumentPickerResponse) => {
@@ -105,10 +106,10 @@ const FileUploader = () => {
       name: file.name,
     });
     data.append('veid', company.curid);
-    uploadFile(data);
+    uploadFile(data, file.name!);
   };
 
-  const uploadFile = async (data: FormData) => {
+  const uploadFile = async (data: FormData, name: string) => {
     const config = {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         const percentCompleted = Math.round(
@@ -127,6 +128,8 @@ const FileUploader = () => {
       const url = company!.config.API_URL + '/vc/v1/image/upload';
       await axios.post(url, data, config);
       console.log('File uploaded successfully');
+
+      dispatch(uploadFileSuccess(name));
     } catch (error) {
       console.error('Error uploading file:', error);
     } finally {

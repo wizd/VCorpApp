@@ -111,6 +111,7 @@ const QuestionBox = ({
 
   const startAdvancedInputMode = async () => {
     console.log('Start AdvancedInput mode...');
+    onAvatarLongPress?.();
     navigation.navigate('AdvancedInput', {
       avatarUrl:
         company!.config.API_URL + '/assets/avatar/' + company.curid + '.png',
