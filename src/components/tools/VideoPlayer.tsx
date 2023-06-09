@@ -88,6 +88,7 @@ const VideoPlayer = ({videoUrl}: {videoUrl: string}) => {
           iconName={paused ? 'play-arrow' : 'pause'}
           onPress={togglePlayPause}
         />
+        <View style={styles.buttonSpacer} />
         <SmallButton iconName="file-download" onPress={handleDownload} />
         {/* <SmallButton iconName="fullscreen" onPress={toggleFullScreen} /> */}
       </View>
@@ -96,6 +97,9 @@ const VideoPlayer = ({videoUrl}: {videoUrl: string}) => {
 };
 
 const styles = StyleSheet.create({
+  buttonSpacer: {
+    width: 15, // 新增
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
