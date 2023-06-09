@@ -17,16 +17,18 @@ const QuickActions = (props: any) => {
       <View style={[styles.buttonsContainer]}>
         <QuickQuestonButton
           pressed={props.pressed}
-          q="我的朋友说你是神级大佬，我现在对你非常崇拜。你真的是大佬吗？"
+          q="我的朋友们都说你非常厉害，我对你的能力充满好奇。你能告诉我你都会什么吗？"
           frame44MarginTop={8}
         />
+        <View style={styles.buttonSpacer} />
         <QuickQuestonButton
-          q="帮我写一首诗，赞颂有了人工智能以后的幸福生活。用七律来写，模仿李白的风格。"
+          q="我想请你帮我写一首赞美人工智能带来幸福生活的诗。能用七律的形式来写，模仿李白的风格吗？"
           pressed={props.pressed}
           frame44MarginTop={8}
         />
+        <View style={styles.buttonSpacer} />
         <QuickQuestonButton
-          q="帮我写个朋友圈消息，说我也用上人工智能了！我的朋友们都很好奇，你来挑逗一下他们吧。"
+          q="能帮我写一个朋友圈动态吗？告诉我的朋友们我也开始使用人工智能了！让他们感到好奇和有趣。"
           pressed={props.pressed}
         />
       </View>
@@ -35,6 +37,9 @@ const QuickActions = (props: any) => {
 };
 
 const styles = StyleSheet.create({
+  buttonSpacer: {
+    height: 15, // 新增
+  },
   mt5: {
     marginTop: Margin.m_xs,
   },
@@ -62,8 +67,8 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flex: 1,
-    //alignItems: 'stretch', // 新增
-    justifyContent: 'space-between', // 新增
+    alignItems: 'stretch', // 新增
+    justifyContent: 'space-evenly', // 新增
     flexDirection: 'column', // 新增
     //paddingVertical: 15,
     marginTop: 8,
