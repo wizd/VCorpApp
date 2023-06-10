@@ -81,7 +81,9 @@ const AIMessage = (props: any) => {
           }}
           style={styles.itemImage}
         />
-        <Text style={styles.userName}>{name}</Text>
+        <Text style={styles.userName} selectable={true}>
+          {name}
+        </Text>
       </View>
       <View style={styles.AITalkContent}>
         <Markdown text={props.text} />

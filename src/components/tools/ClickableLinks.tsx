@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, Linking, StyleSheet} from 'react-native';
+import {Text, Linking, StyleSheet, TouchableOpacity} from 'react-native';
 import {FontFamily, FontSize} from '../../../GlobalStyles';
 import ImageSaver from '../ImageSaver';
 
@@ -20,7 +20,7 @@ const ClickableLinks: React.FC<ClickableLinksProps> = ({content}) => {
   const textParts = findLinks(content);
 
   return (
-    <Text style={styles.container}>
+    <Text style={styles.container} selectable={true}>
       {textParts.map((part, index) => {
         if (index % 2 === 1) {
           if (part.endsWith('.png')) {
