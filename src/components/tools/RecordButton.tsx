@@ -53,7 +53,11 @@ const RecordButton: React.FC<RecordButtonProps> = ({
       AudioRecord.on('data', data => {
         //send speech data to server via websocket
         const bytes = toByteArray(data);
-        //console.log('bytes.length: ' + bytes.length);
+        console.log(
+          `speech data typs is: ${typeof data} len: ${
+            data.length
+          } bytes.length: ${bytes.length}`,
+        );
         //console.log(bytes);
 
         setCid(currentCid => {

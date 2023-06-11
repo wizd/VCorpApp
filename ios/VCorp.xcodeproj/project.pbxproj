@@ -42,6 +42,7 @@
 		6433C8B329CAE8B000F1A437 /* Nunito_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Nunito_bold.ttf; path = ../assets/fonts/Nunito_bold.ttf; sourceTree = "<group>"; };
 		6433C8B429CAE8B000F1A437 /* Nunito.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Nunito.ttf; path = ../assets/fonts/Nunito.ttf; sourceTree = "<group>"; };
 		6433C8B529CAE8B000F1A437 /* Nunito_medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Nunito_medium.ttf; path = ../assets/fonts/Nunito_medium.ttf; sourceTree = "<group>"; };
+		647C4B6E2A35C0900047B88F /* VCorp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = VCorp.entitlements; path = VCorp/VCorp.entitlements; sourceTree = "<group>"; };
 		64E4A59629CADCDC00567B21 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = VCorp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8864A97285EA1368FB39CDE6 /* Pods-VCorp-VCorpTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VCorp-VCorpTests.release.xcconfig"; path = "Target Support Files/Pods-VCorp-VCorpTests/Pods-VCorp-VCorpTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -93,6 +94,7 @@
 		13B07FAE1A68108700A75B9A /* VCorp */ = {
 			isa = PBXGroup;
 			children = (
+				647C4B6E2A35C0900047B88F /* VCorp.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -509,6 +511,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = VCorp/VCorp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B9H6AAT29D;
 				ENABLE_BITCODE = NO;
@@ -538,6 +541,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = VCorp/VCorp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B9H6AAT29D;
 				INFOPLIST_FILE = VCorp/Info.plist;
