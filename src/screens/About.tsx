@@ -7,7 +7,7 @@ const About = () => {
     <FullScreenDialog title="关于">
       <View style={styles.container}>
         <Text style={styles.title}>微可</Text>
-        <Text style={styles.subtitle}>Version 1.0.54</Text>
+        <Text style={styles.subtitle}>Version 1.0.57</Text>
         <Text style={styles.description}>
           微可 App
           是配合微可AI中间件使用的智能应用，具有诸多强大功能，可帮助您更高效地完成工作。
