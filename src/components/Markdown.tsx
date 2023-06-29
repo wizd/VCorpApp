@@ -1,9 +1,8 @@
 import React, {FC} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {Color, FontFamily, FontSize} from '../../GlobalStyles';
-import CodeBlock, {CodeBlockProps} from './CodeBlock';
-import HyperText from './tools/ClickableLinks';
+import {View} from 'react-native';
+import CodeBlock from './CodeBlock';
 import ClickableLinks from './tools/ClickableLinks';
+import MarkdownImage from './MarkdownImage'; // 导入自定义的 MarkdownImage 组件
 
 interface MarkdownProps {
   text: string;
@@ -34,6 +33,18 @@ const Markdown: FC<MarkdownProps> = ({text}) => {
           code={code}
         />,
       );
+    } else if (/!\[.*\]\(.*\)/.test(line)) {
+      // 检查是否是 Markdown 格式的图片链接
+      const altText = line.match(/!\[(.*?)\]/)?.[1] || '';
+      const imageUrl = line.match(/\((.*?)\)/)?.[1] || '';
+
+      content.push(
+        <MarkdownImage
+          key={`markdown-image-${content.length}`}
+          alt={altText}
+          source={imageUrl}
+        />,
+      );
     } else {
       content.push(
         <ClickableLinks key={`clickable-links-${i}`} content={line} />,
@@ -43,10 +54,5 @@ const Markdown: FC<MarkdownProps> = ({text}) => {
 
   return <View>{content}</View>;
 };
-
-// selectable={true}
-// style={styles.helloChatgpthowAre}
-// key={`text-${content.length}`}>
-//const styles = StyleSheet.create({});
 
 export default Markdown;

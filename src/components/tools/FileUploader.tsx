@@ -18,11 +18,13 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 import {uploadFileSuccess} from '../../persist/slices/companySlice';
+import {useToast} from '../../utils/useToast';
 
 /* toggle includeExtra */
 const includeExtra = true;
 
 const FileUploader = () => {
+  const showToast = useToast();
   const dispatch = useDispatch();
   const company = useSelector((state: any) => state.company) as Company;
   const [progress, setProgress] = useState(0);
@@ -130,8 +132,16 @@ const FileUploader = () => {
       console.log('File uploaded successfully');
 
       dispatch(uploadFileSuccess(name));
+      showToast(`上传成功！`);
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.log('Error uploading file:', error);
+
+      // 提取服务器返回的错误信息
+      const errorMessage =
+        error.response && error.response.data
+          ? error.response.data
+          : (error as any).message;
+      showToast(`上传失败。也许这个AI暂不接受文件上传呢。`);
     } finally {
       setUploading(false);
       setProgress(0);

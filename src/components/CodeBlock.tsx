@@ -17,7 +17,9 @@ const CodeBlock: FC<CodeBlockProps> = ({language, code}) => {
   return (
     <View style={styles.codeBlockContainer}>
       {language === 'image' && code && code.trim() !== '' ? (
-        <ImageSaver source={{uri: code.trim()}} />
+        <Text selectable={true} style={styles.code}>
+          {code.trim()}
+        </Text>
       ) : language === 'video' && code && code.trim() !== '' ? (
         <VideoPlayer videoUrl={code.trim()} />
       ) : (

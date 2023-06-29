@@ -378,6 +378,7 @@ const ShortCuts = () => {
       veid: company!.curid,
       vename: company!.employees.find(e => e.id === company!.curid)?.name,
       messages: history,
+      stream: true,
     };
 
     const options: EventSourceOptions = {
