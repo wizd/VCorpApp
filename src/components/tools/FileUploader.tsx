@@ -101,11 +101,12 @@ const FileUploader = () => {
   };
 
   const uploadDocument = async (file: DocumentPickerResponse) => {
+    console.log('uploadDocument:', file.uri, file.type, file.name, file.size);
     const data = new FormData();
     data.append('file', {
       uri: file.uri,
       type: file.type,
-      name: file.name,
+      name: encodeURIComponent(file.name!), // 对文件名进行编码
     });
     data.append('veid', company.curid);
     uploadFile(data, file.name!);
